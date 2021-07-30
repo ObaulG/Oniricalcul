@@ -1,0 +1,249 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://scenes/main_field_game/maingame.gd" type="Script" id=1]
+[ext_resource path="res://scenes/domain/domain.tscn" type="PackedScene" id=2]
+[ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=3]
+[ext_resource path="res://fonts/LMROMAN10-BOLD.OTF" type="DynamicFontData" id=4]
+[ext_resource path="res://LMROMAN10-REGULAR.OTF" type="DynamicFontData" id=5]
+[ext_resource path="res://UI/TimeDisplay.tscn" type="PackedScene" id=6]
+[ext_resource path="res://bonus/bonus_menu.tscn" type="PackedScene" id=7]
+
+[sub_resource type="DynamicFont" id=1]
+size = 40
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 30
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 150
+font_data = ExtResource( 4 )
+
+[node name="GameMaster" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="WindowDialog" type="WindowDialog" parent="."]
+margin_right = 543.0
+margin_bottom = 297.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="round_timer" type="Timer" parent="."]
+wait_time = 33.343
+one_shot = true
+
+[node name="pre_game_timer" type="Timer" parent="."]
+wait_time = 3.118
+one_shot = true
+autostart = true
+
+[node name="shop_timer" type="Timer" parent="."]
+wait_time = 15.0
+one_shot = true
+
+[node name="window" type="MarginContainer" parent="."]
+margin_right = 1920.0
+margin_bottom = 1080.0
+mouse_filter = 2
+custom_constants/margin_right = 37
+custom_constants/margin_top = -2
+custom_constants/margin_left = 8
+custom_constants/margin_bottom = 71
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="window"]
+margin_left = 8.0
+margin_top = -2.0
+margin_right = 1986.0
+margin_bottom = 1198.0
+color = Color( 0.658824, 0.529412, 0.784314, 0.266667 )
+
+[node name="game_elements" type="MarginContainer" parent="window"]
+margin_left = 8.0
+margin_top = -2.0
+margin_right = 1986.0
+margin_bottom = 1198.0
+
+[node name="hbox" type="HBoxContainer" parent="window/game_elements"]
+margin_right = 1978.0
+margin_bottom = 1200.0
+custom_constants/separation = 131
+
+[node name="p1_field" type="VBoxContainer" parent="window/game_elements/hbox"]
+margin_right = 500.0
+margin_bottom = 1200.0
+
+[node name="MarginContainer" type="MarginContainer" parent="window/game_elements/hbox/p1_field"]
+margin_right = 500.0
+margin_bottom = 1200.0
+rect_min_size = Vector2( 500, 1200 )
+
+[node name="domain_p1" parent="window/game_elements/hbox/p1_field/MarginContainer" instance=ExtResource( 2 )]
+margin_right = 500.0
+margin_bottom = 1200.0
+
+[node name="central_field" type="VBoxContainer" parent="window/game_elements/hbox"]
+margin_left = 631.0
+margin_right = 1131.0
+margin_bottom = 1200.0
+
+[node name="operation_zone" type="MarginContainer" parent="window/game_elements/hbox/central_field"]
+margin_right = 500.0
+margin_bottom = 300.0
+
+[node name="ColorRect" type="ColorRect" parent="window/game_elements/hbox/central_field/operation_zone"]
+margin_right = 500.0
+margin_bottom = 300.0
+rect_min_size = Vector2( 500, 300 )
+color = Color( 0.203922, 1, 0.533333, 0.121569 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="window/game_elements/hbox/central_field/operation_zone"]
+margin_right = 500.0
+margin_bottom = 300.0
+
+[node name="operation_display" type="Label" parent="window/game_elements/hbox/central_field/operation_zone/VBoxContainer"]
+margin_right = 500.0
+margin_bottom = 101.0
+custom_fonts/font = ExtResource( 3 )
+text = "a"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="operation_answer" type="Label" parent="window/game_elements/hbox/central_field/operation_zone/VBoxContainer"]
+margin_top = 105.0
+margin_right = 500.0
+margin_bottom = 206.0
+custom_fonts/font = ExtResource( 3 )
+text = "a"
+align = 1
+valign = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="global_data" type="HBoxContainer" parent="window/game_elements/hbox/central_field"]
+margin_top = 304.0
+margin_right = 500.0
+margin_bottom = 362.0
+
+[node name="CenterContainer3" type="CenterContainer" parent="window/game_elements/hbox/central_field/global_data"]
+margin_right = 268.0
+margin_bottom = 58.0
+
+[node name="time_left_label" type="Label" parent="window/game_elements/hbox/central_field/global_data/CenterContainer3"]
+margin_right = 268.0
+margin_bottom = 58.0
+custom_fonts/font = SubResource( 1 )
+text = "Temps restant "
+
+[node name="TimeDisplay" parent="window/game_elements/hbox/central_field/global_data" instance=ExtResource( 6 )]
+margin_left = 272.0
+margin_right = 472.0
+margin_bottom = 58.0
+
+[node name="p2_field" type="VBoxContainer" parent="window/game_elements/hbox"]
+margin_left = 1262.0
+margin_right = 1847.0
+margin_bottom = 1200.0
+
+[node name="answer_time_ai" type="CenterContainer" parent="window/game_elements/hbox/p2_field"]
+margin_right = 585.0
+margin_bottom = 52.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="window/game_elements/hbox/p2_field/answer_time_ai"]
+margin_right = 585.0
+margin_bottom = 52.0
+custom_constants/separation = 0
+
+[node name="Label" type="Label" parent="window/game_elements/hbox/p2_field/answer_time_ai/HBoxContainer"]
+margin_top = 4.0
+margin_right = 385.0
+margin_bottom = 47.0
+custom_fonts/font = SubResource( 2 )
+text = "Temps réponse de l'ennemi : "
+
+[node name="TimeDisplay" parent="window/game_elements/hbox/p2_field/answer_time_ai/HBoxContainer" instance=ExtResource( 6 )]
+margin_left = 385.0
+margin_right = 585.0
+
+[node name="domain_p2" parent="window/game_elements/hbox/p2_field" instance=ExtResource( 2 )]
+margin_top = 56.0
+margin_right = 585.0
+margin_bottom = 56.0
+
+[node name="p2_playing_timer" type="Timer" parent="window/game_elements/hbox/p2_field"]
+wait_time = 1.31
+
+[node name="other_field" type="VBoxContainer" parent="window/game_elements/hbox"]
+margin_left = 1978.0
+margin_right = 1978.0
+margin_bottom = 1200.0
+
+[node name="end_label" type="Label" parent="window/game_elements"]
+visible = false
+margin_top = 492.0
+margin_right = 1978.0
+margin_bottom = 707.0
+custom_fonts/font = SubResource( 3 )
+text = "qq"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="window/game_elements"]
+margin_right = 1978.0
+margin_bottom = 1200.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="bonus_window" type="MarginContainer" parent="window/game_elements/CenterContainer"]
+margin_left = 289.0
+margin_top = 350.0
+margin_right = 1689.0
+margin_bottom = 850.0
+rect_min_size = Vector2( 1400, 500 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="bonus_menu" parent="window/game_elements/CenterContainer/bonus_window" instance=ExtResource( 7 )]
+visible = false
+margin_right = 1400.0
+margin_bottom = 500.0
+
+[connection signal="game_pause" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_pause"]
+[connection signal="game_pause" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_pause"]
+[connection signal="game_resume" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_resume"]
+[connection signal="game_resume" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_resume"]
+[connection signal="new_round" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_new_round"]
+[connection signal="new_round" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_new_round"]
+[connection signal="send_threat" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_send_threat"]
+[connection signal="send_threat" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_send_threat"]
+[connection signal="shopping_time" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_shopping_time"]
+[connection signal="shopping_time" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_shopping_time"]
+[connection signal="timeout" from="round_timer" to="." method="_on_round_timer_timeout"]
+[connection signal="timeout" from="pre_game_timer" to="." method="_on_pre_game_timer_timeout"]
+[connection signal="timeout" from="shop_timer" to="." method="_on_shop_timer_timeout"]
+[connection signal="attack" from="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" to="." method="_on_domain_p1_attack"]
+[connection signal="end" from="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" to="." method="_on_domain_end"]
+[connection signal="new_money_value" from="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" to="window/game_elements/CenterContainer/bonus_window/bonus_menu" method="_on_domain_p1_new_money_value"]
+[connection signal="attack" from="window/game_elements/hbox/p2_field/domain_p2" to="." method="_on_domain_p2_attack"]
+[connection signal="end" from="window/game_elements/hbox/p2_field/domain_p2" to="." method="_on_domain_end"]
+[connection signal="timeout" from="window/game_elements/hbox/p2_field/p2_playing_timer" to="." method="_on_p2_playing_timer_timeout"]
+[connection signal="player_ask_to_buy_operation" from="window/game_elements/CenterContainer/bonus_window/bonus_menu" to="." method="_on_bonus_menu_player_ask_to_buy_operation"]
+[connection signal="player_wants_to_erase_operation" from="window/game_elements/CenterContainer/bonus_window/bonus_menu" to="." method="_on_bonus_menu_player_wants_to_erase_operation"]
+[connection signal="player_wants_to_swap_operations" from="window/game_elements/CenterContainer/bonus_window/bonus_menu" to="." method="_on_bonus_menu_player_wants_to_swap_operations"]

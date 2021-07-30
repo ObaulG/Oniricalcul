@@ -1,0 +1,163 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://LMROMAN10-REGULAR.OTF" type="DynamicFontData" id=1]
+[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=2]
+[ext_resource path="res://UI/TimeDisplay.tscn" type="PackedScene" id=3]
+[ext_resource path="res://incantation/Incantation_Operations.tscn" type="PackedScene" id=4]
+[ext_resource path="res://bonus/bonus_menu.gd" type="Script" id=5]
+[ext_resource path="res://save/player.gd" type="Script" id=6]
+
+[sub_resource type="DynamicFont" id=1]
+size = 30
+outline_color = Color( 0.462745, 0.0705882, 0.0705882, 1 )
+font_data = ExtResource( 1 )
+
+[node name="bonus_menu" type="Container"]
+mouse_filter = 2
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 1288.0
+margin_bottom = 491.0
+rect_clip_content = true
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
+margin_right = 1288.0
+margin_bottom = 491.0
+mouse_filter = 2
+color = Color( 0.741176, 0.639216, 0.87451, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="vbox" type="VBoxContainer" parent="MarginContainer"]
+margin_right = 1288.0
+margin_bottom = 491.0
+custom_constants/separation = 33
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/vbox"]
+margin_right = 1288.0
+margin_bottom = 52.0
+custom_constants/separation = 336
+
+[node name="TimeDisplay" parent="MarginContainer/vbox/HBoxContainer" instance=ExtResource( 3 )]
+mouse_filter = 2
+
+[node name="titlecontainer" type="CenterContainer" parent="MarginContainer/vbox/HBoxContainer"]
+margin_left = 536.0
+margin_right = 656.0
+margin_bottom = 52.0
+mouse_filter = 2
+
+[node name="title" type="Label" parent="MarginContainer/vbox/HBoxContainer/titlecontainer"]
+modulate = Color( 0, 0, 0, 1 )
+margin_top = 4.0
+margin_right = 120.0
+margin_bottom = 47.0
+custom_fonts/font = SubResource( 1 )
+text = "Interlude"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="points" type="Label" parent="MarginContainer/vbox/HBoxContainer"]
+modulate = Color( 0, 0, 0, 1 )
+margin_left = 992.0
+margin_top = 4.0
+margin_right = 1094.0
+margin_bottom = 47.0
+custom_fonts/font = SubResource( 1 )
+text = "Points: "
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="bonus_zone" type="HBoxContainer" parent="MarginContainer/vbox"]
+margin_top = 85.0
+margin_right = 1288.0
+margin_bottom = 259.0
+custom_constants/separation = 50
+
+[node name="new_operations" type="VBoxContainer" parent="MarginContainer/vbox/bonus_zone"]
+margin_right = 590.0
+margin_bottom = 174.0
+custom_constants/separation = 17
+
+[node name="title" type="Label" parent="MarginContainer/vbox/bonus_zone/new_operations"]
+margin_right = 590.0
+margin_bottom = 29.0
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.905882, 0.937255, 0.341176, 1 )
+text = "Opérations"
+
+[node name="Incantation_Operations" parent="MarginContainer/vbox/bonus_zone/new_operations" instance=ExtResource( 4 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 46.0
+margin_right = 590.0
+margin_bottom = 111.0
+
+[node name="title2" type="Label" parent="MarginContainer/vbox/bonus_zone/new_operations"]
+margin_top = 128.0
+margin_right = 590.0
+margin_bottom = 157.0
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.905882, 0.937255, 0.341176, 1 )
+text = "Nouvelles opérations"
+
+[node name="new_operations" type="GridContainer" parent="MarginContainer/vbox/bonus_zone/new_operations"]
+margin_top = 174.0
+margin_right = 590.0
+margin_bottom = 174.0
+columns = 6
+script = ExtResource( 6 )
+
+[node name="vbox_items" type="VBoxContainer" parent="MarginContainer/vbox/bonus_zone"]
+margin_left = 640.0
+margin_right = 822.0
+margin_bottom = 174.0
+
+[node name="bonus_title" type="Label" parent="MarginContainer/vbox/bonus_zone/vbox_items"]
+margin_right = 182.0
+margin_bottom = 29.0
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.905882, 0.937255, 0.341176, 1 )
+text = "Objets proposés      "
+
+[node name="list" type="GridContainer" parent="MarginContainer/vbox/bonus_zone/vbox_items"]
+margin_top = 33.0
+margin_right = 182.0
+margin_bottom = 33.0
+custom_constants/vseparation = 0
+columns = 2
+
+[node name="Stats" type="VBoxContainer" parent="MarginContainer/vbox/bonus_zone"]
+margin_left = 872.0
+margin_right = 917.0
+margin_bottom = 174.0
+
+[node name="bonus_title2" type="Label" parent="MarginContainer/vbox/bonus_zone/Stats"]
+margin_right = 45.0
+margin_bottom = 29.0
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.905882, 0.937255, 0.341176, 1 )
+text = "Stats"
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
+margin_right = 229.0
+margin_bottom = 70.0
+window_title = "Modification de l'incantation"
+dialog_text = "Confirmer?"
+
+[connection signal="on_pop_up_cancel" from="." to="." method="_on_pop_up_cancel"]
+[connection signal="on_pop_up_ok_press" from="." to="." method="_on_pop_up_ok_press"]

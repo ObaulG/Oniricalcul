@@ -1,0 +1,95 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://UI/HealthDisplay.gd" type="Script" id=1]
+[ext_resource path="res://textures/barHorizontal_green.png" type="Texture" id=2]
+[ext_resource path="res://textures/barHorizontal_darkgrey.png" type="Texture" id=3]
+[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=4]
+[ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=5]
+
+[sub_resource type="ShaderMaterial" id=1]
+
+[sub_resource type="Gradient" id=2]
+offsets = PoolRealArray( 0, 0, 0.429508, 0.832787 )
+colors = PoolColorArray( 0.780392, 0.756863, 0.133333, 1, 0.811765, 0.0901961, 0.0901961, 1, 0.618938, 0.395921, 0.092058, 1, 0.39315, 0.753906, 0.0942383, 1 )
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = ExtResource( 5 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+
+[node name="HealthDisplay" type="AspectRatioContainer"]
+material = SubResource( 1 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+gradient = SubResource( 2 )
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="vbox" type="VBoxContainer" parent="."]
+margin_right = 200.0
+margin_bottom = 49.0
+custom_constants/separation = -6
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HealthBar" type="TextureProgress" parent="vbox"]
+material = SubResource( 3 )
+margin_right = 200.0
+margin_bottom = 26.0
+step = 0.1
+value = 100.0
+texture_under = ExtResource( 3 )
+texture_progress = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="labels" type="HBoxContainer" parent="vbox"]
+margin_top = 20.0
+margin_right = 200.0
+margin_bottom = 49.0
+custom_constants/separation = 8
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="current_hp" type="Label" parent="vbox/labels"]
+margin_left = 72.0
+margin_right = 92.0
+margin_bottom = 29.0
+custom_fonts/font = ExtResource( 4 )
+text = "35"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="slash" type="Label" parent="vbox/labels"]
+margin_left = 100.0
+margin_right = 110.0
+margin_bottom = 29.0
+custom_fonts/font = ExtResource( 4 )
+text = "/"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="max_hp" type="Label" parent="vbox/labels"]
+margin_left = 118.0
+margin_right = 127.0
+margin_bottom = 29.0
+custom_fonts/font = ExtResource( 4 )
+text = "?"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}

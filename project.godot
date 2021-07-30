@@ -1,0 +1,226 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Calcul",
+"class": "Addition",
+"language": "GDScript",
+"path": "res://operations/scripts/addition.gd"
+}, {
+"base": "Container",
+"class": "BonusMenu",
+"language": "GDScript",
+"path": "res://bonus/bonus_menu.gd"
+}, {
+"base": "Operation",
+"class": "Calcul",
+"language": "GDScript",
+"path": "res://operations/scripts/calcul.gd"
+}, {
+"base": "Operation",
+"class": "Calcul_1O",
+"language": "GDScript",
+"path": "res://operations/scripts/Calcul_1O.gd"
+}, {
+"base": "Node",
+"class": "Calcul_Factory",
+"language": "GDScript",
+"path": "res://operations/calcul_generator.gd"
+}, {
+"base": "Object",
+"class": "Character",
+"language": "GDScript",
+"path": "res://characters/character.gd"
+}, {
+"base": "Operation",
+"class": "Conversion",
+"language": "GDScript",
+"path": "res://operations/scripts/conversion.gd"
+}, {
+"base": "Node",
+"class": "Domain",
+"language": "GDScript",
+"path": "res://scenes/domain/domain.gd"
+}, {
+"base": "Calcul_1O",
+"class": "Exponentiation",
+"language": "GDScript",
+"path": "res://operations/scripts/exponentiation.gd"
+}, {
+"base": "Node2D",
+"class": "GameMaster",
+"language": "GDScript",
+"path": "res://scenes/main_field_game/maingame.gd"
+}, {
+"base": "Control",
+"class": "HealthDisplay",
+"language": "GDScript",
+"path": "res://UI/HealthDisplay.gd"
+}, {
+"base": "Control",
+"class": "Incantation_Operations",
+"language": "GDScript",
+"path": "res://incantation/Incantation_Operations.gd"
+}, {
+"base": "Object",
+"class": "Operation",
+"language": "GDScript",
+"path": "res://operations/scripts/operation.gd"
+}, {
+"base": "Object",
+"class": "OperationData",
+"language": "GDScript",
+"path": "res://operations/OperationData.gd"
+}, {
+"base": "Control",
+"class": "Operation_Display",
+"language": "GDScript",
+"path": "res://operations/displaying/operation_display.gd"
+}, {
+"base": "Object",
+"class": "Pattern",
+"language": "GDScript",
+"path": "res://incantation/pattern.gd"
+}, {
+"base": "Object",
+"class": "Player",
+"language": "GDScript",
+"path": "res://save/player.gd"
+}, {
+"base": "Calcul",
+"class": "Product",
+"language": "GDScript",
+"path": "res://operations/scripts/product.gd"
+}, {
+"base": "Object",
+"class": "ReliquatNumber",
+"language": "GDScript",
+"path": "res://scripts/reliquat_number.gd"
+}, {
+"base": "Calcul_1O",
+"class": "RootOP",
+"language": "GDScript",
+"path": "res://operations/scripts/root_op.gd"
+}, {
+"base": "Calcul_1O",
+"class": "SquareRootOP",
+"language": "GDScript",
+"path": "res://operations/scripts/square_root.gd"
+}, {
+"base": "Calcul",
+"class": "Substraction",
+"language": "GDScript",
+"path": "res://operations/scripts/substraction.gd"
+}, {
+"base": "Node2D",
+"class": "Threat",
+"language": "GDScript",
+"path": "res://scenes/threat/threat.gd"
+} ]
+_global_script_class_icons={
+"Addition": "",
+"BonusMenu": "",
+"Calcul": "",
+"Calcul_1O": "",
+"Calcul_Factory": "",
+"Character": "",
+"Conversion": "",
+"Domain": "",
+"Exponentiation": "",
+"GameMaster": "",
+"HealthDisplay": "",
+"Incantation_Operations": "",
+"Operation": "",
+"OperationData": "",
+"Operation_Display": "",
+"Pattern": "",
+"Player": "",
+"Product": "",
+"ReliquatNumber": "",
+"RootOP": "",
+"SquareRootOP": "",
+"Substraction": "",
+"Threat": ""
+}
+
+[application]
+
+config/name="Oniricalcul"
+run/main_scene="res://scenes/titlescreen/title.tscn"
+config/icon="res://textures/icon.png"
+
+[audio]
+
+default_bus_layout=""
+
+[autoload]
+
+global="*res://singletons/global.gd"
+
+[debug]
+
+settings/stdout/print_fps=true
+settings/stdout/verbose_stdout=true
+
+[display]
+
+window/size/width=1920
+window/size/height=1080
+
+[editor_plugins]
+
+enabled=PoolStringArray(  )
+
+[global]
+
+debug=false
+
+[input]
+
+delete_char={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777220,"unicode":0,"echo":false,"script":null)
+ ]
+}
+pass={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777218,"unicode":0,"echo":false,"script":null)
+ ]
+}
+special_ability={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":32,"unicode":0,"echo":false,"script":null)
+ ]
+}
+validate={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777221,"unicode":0,"echo":false,"script":null)
+ ]
+}
+attack_stance={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":65,"unicode":0,"echo":false,"script":null)
+ ]
+}
+defense_stance={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":68,"unicode":0,"echo":false,"script":null)
+ ]
+}
+bonus_stance={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":69,"unicode":0,"echo":false,"script":null)
+ ]
+}
+
+[rendering]
+
+vram_compression/import_etc=true
+vram_compression/import_etc2=false

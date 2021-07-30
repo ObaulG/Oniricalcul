@@ -1,0 +1,81 @@
+{
+  "operations": [
+  {
+    "id": 1,
+    "str_data" : {
+      "fr": {
+        "name": "Addition 2 opérandes",
+        "descr": "Une addition tout ce qu'il y a de plus classique."
+      }
+    },
+    
+    "hardness_list" : [1,2,3,4,5],
+    "potential_list": [1,2,3,6,9]
+  },
+  {
+    "id": 2,
+    "str_data" : {
+      "fr": {
+        "name": "Soustraction 2 opérandes",
+        "descr": "Une soustraction tout ce qu'il y a de plus classique."
+      }
+    },
+    
+    "hardness_list" : [1,2,3,4,5],
+    "potential_list": [1,2,5,7,11]
+    
+  },
+  {
+    "id": 3,
+    "str_data" : {
+      "fr": {
+        "name": "Multiplication 2 opérandes",
+        "descr": "Une multiplication tout ce qu'il y a de plus classique."
+      }
+    },
+    
+    "hardness_list" : [1,2,3,4,5],
+    "potential_list": [1,2,5,11,18]
+    
+  },
+  {
+    "id": 4,
+    "str_data" : {
+      "fr": {
+        "name": "Conversion de bases",
+        "descr": "Conversion d'un nombre d'une base a vers une base b."
+      }
+    },
+    
+    "hardness_list" : [1,2,3,4,5],
+    "potential_list": [1,2,3,6,9]
+    
+  },
+  {
+    "id": 5,
+    "str_data" : {
+      "fr": {
+        "name": "Exponentiation",
+        "descr": "Elévation d'un nombre a à la puissance b."
+      }
+    },
+    
+    "hardness_list" : [2,3,4,5],
+    "potential_list": [2,5,10,15]
+    
+  },
+  {
+    "id": 6,
+    "str_data" : {
+      "fr": {
+        "name": "Racine",
+        "descr": "Elévation d'un nombre a à la puissance b."
+      }
+    },
+    
+    "hardness_list" : [2,3,4,5],
+    "potential_list": [2,5,10,15]
+    
+  }
+  ]
+}

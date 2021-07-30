@@ -1,0 +1,88 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://scenes/threat/threat.gd" type="Script" id=1]
+[ext_resource path="res://textures/meteor.jpg" type="Texture" id=2]
+[ext_resource path="res://UI/HealthDisplay.tscn" type="PackedScene" id=3]
+[ext_resource path="res://textures/particles/flame_01.png" type="Texture" id=4]
+[ext_resource path="res://textures/particles/smoke_02.png" type="Texture" id=5]
+
+[sub_resource type="Gradient" id=1]
+colors = PoolColorArray( 0.941406, 0.162264, 0.0588379, 1, 0.132813, 0.015564, 0.015564, 1 )
+
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
+
+[sub_resource type="ParticlesMaterial" id=3]
+lifetime_randomness = 0.11
+emission_shape = 2
+emission_box_extents = Vector3( 12, 60, 1 )
+flag_disable_z = true
+direction = Vector3( 0, -1, 0 )
+spread = 23.98
+gravity = Vector3( 0, -100, 0 )
+initial_velocity = 55.26
+initial_velocity_random = 1.0
+angular_velocity_random = 0.39
+orbit_velocity = 0.0
+orbit_velocity_random = 0.58
+angle = -184.3
+scale = 0.19
+color_ramp = SubResource( 2 )
+
+[sub_resource type="Gradient" id=4]
+offsets = PoolRealArray( 0, 0.498681, 0.762533 )
+colors = PoolColorArray( 0.67627, 0.140009, 0.140009, 1, 0.141113, 0.0691886, 0.0121269, 1, 1, 0.996221, 0.996094, 1 )
+
+[sub_resource type="GradientTexture" id=5]
+gradient = SubResource( 4 )
+
+[sub_resource type="ParticlesMaterial" id=6]
+flag_disable_z = true
+direction = Vector3( 0, -1, 0 )
+spread = 134.57
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 109.99
+initial_velocity_random = 1.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 0.5
+color_ramp = SubResource( 5 )
+hue_variation_random = 0.33
+
+[node name="Threat" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="Position2D" type="Position2D" parent="."]
+
+[node name="Sprite" type="Sprite" parent="Position2D"]
+position = Vector2( -0.0872347, 0.0577657 )
+texture = ExtResource( 2 )
+region_rect = Rect2( 50, 50, 0, 0 )
+
+[node name="falling_particles" type="Particles2D" parent="."]
+amount = 35
+speed_scale = 1.29
+randomness = 1.0
+visibility_rect = Rect2( -100, -400, 200, 600 )
+process_material = SubResource( 3 )
+texture = ExtResource( 4 )
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="HealthDisplay" parent="." instance=ExtResource( 3 )]
+margin_left = 22.6274
+margin_top = 66.468
+margin_right = 222.627
+margin_bottom = 115.468
+
+[node name="destroy_particles" type="Particles2D" parent="."]
+position = Vector2( 2.66968, 34.7058 )
+emitting = false
+amount = 16
+speed_scale = 3.06
+explosiveness = 0.12
+process_material = SubResource( 6 )
+texture = ExtResource( 5 )
+
+[connection signal="impact" from="." to="." method="_on_Threat_impact"]
+[connection signal="tween_all_completed" from="Tween" to="." method="_on_Tween_tween_all_completed"]

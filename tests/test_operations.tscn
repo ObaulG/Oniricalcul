@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://incantation/Incantation_Operations.tscn" type="PackedScene" id=1]
+[ext_resource path="res://tests/test_operations.gd" type="Script" id=2]
+[ext_resource path="res://operations/displaying/operation_display.tscn" type="PackedScene" id=3]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="Incantation_Operations" parent="." instance=ExtResource( 1 )]
+margin_left = 78.3991
+margin_top = 96.2174
+margin_right = 668.399
+margin_bottom = 161.217
+
+[node name="operation" parent="." instance=ExtResource( 3 )]
+margin_left = 99.2218
+margin_top = 249.23
+margin_right = 163.222
+margin_bottom = 313.23
+
+[node name="operation2" parent="." instance=ExtResource( 3 )]
+margin_left = 293.875
+margin_top = 250.092
+margin_right = 357.875
+margin_bottom = 314.092
+
+[node name="operation3" parent="." instance=ExtResource( 3 )]
+margin_left = 193.783
+margin_top = 248.729
+margin_right = 257.783
+margin_bottom = 312.729

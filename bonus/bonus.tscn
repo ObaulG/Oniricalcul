@@ -1,0 +1,87 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://bonus/bonus.gd" type="Script" id=1]
+
+[sub_resource type="ParticlesMaterial" id=1]
+render_priority = 38
+emission_shape = 2
+emission_box_extents = Vector3( 32, 1, 1 )
+flag_disable_z = true
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+linear_accel = 2.33
+radial_accel = 2.0
+radial_accel_random = 0.1
+scale = 3.0
+scale_random = 0.69
+color = Color( 0.682353, 0.717647, 0.0313726, 1 )
+
+[node name="bonus" type="Container"]
+margin_right = 128.0
+margin_bottom = 128.0
+rect_min_size = Vector2( 128, 128 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 128.0
+margin_bottom = 128.0
+color = Color( 0.458824, 0.164706, 0.603922, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 128.0
+margin_bottom = 128.0
+custom_constants/separation = 13
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer"]
+margin_right = 128.0
+margin_bottom = 14.0
+
+[node name="title" type="Label" parent="VBoxContainer/CenterContainer"]
+margin_left = 51.0
+margin_right = 77.0
+margin_bottom = 14.0
+text = "title"
+
+[node name="CenterContainer2" type="CenterContainer" parent="VBoxContainer"]
+margin_top = 27.0
+margin_right = 128.0
+margin_bottom = 91.0
+
+[node name="icon" type="TextureRect" parent="VBoxContainer/CenterContainer2"]
+margin_left = 32.0
+margin_right = 96.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 64, 64 )
+
+[node name="Particles2D" type="Particles2D" parent="VBoxContainer/CenterContainer2"]
+light_mask = 8193
+position = Vector2( 64.0651, 58.7436 )
+emitting = false
+amount = 18
+lifetime = 4.0
+speed_scale = 1.8
+visibility_rect = Rect2( -36, -60, 72, 72 )
+process_material = SubResource( 1 )
+
+[node name="CenterContainer3" type="CenterContainer" parent="VBoxContainer"]
+margin_top = 104.0
+margin_right = 128.0
+margin_bottom = 118.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="descr" type="Label" parent="VBoxContainer/CenterContainer3"]
+margin_left = 45.0
+margin_right = 83.0
+margin_bottom = 14.0
+text = "blabla"

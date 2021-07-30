@@ -1,0 +1,78 @@
+{
+	"textures": [
+		{
+			"image": "op_ss.png",
+			"size": {
+				"w": 256,
+				"h": 64
+			},
+			"sprites": [
+				{
+					"filename": "addition.PNG",
+					"region": {
+						"x": 0,
+						"y": 0,
+						"w": 64,
+						"h": 64
+					},
+					"margin": {
+						"x": 0,
+						"y": 0,
+						"w": 0,
+						"h": 0
+					}
+				},
+				{
+					"filename": "conversion.PNG",
+					"region": {
+						"x": 64,
+						"y": 0,
+						"w": 64,
+						"h": 64
+					},
+					"margin": {
+						"x": 0,
+						"y": 0,
+						"w": 0,
+						"h": 0
+					}
+				},
+				{
+					"filename": "product.PNG",
+					"region": {
+						"x": 128,
+						"y": 0,
+						"w": 64,
+						"h": 64
+					},
+					"margin": {
+						"x": 0,
+						"y": 0,
+						"w": 0,
+						"h": 0
+					}
+				},
+				{
+					"filename": "soustraction.PNG",
+					"region": {
+						"x": 192,
+						"y": 0,
+						"w": 64,
+						"h": 64
+					},
+					"margin": {
+						"x": 0,
+						"y": 0,
+						"w": 0,
+						"h": 0
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "1.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:2738fff0aad2e6bd0568499fd7851001:5f9ccc68e97a33dedfbfad38ab96ecbb:a8149bcd3fc5496475eccd90b363d024$"
+	}
+}
