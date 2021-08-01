@@ -1,17 +1,65 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://incantation/Incantation_Operations_Circle.gd" type="Script" id=1]
+[ext_resource path="res://UI/CircularContainer.tscn" type="PackedScene" id=2]
+[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=3]
 
-[node name="Incantation_Operations_Circle" type="Container"]
+[node name="Incantation_Operations_Circle" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -1329.0
-margin_bottom = -983.0
-rect_min_size = Vector2( 590, 97 )
+margin_right = -1408.0
+margin_bottom = -568.0
+rect_min_size = Vector2( 512, 512 )
 mouse_filter = 2
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[connection signal="gui_input" from="." to="." method="_on_Incantation_Operations_gui_input"]
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 512.0
+margin_bottom = 512.0
+rect_min_size = Vector2( 512, 512 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="ColorRect" parent="MarginContainer"]
+margin_right = 512.0
+margin_bottom = 512.0
+color = Color( 0.623529, 0.815686, 0.627451, 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_right = 512.0
+margin_bottom = 512.0
+custom_constants/separation = 62
+
+[node name="CircularContainer" parent="MarginContainer/VBoxContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 512.0
+margin_bottom = 256.0
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer"]
+margin_top = 318.0
+margin_right = 512.0
+margin_bottom = 347.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/CenterContainer"]
+margin_left = 181.0
+margin_right = 330.0
+margin_bottom = 29.0
+custom_constants/separation = 50
+
+[node name="potential_label" type="Label" parent="MarginContainer/VBoxContainer/CenterContainer/HBoxContainer"]
+margin_right = 81.0
+margin_bottom = 29.0
+custom_fonts/font = ExtResource( 3 )
+text = "Potentiel"
+
+[node name="potential_value" type="Label" parent="MarginContainer/VBoxContainer/CenterContainer/HBoxContainer"]
+margin_left = 131.0
+margin_right = 149.0
+margin_bottom = 29.0
+custom_fonts/font = ExtResource( 3 )
+text = "??"

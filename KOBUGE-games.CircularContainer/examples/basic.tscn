@@ -74,7 +74,7 @@ arrange/start_angle = 360.0
 arrange/start_empty = false
 arrange/allow_node2d = false
 animate/percent_visible = 0.0
-animate/all_at_once = false
+animate/all_at_once = true
 
 [node name="operation" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
 margin_left = 150.494

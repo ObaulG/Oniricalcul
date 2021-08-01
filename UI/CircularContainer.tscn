@@ -2,40 +2,16 @@
 
 [ext_resource path="res://UI/CircularContainer.gd" type="Script" id=1]
 
-[node name="CircularContainer" type="Control"]
+[node name="CircularContainer" type="Container"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_right = -1664.0
+margin_bottom = -824.0
+rect_min_size = Vector2( 256, 256 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false,
 "_editor_description_": ""
 }
 completance = null
-angle = null
-
-[node name="ColorRect3" type="ColorRect" parent="."]
-margin_left = 287.285
-margin_top = 226.287
-margin_right = 520.285
-margin_bottom = 439.287
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ColorRect2" type="ColorRect" parent="."]
-margin_left = 846.272
-margin_top = 64.6521
-margin_right = 1079.27
-margin_bottom = 277.652
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ColorRect4" type="ColorRect" parent="."]
-margin_left = 870.966
-margin_top = 441.8
-margin_right = 1103.97
-margin_bottom = 654.8
-__meta__ = {
-"_edit_use_anchors_": false
-}
+base_angle = null

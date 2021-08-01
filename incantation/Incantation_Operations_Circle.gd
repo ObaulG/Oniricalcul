@@ -1,4 +1,4 @@
-extends Container
+extends Control
 
 signal operation_selected(index)
 signal operation_confirmed_and_incantation_updated(index)
@@ -6,32 +6,35 @@ signal operation_confirmed_and_incantation_updated(index)
 class_name Incantation_Operations_Circle
 
 var circle_container
+var potential_label
+
 var nb_op
 var size
 var operations_list
 var current
 var list
-var potential_label
+
 
 var rollback_list
 var operations_selectable: bool
 var multiple_selection: bool
 
 func _ready():
-	grid = $MarginContainer/VBoxContainer/GridContainer
-	potential_label = $MarginContainer/VBoxContainer/potential
+	circle_container = $MarginContainer/VBoxContainer/CircularContainer
+	potential_label = $MarginContainer/VBoxContainer/CenterContainer/HBoxContainer/potential_value
 	
 	nb_op = Pattern.MAX_OP
 	#Modifier la taille de l'objet en f. du nb d'op? à voir..
 	operations_list = []
 	for i in range(nb_op):
 		var operation = global.operation_display.instance()
-		grid.add_child(operation)
+		circle_container.add_child(operation)
 		operations_list.append(operation)
 		operation.connect("operation_confirmed", self, "on_operation_confirmed")
 		operation.connect("operation_unselected", self, "on_operation_unselected")
 		operation.connect("operation_selected", self, "on_operation_selected")
 		operation.set_index(i)
+		operation.visible = false
 	current = -1
 	rollback_list = []
 	operations_selectable = false
@@ -53,17 +56,19 @@ func update_operations(L: Array, dragable = false):
 			else:
 				subtype = -1
 			operations_list[i].change_operation(type, diff, subtype)
+			operations_list[i].visible = true
 		else:
 			operations_list[i].clean()
+			operations_list[i].visible = true
 	update_potential(potential)
 
 func update_potential(p: int):
-	potential_label.text = "Potential: " + str(p)
+	potential_label.text = str(p)
 	
 func set_operations_selectable(b = true, multiple = false):
 	operations_selectable = b
 	multiple_selection = multiple
-	for op in grid.get_children():
+	for op in circle_container.get_children():
 		op.set_selectable(b)
 		
 func change_current_index(i: int):

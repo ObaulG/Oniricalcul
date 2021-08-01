@@ -69,7 +69,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://incantation/Incantation_Operations.gd"
 }, {
-"base": "Container",
+"base": "Control",
 "class": "Incantation_Operations_Circle",
 "language": "GDScript",
 "path": "res://incantation/Incantation_Operations_Circle.gd"
@@ -159,7 +159,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Oniricalcul"
-run/main_scene="res://KOBUGE-games.CircularContainer/examples/basic.tscn"
+run/main_scene="res://scenes/titlescreen/title.tscn"
 config/icon="res://textures/icon.png"
 
 [audio]

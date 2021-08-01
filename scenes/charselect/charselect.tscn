@@ -7,25 +7,25 @@
 [ext_resource path="res://LMROMAN10-REGULAR.OTF" type="DynamicFontData" id=5]
 [ext_resource path="res://textures/operations/spritesheet.png" type="Texture" id=6]
 [ext_resource path="res://textures/barHorizontal_green.png" type="Texture" id=7]
+[ext_resource path="res://incantation/Incantation_Operations_Circle.tscn" type="PackedScene" id=8]
 
 [sub_resource type="DynamicFont" id=1]
 size = 38
 font_data = ExtResource( 5 )
 
 [sub_resource type="DynamicFont" id=2]
-size = 38
 font_data = ExtResource( 5 )
 
-[sub_resource type="DynamicFont" id=3]
-font_data = ExtResource( 5 )
-
-[sub_resource type="AtlasTexture" id=4]
+[sub_resource type="AtlasTexture" id=3]
 flags = 4
 atlas = ExtResource( 6 )
 region = Rect2( 256, 0, 64, 64 )
 
-[node name="CharSelect" type="Node2D"]
+[node name="CharSelect" type="Control"]
 script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="ColorRect" type="ColorRect" parent="."]
 margin_right = 1920.0
@@ -56,19 +56,26 @@ custom_constants/separation = 63
 
 [node name="Label" type="Label" parent="window/hbox1/characters"]
 margin_right = 600.0
-margin_bottom = 2.0
-custom_fonts/font = SubResource( 1 )
+margin_bottom = 29.0
+custom_fonts/font = ExtResource( 1 )
 text = "Choisissez votre personnage"
 align = 1
 
 [node name="charlist" type="ItemList" parent="window/hbox1/characters"]
-margin_top = 65.0
+margin_top = 92.0
 margin_right = 600.0
-margin_bottom = 365.0
+margin_bottom = 392.0
 rect_min_size = Vector2( 600, 300 )
 max_text_lines = 3
 max_columns = 3
 same_column_width = true
+
+[node name="Incantation_Operations_Circle" parent="window/hbox1/characters" instance=ExtResource( 8 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 455.0
+margin_right = 600.0
+margin_bottom = 711.0
 
 [node name="settings" type="VBoxContainer" parent="window/hbox1"]
 margin_left = 754.0
@@ -79,7 +86,7 @@ rect_min_size = Vector2( 900, 300 )
 [node name="Label" type="Label" parent="window/hbox1/settings"]
 margin_right = 900.0
 margin_bottom = 2.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 1 )
 text = "Paramètres de jeu"
 align = 1
 
@@ -429,7 +436,7 @@ text = "Description du style"
 margin_top = 33.0
 margin_right = 900.0
 margin_bottom = 35.0
-custom_fonts/font = SubResource( 3 )
+custom_fonts/font = SubResource( 2 )
 text = "<informations>"
 
 [node name="header" type="HBoxContainer" parent="window/hbox1/settings/informations"]
@@ -473,7 +480,7 @@ custom_constants/separation = 30
 [node name="op" type="TextureRect" parent="window/hbox1/settings/informations/GridContainer/list/base"]
 margin_right = 64.0
 margin_bottom = 64.0
-texture = SubResource( 4 )
+texture = SubResource( 3 )
 
 [node name="VSeparator" type="VSeparator" parent="window/hbox1/settings/informations/GridContainer/list/base"]
 margin_left = 94.0
@@ -495,7 +502,7 @@ texture_progress = ExtResource( 7 )
 [node name="incantation" type="VBoxContainer" parent="window/hbox1/settings"]
 margin_top = 505.0
 margin_right = 900.0
-margin_bottom = 603.0
+margin_bottom = 635.0
 
 [node name="Label" type="Label" parent="window/hbox1/settings/incantation"]
 margin_right = 900.0
@@ -508,12 +515,12 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 33.0
 margin_right = 900.0
-margin_bottom = 98.0
+margin_bottom = 130.0
 
 [node name="diff" type="VBoxContainer" parent="window/hbox1/settings"]
-margin_top = 607.0
+margin_top = 639.0
 margin_right = 900.0
-margin_bottom = 689.0
+margin_bottom = 721.0
 
 [node name="Label" type="Label" parent="window/hbox1/settings/diff"]
 margin_right = 900.0
@@ -535,18 +542,18 @@ custom_fonts/font = ExtResource( 1 )
 text = "Très facile"
 
 [node name="startbutton" type="Button" parent="window/hbox1/settings"]
-margin_top = 693.0
+margin_top = 725.0
 margin_right = 900.0
-margin_bottom = 713.0
+margin_bottom = 745.0
 text = "Démarrer"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="return_button" type="Button" parent="window/hbox1/settings"]
-margin_top = 717.0
+margin_top = 749.0
 margin_right = 900.0
-margin_bottom = 737.0
+margin_bottom = 769.0
 text = "Retour"
 __meta__ = {
 "_edit_use_anchors_": false

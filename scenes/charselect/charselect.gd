@@ -42,7 +42,7 @@ var op_gridcontainer
 var op_p_display_base
 var vbox_op_list
 var op_display
-
+var op_display_bis
 var diff_range: HSlider
 var diff_label: Label
 
@@ -134,6 +134,7 @@ func _ready():
 		op_node.set_name("operation"+str(op_index))
 		vbox_op_list.add_child(op_node)
 	op_display = $window/hbox1/settings/incantation/Incantation_Operations
+	op_display_bis = $window/hbox1/characters/Incantation_Operations_Circle
 	
 	#we don't show void operation...
 	op_p_display_base.visible = false
@@ -177,7 +178,7 @@ func _on_ItemList_item_selected(index):
 	set_3textures_bar(caracs_nodes["malus"], true, character.get_malus_level(), 1, 3)
 
 	op_display.update_operations(character.get_base_pattern())
-	
+	op_display_bis.update_operations(character.get_base_pattern())
 	#puis modifier les probabilités d'apparition des opérations
 	var probabilities = character.get_operation_preference()
 	var i = 0
