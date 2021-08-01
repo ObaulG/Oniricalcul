@@ -55,6 +55,7 @@ func change_state(state):
 			swap_button.disabled = false
 			erase_button.disabled = false
 			cancel_button.disabled = true
+			set_shop_operations_buyable(true)
 			make_op_selectionnable(false, false)
 		STATE.REPLACING_OP:
 			swap_button.disabled = true
@@ -187,7 +188,7 @@ func _on_swap_button_down():
 
 func _on_cancel_button_down():
 	set_shop_operations_buyable(true)
-	make_op_selectionnable(false)
+	change_state(STATE.IDLE)
 
 func _on_domain_p1_new_money_value(money):
 	print("Nouvelle valeur de monnaie recue")

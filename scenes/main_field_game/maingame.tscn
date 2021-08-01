@@ -58,18 +58,18 @@ __meta__ = {
 [node name="ColorRect" type="ColorRect" parent="window"]
 margin_left = 8.0
 margin_top = -2.0
-margin_right = 1986.0
+margin_right = 1883.0
 margin_bottom = 1198.0
 color = Color( 0.658824, 0.529412, 0.784314, 0.266667 )
 
 [node name="game_elements" type="MarginContainer" parent="window"]
 margin_left = 8.0
 margin_top = -2.0
-margin_right = 1986.0
+margin_right = 1883.0
 margin_bottom = 1198.0
 
 [node name="hbox" type="HBoxContainer" parent="window/game_elements"]
-margin_right = 1978.0
+margin_right = 1875.0
 margin_bottom = 1200.0
 custom_constants/separation = 131
 
@@ -135,65 +135,65 @@ __meta__ = {
 [node name="global_data" type="HBoxContainer" parent="window/game_elements/hbox/central_field"]
 margin_top = 304.0
 margin_right = 500.0
-margin_bottom = 362.0
+margin_bottom = 356.0
 
 [node name="CenterContainer3" type="CenterContainer" parent="window/game_elements/hbox/central_field/global_data"]
-margin_right = 268.0
-margin_bottom = 58.0
+margin_right = 14.0
+margin_bottom = 52.0
 
 [node name="time_left_label" type="Label" parent="window/game_elements/hbox/central_field/global_data/CenterContainer3"]
-margin_right = 268.0
-margin_bottom = 58.0
+margin_top = 25.0
+margin_right = 14.0
+margin_bottom = 27.0
 custom_fonts/font = SubResource( 1 )
 text = "Temps restant "
 
 [node name="TimeDisplay" parent="window/game_elements/hbox/central_field/global_data" instance=ExtResource( 6 )]
-margin_left = 272.0
-margin_right = 472.0
-margin_bottom = 58.0
+margin_left = 18.0
+margin_right = 218.0
 
 [node name="p2_field" type="VBoxContainer" parent="window/game_elements/hbox"]
 margin_left = 1262.0
-margin_right = 1847.0
+margin_right = 1490.0
 margin_bottom = 1200.0
 
 [node name="answer_time_ai" type="CenterContainer" parent="window/game_elements/hbox/p2_field"]
-margin_right = 585.0
+margin_right = 228.0
 margin_bottom = 52.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="window/game_elements/hbox/p2_field/answer_time_ai"]
-margin_right = 585.0
+margin_right = 228.0
 margin_bottom = 52.0
 custom_constants/separation = 0
 
 [node name="Label" type="Label" parent="window/game_elements/hbox/p2_field/answer_time_ai/HBoxContainer"]
-margin_top = 4.0
-margin_right = 385.0
-margin_bottom = 47.0
+margin_top = 25.0
+margin_right = 28.0
+margin_bottom = 27.0
 custom_fonts/font = SubResource( 2 )
 text = "Temps réponse de l'ennemi : "
 
 [node name="TimeDisplay" parent="window/game_elements/hbox/p2_field/answer_time_ai/HBoxContainer" instance=ExtResource( 6 )]
-margin_left = 385.0
-margin_right = 585.0
+margin_left = 28.0
+margin_right = 228.0
 
 [node name="domain_p2" parent="window/game_elements/hbox/p2_field" instance=ExtResource( 2 )]
 margin_top = 56.0
-margin_right = 585.0
+margin_right = 228.0
 margin_bottom = 56.0
 
 [node name="p2_playing_timer" type="Timer" parent="window/game_elements/hbox/p2_field"]
 wait_time = 1.31
 
 [node name="other_field" type="VBoxContainer" parent="window/game_elements/hbox"]
-margin_left = 1978.0
-margin_right = 1978.0
+margin_left = 1621.0
+margin_right = 1621.0
 margin_bottom = 1200.0
 
 [node name="end_label" type="Label" parent="window/game_elements"]
 visible = false
 margin_top = 492.0
-margin_right = 1978.0
+margin_right = 1875.0
 margin_bottom = 707.0
 custom_fonts/font = SubResource( 3 )
 text = "qq"
@@ -204,16 +204,16 @@ __meta__ = {
 }
 
 [node name="CenterContainer" type="CenterContainer" parent="window/game_elements"]
-margin_right = 1978.0
+margin_right = 1875.0
 margin_bottom = 1200.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="bonus_window" type="MarginContainer" parent="window/game_elements/CenterContainer"]
-margin_left = 289.0
+margin_left = 237.0
 margin_top = 350.0
-margin_right = 1689.0
+margin_right = 1637.0
 margin_bottom = 850.0
 rect_min_size = Vector2( 1400, 500 )
 __meta__ = {

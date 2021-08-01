@@ -3,13 +3,13 @@
 [ext_resource path="res://operations/displaying/operation_display.gd" type="Script" id=1]
 [ext_resource path="res://textures/operations/spritesheet.png" type="Texture" id=2]
 
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 33, 33 )
-
 [sub_resource type="AtlasTexture" id=2]
 flags = 4
 atlas = ExtResource( 2 )
 region = Rect2( 256, 0, 64, 64 )
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 33, 33 )
 
 [node name="operation" type="Container"]
 anchor_right = 1.0
@@ -23,16 +23,6 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Area2D" type="Area2D" parent="."]
-z_index = 1
-space_override = 3
-
-[node name="click_zone" type="CollisionShape2D" parent="Area2D"]
-position = Vector2( 32, 32 )
-z_index = 1
-shape = SubResource( 1 )
-disabled = true
 
 [node name="bg" type="ColorRect" parent="."]
 margin_right = 64.0
@@ -88,6 +78,18 @@ margin_bottom = 14.0
 text = "!!"
 align = 1
 
+[node name="Area2D" type="Area2D" parent="."]
+z_index = 1
+priority = 3.0
+collision_layer = 33825
+
+[node name="click_zone" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 32, 32 )
+z_index = 1
+shape = SubResource( 1 )
+disabled = true
+
+[connection signal="gui_input" from="." to="." method="_on_operation_gui_input"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Button" to="." method="_on_Button_pressed"]
 [connection signal="input_event" from="Area2D" to="." method="_on_Area2D_input_event"]
 [connection signal="mouse_entered" from="Area2D" to="." method="_on_Area2D_mouse_entered"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Button" to="." method="_on_Button_pressed"]

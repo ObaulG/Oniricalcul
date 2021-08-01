@@ -53,12 +53,11 @@ var shop_timer
 var round_timer
 var round_time_bar
 var timer_node
-# Chargement des textures
-# ...
+
 func _ready():
 	
 	pre_round_duration = 1.0
-	round_duration = 15.0
+	round_duration = 1.0
 	shopping_duration = 15.0
 	
 	calcul_factory = Calcul_Factory.new()

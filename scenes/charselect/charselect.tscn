@@ -56,15 +56,15 @@ custom_constants/separation = 63
 
 [node name="Label" type="Label" parent="window/hbox1/characters"]
 margin_right = 600.0
-margin_bottom = 55.0
+margin_bottom = 2.0
 custom_fonts/font = SubResource( 1 )
 text = "Choisissez votre personnage"
 align = 1
 
 [node name="charlist" type="ItemList" parent="window/hbox1/characters"]
-margin_top = 118.0
+margin_top = 65.0
 margin_right = 600.0
-margin_bottom = 418.0
+margin_bottom = 365.0
 rect_min_size = Vector2( 600, 300 )
 max_text_lines = 3
 max_columns = 3
@@ -78,15 +78,15 @@ rect_min_size = Vector2( 900, 300 )
 
 [node name="Label" type="Label" parent="window/hbox1/settings"]
 margin_right = 900.0
-margin_bottom = 55.0
+margin_bottom = 2.0
 custom_fonts/font = SubResource( 2 )
 text = "Paramètres de jeu"
 align = 1
 
 [node name="char_name" type="VBoxContainer" parent="window/hbox1/settings"]
-margin_top = 59.0
+margin_top = 6.0
 margin_right = 900.0
-margin_bottom = 114.0
+margin_bottom = 61.0
 
 [node name="hbox" type="HBoxContainer" parent="window/hbox1/settings/char_name"]
 margin_right = 900.0
@@ -124,9 +124,9 @@ margin_right = 900.0
 margin_bottom = 55.0
 
 [node name="caracteristics" type="VBoxContainer" parent="window/hbox1/settings"]
-margin_top = 118.0
+margin_top = 65.0
 margin_right = 900.0
-margin_bottom = 293.0
+margin_bottom = 240.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="window/hbox1/settings/caracteristics"]
 margin_right = 900.0
@@ -415,9 +415,9 @@ margin_right = 900.0
 margin_bottom = 175.0
 
 [node name="informations" type="VBoxContainer" parent="window/hbox1/settings"]
-margin_top = 297.0
+margin_top = 244.0
 margin_right = 900.0
-margin_bottom = 576.0
+margin_bottom = 501.0
 
 [node name="label" type="Label" parent="window/hbox1/settings/informations"]
 margin_right = 900.0
@@ -428,14 +428,14 @@ text = "Description du style"
 [node name="text_info" type="Label" parent="window/hbox1/settings/informations"]
 margin_top = 33.0
 margin_right = 900.0
-margin_bottom = 57.0
+margin_bottom = 35.0
 custom_fonts/font = SubResource( 3 )
 text = "<informations>"
 
 [node name="header" type="HBoxContainer" parent="window/hbox1/settings/informations"]
-margin_top = 61.0
+margin_top = 39.0
 margin_right = 900.0
-margin_bottom = 75.0
+margin_bottom = 53.0
 custom_constants/separation = 30
 
 [node name="Label" type="Label" parent="window/hbox1/settings/informations/header"]
@@ -455,9 +455,9 @@ margin_bottom = 14.0
 text = "Probabilité d'apparition"
 
 [node name="GridContainer" type="ScrollContainer" parent="window/hbox1/settings/informations"]
-margin_top = 79.0
+margin_top = 57.0
 margin_right = 900.0
-margin_bottom = 279.0
+margin_bottom = 257.0
 rect_min_size = Vector2( 900, 200 )
 scroll_horizontal_enabled = false
 
@@ -493,9 +493,9 @@ texture_under = ExtResource( 2 )
 texture_progress = ExtResource( 7 )
 
 [node name="incantation" type="VBoxContainer" parent="window/hbox1/settings"]
-margin_top = 580.0
+margin_top = 505.0
 margin_right = 900.0
-margin_bottom = 678.0
+margin_bottom = 603.0
 
 [node name="Label" type="Label" parent="window/hbox1/settings/incantation"]
 margin_right = 900.0
@@ -511,9 +511,9 @@ margin_right = 900.0
 margin_bottom = 98.0
 
 [node name="diff" type="VBoxContainer" parent="window/hbox1/settings"]
-margin_top = 682.0
+margin_top = 607.0
 margin_right = 900.0
-margin_bottom = 764.0
+margin_bottom = 689.0
 
 [node name="Label" type="Label" parent="window/hbox1/settings/diff"]
 margin_right = 900.0
@@ -535,18 +535,18 @@ custom_fonts/font = ExtResource( 1 )
 text = "Très facile"
 
 [node name="startbutton" type="Button" parent="window/hbox1/settings"]
-margin_top = 768.0
+margin_top = 693.0
 margin_right = 900.0
-margin_bottom = 788.0
+margin_bottom = 713.0
 text = "Démarrer"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="return_button" type="Button" parent="window/hbox1/settings"]
-margin_top = 792.0
+margin_top = 717.0
 margin_right = 900.0
-margin_bottom = 812.0
+margin_bottom = 737.0
 text = "Retour"
 __meta__ = {
 "_edit_use_anchors_": false

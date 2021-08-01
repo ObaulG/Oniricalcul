@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://incantation/Incantation_Operations_Circle.gd" type="Script" id=1]
+
+[node name="Incantation_Operations_Circle" type="Container"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -1329.0
+margin_bottom = -983.0
+rect_min_size = Vector2( 590, 97 )
+mouse_filter = 2
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="gui_input" from="." to="." method="_on_Incantation_Operations_gui_input"]

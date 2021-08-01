@@ -10,11 +10,11 @@ var options_button
 var meteor_timer
 
 func _ready():
-	fast_game_button = $MarginContainer/HBoxContainer/VBoxContainer/buttons_container/list/fast_game_button
-	classic_game_button = $MarginContainer/HBoxContainer/VBoxContainer/buttons_container/list/classic_game_button
-	history_game_button = $MarginContainer/HBoxContainer/VBoxContainer/buttons_container/list/history_mode_button
-	quit_button = $MarginContainer/HBoxContainer/VBoxContainer/buttons_container/list/quit_button
-	options_button = $MarginContainer/HBoxContainer/VBoxContainer/buttons_container/list/options_button
+	fast_game_button = $MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list/fast_game_button
+	classic_game_button = $MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list/classic_game_button
+	history_game_button = $MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list/history_mode_button
+	quit_button = $MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list/quit_button
+	options_button = $MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list/options_button
 
 	meteor_timer = $meteor_timer
 

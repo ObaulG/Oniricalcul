@@ -17,8 +17,6 @@ const BACKGROUND_COLOR_DIFF: Dictionary = {
 	5: Color("#CE11F8"),
 }
 
-
-
 var bg: ColorRect
 var diff_label: Label
 var sprite_node: Sprite
@@ -159,15 +157,28 @@ func _on_operation_focus_exited():
 func _on_Button_pressed():
 	emit_signal("wants_to_buy_op", self)
 
-func _on_Area2D_input_event(_viewport, event, _shape_idx):
+func _on_Area2D_input_event(viewport, event, shape_idx):
 	print("CLIC")
 	if event is InputEventMouseButton:
 		if selectable and event.pressed and event.button_index == BUTTON_LEFT:
 			if !selected:
+				$selected.visible = true
 				emit_signal("operation_selected", index_in_incantation)
 			else:
+				$selected.visible = false
 				emit_signal("operation_unselected", index_in_incantation)
 
 
 func _on_Area2D_mouse_entered():
 	print("AAAA")
+
+
+func _on_operation_gui_input(event):
+	if event is InputEventMouseButton:
+		if selectable and event.pressed and event.button_index == BUTTON_LEFT:
+			if !selected:
+				$selected.visible = true
+				emit_signal("operation_selected", index_in_incantation)
+			else:
+				$selected.visible = false
+				emit_signal("operation_unselected", index_in_incantation)
