@@ -36,10 +36,10 @@ func _place():
 	var final_positions = []
 	for child in children:
 		if child is Control:
-			var final_pos = origin + Vector2(0, radius).rotated(deg2rad(angle))
+			var final_pos = origin + Vector2(0, -radius).rotated(deg2rad(angle))
 			angle += 360/n
-			
 			child.set_position(final_pos)
+			
 func get_completance():
 	return completance
 

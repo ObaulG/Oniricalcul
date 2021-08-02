@@ -46,8 +46,6 @@ func _ready():
 	clickzone = $Area2D
 	clickrect = $Area2D/click_zone
 	
-	
-	
 	var atlas = AtlasTexture.new()
 	atlas.set_atlas(global.sprite_sheet_operations)
 	atlas.set_region(Rect2(256, 0, 64, 64))
@@ -62,6 +60,7 @@ func _ready():
 	selectable = false
 	selected = false
 	dragable = true
+	clean()
 	
 func _on_Window_gui_input(_event):
 	pass
@@ -87,7 +86,9 @@ func change_operation(t: int, d: int, st = -1):
 		_:
 			index = 4
 	sprite_node.texture.set_region(Rect2(index*64, 0, 64, 64))
-	
+	if t != -1:
+		visible = true
+
 func set_display_type(type: int):
 	display_type = type
 	if type == DISPLAY_TYPE.BASIC:
@@ -117,7 +118,8 @@ func clean():
 	diff = -1
 	subtype = -1
 	diff_label.text = ""
-
+	visible = false
+	
 func get_type():
 	return type
 

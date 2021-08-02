@@ -25,27 +25,29 @@ func _ready():
 	
 	nb_op = Pattern.MAX_OP
 	#Modifier la taille de l'objet en f. du nb d'op? à voir..
-	operations_list = []
+
 	for i in range(nb_op):
 		var operation = global.operation_display.instance()
 		circle_container.add_child(operation)
-		operations_list.append(operation)
 		operation.connect("operation_confirmed", self, "on_operation_confirmed")
 		operation.connect("operation_unselected", self, "on_operation_unselected")
 		operation.connect("operation_selected", self, "on_operation_selected")
 		operation.set_index(i)
-		operation.visible = false
+		operation.clean()
 	current = -1
 	rollback_list = []
 	operations_selectable = false
 	multiple_selection = false
 	
+
 func update_operations(L: Array, dragable = false):
 	list = L.duplicate()
 	var n = len(L)
 	var potential = 0
 	
 	for i in range(nb_op):
+		var op = get_operation_by_index(i)
+		
 		if i < n:
 			var type = L[i][0]
 			var diff = L[i][1]
@@ -55,11 +57,9 @@ func update_operations(L: Array, dragable = false):
 				subtype = L[i][2]
 			else:
 				subtype = -1
-			operations_list[i].change_operation(type, diff, subtype)
-			operations_list[i].visible = true
+			op.change_operation(type, diff, subtype)
 		else:
-			operations_list[i].clean()
-			operations_list[i].visible = true
+			op.clean()
 	update_potential(potential)
 
 func update_potential(p: int):
@@ -76,10 +76,13 @@ func change_current_index(i: int):
 	if current >= 0:
 		pass #Emphasis of current op
 
+func get_operation_by_index(index: int):
+	return circle_container.get_child(index)
+	
 func get_current_selected_operations(L: Array):
 	var selected = []
 	for i in range(len(operations_list)):
-		if operations_list[i].is_selected():
+		if get_operation_by_index(i).is_selected():
 			selected.append(i)
 	return selected
 	
@@ -87,26 +90,27 @@ func on_operation_selected(index: int):
 	print("Le noeud Incantation a reçu la sélection de l'opération d'index " + str(index))
 	emit_signal("operation_selected", index)
 	if !multiple_selection:
-		for i in range(len(operations_list)):
+		for i in range(len(circle_container.get_children())):
+			var op = get_operation_by_index(i)
 			if i == index:
-				operations_list[index].set_selected(true)
+				op.set_selected(true)
 				print(i)
 			else:
-				operations_list[index].set_selected(false)
+				op.set_selected(false)
 	
 func on_operation_unselected(index: int):
 	print("Le noeud Incantation a reçu la désélection de l'opération d'index " + str(index))
-	operations_list[index].set_selected(false)
+	get_operation_by_index(index).set_selected(false)
 	emit_signal("operation_unselected", index)
 
 func remove_operation_by_index(index: int):
 	assert (index >= 0 and index < 8)
-	operations_list[index].clean()
+	get_operation_by_index(index).clean()
 	
 func assign_operation_to_index(pattern_el: Array, index: int):
 	assert (index >= 0 and index < 8)
-	operations_list[index].clean()
-	operations_list[index].change_operation(pattern_el[0], pattern_el[1])
+	get_operation_by_index(index).clean()
+	get_operation_by_index(index).change_operation(pattern_el[0], pattern_el[1])
 	
 func on_operation_confirmed(index: int):
 	print("Le noeud Incantation a reçu la confirmation de changement de l'opération d'index " + str(index))

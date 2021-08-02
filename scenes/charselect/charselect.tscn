@@ -75,7 +75,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 455.0
 margin_right = 600.0
-margin_bottom = 711.0
+margin_bottom = 967.0
 
 [node name="settings" type="VBoxContainer" parent="window/hbox1"]
 margin_left = 754.0

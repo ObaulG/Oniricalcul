@@ -37,7 +37,7 @@ __meta__ = {
 
 [node name="ColorRect" type="ColorRect" parent="MarginContainer"]
 margin_right = 1288.0
-margin_bottom = 491.0
+margin_bottom = 504.0
 mouse_filter = 2
 color = Color( 0.741176, 0.639216, 0.87451, 1 )
 __meta__ = {
@@ -46,7 +46,7 @@ __meta__ = {
 
 [node name="vbox" type="VBoxContainer" parent="MarginContainer"]
 margin_right = 1288.0
-margin_bottom = 491.0
+margin_bottom = 504.0
 rect_clip_content = true
 custom_constants/separation = 33
 __meta__ = {
@@ -93,13 +93,13 @@ __meta__ = {
 [node name="bonus_zone" type="HBoxContainer" parent="MarginContainer/vbox"]
 margin_top = 85.0
 margin_right = 1288.0
-margin_bottom = 472.0
+margin_bottom = 504.0
 mouse_filter = 2
 custom_constants/separation = 50
 
 [node name="new_operations" type="VBoxContainer" parent="MarginContainer/vbox/bonus_zone"]
 margin_right = 590.0
-margin_bottom = 387.0
+margin_bottom = 419.0
 mouse_filter = 2
 custom_constants/separation = 25
 
@@ -115,54 +115,54 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 54.0
 margin_right = 590.0
-margin_bottom = 119.0
+margin_bottom = 151.0
 mouse_filter = 1
 
 [node name="title2" type="Label" parent="MarginContainer/vbox/bonus_zone/new_operations"]
-margin_top = 144.0
+margin_top = 176.0
 margin_right = 590.0
-margin_bottom = 173.0
+margin_bottom = 205.0
 custom_fonts/font = ExtResource( 2 )
 custom_colors/font_color = Color( 0.905882, 0.937255, 0.341176, 1 )
 text = "Nouvelles opérations"
 
 [node name="new_operations" type="GridContainer" parent="MarginContainer/vbox/bonus_zone/new_operations"]
-margin_top = 198.0
+margin_top = 230.0
 margin_right = 590.0
-margin_bottom = 198.0
+margin_bottom = 230.0
 columns = 6
 script = ExtResource( 6 )
 
 [node name="title3" type="Label" parent="MarginContainer/vbox/bonus_zone/new_operations"]
-margin_top = 223.0
+margin_top = 255.0
 margin_right = 590.0
-margin_bottom = 252.0
+margin_bottom = 284.0
 custom_fonts/font = ExtResource( 2 )
 custom_colors/font_color = Color( 0.905882, 0.937255, 0.341176, 1 )
 text = "Echanges"
 
 [node name="swap_button" type="Button" parent="MarginContainer/vbox/bonus_zone/new_operations"]
-margin_top = 277.0
+margin_top = 309.0
 margin_right = 590.0
-margin_bottom = 297.0
+margin_bottom = 329.0
 text = "Echanger"
 
 [node name="erase_button" type="Button" parent="MarginContainer/vbox/bonus_zone/new_operations"]
-margin_top = 322.0
+margin_top = 354.0
 margin_right = 590.0
-margin_bottom = 342.0
+margin_bottom = 374.0
 text = "Effacer"
 
 [node name="cancel_button" type="Button" parent="MarginContainer/vbox/bonus_zone/new_operations"]
-margin_top = 367.0
+margin_top = 399.0
 margin_right = 590.0
-margin_bottom = 387.0
+margin_bottom = 419.0
 text = "Annuler"
 
 [node name="vbox_items" type="VBoxContainer" parent="MarginContainer/vbox/bonus_zone"]
 margin_left = 640.0
 margin_right = 822.0
-margin_bottom = 387.0
+margin_bottom = 419.0
 
 [node name="bonus_title" type="Label" parent="MarginContainer/vbox/bonus_zone/vbox_items"]
 margin_right = 182.0
@@ -181,7 +181,7 @@ columns = 2
 [node name="Stats" type="VBoxContainer" parent="MarginContainer/vbox/bonus_zone"]
 margin_left = 872.0
 margin_right = 917.0
-margin_bottom = 387.0
+margin_bottom = 419.0
 
 [node name="bonus_title2" type="Label" parent="MarginContainer/vbox/bonus_zone/Stats"]
 margin_right = 45.0
