@@ -4,6 +4,7 @@ signal send_threat(dico_threat, sender_id, target_id)
 
 signal game_pause()
 signal game_resume()
+signal achievement(id)
 signal shopping_time()
 signal new_round()
 
@@ -183,13 +184,27 @@ func _on_domain_end(id_domain):
 	var text = "Victoire !"
 	if id_domain == 1:
 		text = "Défaite..."
-
+		emit_signal("game_won")
+	else:
+		emit_signal("game_lost")
 	$window/game_elements/end_label.text = text
 	$window/game_elements/end_label.visible = true 
 	
 	get_tree().paused = true
 	
+	# looking for achievements
+	var unlocked = player1.unlocked
+	
+	for achievement in global.achievements_dico:
+		var id = achievement["id"]
+		var char1 = global.player.get_id()
+		if not id in unlocked:
+			match id:
+				6:
+					if ai_diff == 5 and domain1.get_nb_calculs() == domain1.get_good_answers():
+						emit_signal("achievement", 6)
 
+	var stats = domain1.get_stats()
 func determine_ai_time_to_answer():
 	var op = domain2.get_current_pattern_element()
 	var type = op[0]

@@ -26,6 +26,10 @@ var base_diff: int
 #custom object to store the list of operation types
 var pattern: Pattern
 
+# coeff of pattern fitting character conditions.
+# values between 0 and 1
+var fit_coeff: float
+
 var hp_current: int
 var hp_max: int
 var hp_bar: HealthDisplay
@@ -167,6 +171,8 @@ func create(id, player, contract, character_id = 5):
 	swap_price = 3
 	black_blanco_bonus = false
 	determine_defense_power(pattern.get_power())
+	
+	fit_coeff = 1
 func _process(dt):
 	pass
 
@@ -239,26 +245,49 @@ func determine_threat_stats(potential: float):
 	
 	return [power, delay_time, hp, atk_side_effects]
 	
+func determine_character_conditions_fit_coeff():
+	var coeff = 1.0
+#	match character.get_id():
+#		1:
+#			for op in pattern.get_list():
+#				if op.get_diff() > 1:
+#					coeff = coeff / 1.05
+#		2:
+#			pass
+#		3:
+#			var list = pattern.get_list()
+#			for op in list:
+#				if op.get_diff() > 2:
+#					coeff = coeff / 1.05
+#
+#			if list[-1].get_diff < 3:
+#				coeff = coeff / 1.5
+#		4:
+#			pass
+#		5:
+#			pass
+	fit_coeff = coeff
+	
 func determine_effective_power() -> int:
 	var power = pattern.get_power()
-	
-	if 12 in bonus.keys():
+	var bonus_keys = bonus.keys()
+	if 12 in bonus_keys:
 		power += 8*bonus[12]
-	if 11 in bonus.keys():
+	if 11 in bonus_keys:
 		power += 5*bonus[11]
-	if 10 in bonus.keys():
+	if 10 in bonus_keys:
 		power += 3*bonus[10]
-	if 6 in bonus.keys():
+	if 6 in bonus_keys:
 		power *= 1.3
-	if 5 in bonus.keys():
+	if 5 in bonus_keys:
 		power *= 1.2
-	if 3 in bonus.keys():
+	if 3 in bonus_keys:
 		power *= (1 + 0.05*get_nb_threats())
-	if 0 in bonus.keys():
+	if 0 in bonus_keys:
 		power *= 1.1
 	if character.get_id() == 1:
 		power = power * (1 + max(chain, 20)/100 )
-		
+	power = power * fit_coeff
 	power = round(power)
 	power_label.text = "Puissance: " + str(power)
 	return power
@@ -317,8 +346,7 @@ func resume():
 	for child in terrain.get_children():
 		if child is Threat:
 			child.unfreeze()
-			
-	
+
 func hp_current_get():
 	return hp_current
 	
@@ -507,6 +535,12 @@ func get_nb_new_operations():
 func get_money():
 	return money
 	
+func get_nb_calculs():
+	return nb_calculs
+	
+func get_good_answers():
+	return good_answers
+	
 func get_erase_price():
 	return erase_price
 	
@@ -531,6 +565,9 @@ func get_defense_power():
 	
 func get_bonus_dict() -> Dictionary:
 	return bonus
+	
+func get_operations_stats():
+	return operations_stats
 	
 func set_money(value: int):
 	money = value
