@@ -331,6 +331,7 @@ const characters = {
   },
 }
 
+var achievements_dico: Dictionary
 const OPERATIONS = {
 	ADDITION = 1,
 	SUBSTRACTION = 2,
@@ -379,6 +380,20 @@ func _init():
 	op_atlas.set_atlas(load(PATH["OPERATIONS_ATLAS"]))
 	op_atlas.set_region(Rect2(0,0,64,64))
 
+	# loading achievements
+	file = File.new()
+	path = PATH["ACHIEVEMENTS"]
+	file.open(path, file.READ)
+	textdata = file.get_as_text()
+	file.close()
+	result_JSON = JSON.parse(textdata)
+	if result_JSON.error != OK:
+		print("[load_json_file] Error loading JSON file '" + path + "'.")
+		print("\tError: ", result_JSON.error)
+		print("\tError Line: ", result_JSON.error_line)
+		print("\tError String: ", result_JSON.error_string)
+		
+	achievements_dico = result_JSON.duplicate()
 	# loading save
 func get_resized_ImageTexture(t: Texture, w: int, h: int) -> Texture:
 	var img = t.get_data()
