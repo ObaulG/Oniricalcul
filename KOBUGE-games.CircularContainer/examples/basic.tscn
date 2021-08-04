@@ -47,99 +47,97 @@ __meta__ = {
 
 [node name="Top" type="Panel" parent="VBoxContainer"]
 margin_right = 1920.0
-margin_bottom = 386.0
+margin_bottom = 372.0
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 390.0
+margin_top = 376.0
 margin_right = 1920.0
-margin_bottom = 690.0
+margin_bottom = 704.0
 
 [node name="Left" type="Panel" parent="VBoxContainer/HBoxContainer"]
-margin_right = 806.0
-margin_bottom = 300.0
+margin_right = 792.0
+margin_bottom = 328.0
 size_flags_horizontal = 3
 
 [node name="CircularContainer" type="Container" parent="VBoxContainer/HBoxContainer"]
-margin_left = 810.0
-margin_right = 1110.99
-margin_bottom = 300.988
+margin_left = 796.0
+margin_right = 1124.94
+margin_bottom = 328.938
 script = ExtResource( 1 )
 __meta__ = {
 "_editor_icon": ExtResource( 2 )
 }
 arrange/force_squares = false
 arrange/force_expand = false
-arrange/start_angle = 360.0
+arrange/start_angle = 359.82
 arrange/start_empty = false
 arrange/allow_node2d = false
-animate/percent_visible = 0.0
-animate/all_at_once = true
+animate/percent_visible = 1.0
+animate/all_at_once = false
 
 [node name="operation" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
-margin_left = 150.494
-margin_top = 150.494
-margin_right = -86.4941
-margin_bottom = -86.4941
-rect_scale = Vector2( 0.01, 0.01 )
+margin_left = 132.885
+margin_top = 0.000640869
+margin_right = -132.053
+margin_bottom = -264.938
 
 [node name="operation2" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
-margin_left = 150.494
-margin_top = 150.494
-margin_right = -86.4941
-margin_bottom = -86.4941
-rect_scale = Vector2( 0.01, 0.01 )
+margin_left = 47.7245
+margin_top = 30.6536
+margin_right = -217.214
+margin_bottom = -234.285
 
 [node name="operation3" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
-margin_left = 150.494
-margin_top = 150.494
-margin_right = -86.4941
-margin_bottom = -86.4941
-rect_scale = Vector2( 0.01, 0.01 )
-
-[node name="operation4" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
-margin_left = 150.494
-margin_top = 150.494
-margin_right = -86.4941
-margin_bottom = -86.4941
-rect_scale = Vector2( 0.01, 0.01 )
-
-[node name="operation5" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
-margin_left = 150.494
-margin_top = 150.494
-margin_right = -86.4941
-margin_bottom = -86.4941
-rect_scale = Vector2( 0.01, 0.01 )
-
-[node name="operation6" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
-margin_left = 150.494
-margin_top = 150.494
-margin_right = -86.4941
-margin_bottom = -86.4941
-rect_scale = Vector2( 0.01, 0.01 )
-
-[node name="operation7" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
-margin_left = 150.494
-margin_top = 150.494
-margin_right = -86.4941
-margin_bottom = -86.4941
-rect_scale = Vector2( 0.01, 0.01 )
+margin_left = 2.12497
+margin_top = 108.837
+margin_right = -262.813
+margin_bottom = -156.101
 
 [node name="operation8" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
-margin_left = 150.494
-margin_top = 150.494
-margin_right = -86.4941
-margin_bottom = -86.4941
-rect_scale = Vector2( 0.01, 0.01 )
+margin_left = 17.3743
+margin_top = 198.053
+margin_right = -247.564
+margin_bottom = -66.8853
+
+[node name="operation9" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
+margin_left = 86.3535
+margin_top = 256.652
+margin_right = -178.585
+margin_bottom = -8.28613
+
+[node name="operation10" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
+margin_left = 176.861
+margin_top = 257.279
+margin_right = -88.0775
+margin_bottom = -7.65952
+
+[node name="operation11" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
+margin_left = 246.645
+margin_top = 199.64
+margin_right = -18.2935
+margin_bottom = -65.2979
+
+[node name="operation12" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
+margin_left = 263.128
+margin_top = 110.644
+margin_right = -1.81024
+margin_bottom = -154.294
+
+[node name="operation13" parent="VBoxContainer/HBoxContainer/CircularContainer" instance=ExtResource( 3 )]
+margin_left = 218.616
+margin_top = 31.8368
+margin_right = -46.3228
+margin_bottom = -233.102
 
 [node name="Right" type="Panel" parent="VBoxContainer/HBoxContainer"]
-margin_left = 1114.0
+margin_left = 1128.0
 margin_right = 1920.0
-margin_bottom = 300.0
+margin_bottom = 328.0
 size_flags_horizontal = 3
 
 [node name="Bottom" type="Panel" parent="VBoxContainer"]
-margin_top = 694.0
+margin_top = 708.0
 margin_right = 1920.0
 margin_bottom = 1080.0
 size_flags_vertical = 3

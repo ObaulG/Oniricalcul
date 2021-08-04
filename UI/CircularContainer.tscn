@@ -5,9 +5,9 @@
 [node name="CircularContainer" type="Container"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -1664.0
-margin_bottom = -824.0
-rect_min_size = Vector2( 256, 256 )
+margin_right = -1792.0
+margin_bottom = -952.0
+rect_min_size = Vector2( 128, 128 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false,

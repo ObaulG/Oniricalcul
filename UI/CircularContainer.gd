@@ -1,10 +1,22 @@
+# Inspired by Kobuge Games CircularConttainer.
+
 tool
 extends Container
+
+const BASE_DIMENSIONS = Vector2(300,300)
 
 var completance = 0.0 setget _private_set, _private_get
 var base_angle = 0.0 setget _private_set, _private_get
 var appear_at_once = false setget _private_set, _private_get
 var _custom_animator_func = null setget _private_set, _private_get
+
+## Cached variables ##
+
+#min size of rect.
+var _cached_min_size_key = "" setget _private_set, _private_get
+var _cached_min_size = null setget _private_set, _private_get
+var _cached_min_size_dirty = false setget _private_set, _private_get
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
