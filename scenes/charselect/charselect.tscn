@@ -50,38 +50,48 @@ margin_bottom = 998.0
 custom_constants/separation = 154
 
 [node name="characters" type="VBoxContainer" parent="window/hbox1"]
-margin_right = 600.0
+margin_right = 512.0
 margin_bottom = 998.0
-custom_constants/separation = 63
+custom_constants/separation = 29
 
 [node name="Label" type="Label" parent="window/hbox1/characters"]
-margin_right = 600.0
-margin_bottom = 29.0
+margin_right = 512.0
+margin_bottom = 43.0
 custom_fonts/font = ExtResource( 1 )
 text = "Choisissez votre personnage"
 align = 1
 
 [node name="charlist" type="ItemList" parent="window/hbox1/characters"]
-margin_top = 92.0
-margin_right = 600.0
-margin_bottom = 392.0
-rect_min_size = Vector2( 600, 300 )
+margin_top = 72.0
+margin_right = 512.0
+margin_bottom = 272.0
+grow_horizontal = 0
+rect_min_size = Vector2( 400, 200 )
 max_text_lines = 3
 max_columns = 3
 same_column_width = true
 
+[node name="Label2" type="Label" parent="window/hbox1/characters"]
+margin_top = 301.0
+margin_right = 512.0
+margin_bottom = 344.0
+custom_fonts/font = ExtResource( 1 )
+text = "Cycle d'incantation"
+align = 1
+
 [node name="Incantation_Operations_Circle" parent="window/hbox1/characters" instance=ExtResource( 8 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 455.0
-margin_right = 600.0
-margin_bottom = 967.0
+margin_top = 373.0
+margin_right = 512.0
+margin_bottom = 885.0
 
 [node name="settings" type="VBoxContainer" parent="window/hbox1"]
-margin_left = 754.0
-margin_right = 1654.0
+margin_left = 666.0
+margin_right = 1566.0
 margin_bottom = 998.0
 rect_min_size = Vector2( 900, 300 )
+custom_constants/separation = 10
 
 [node name="Label" type="Label" parent="window/hbox1/settings"]
 margin_right = 900.0
@@ -91,13 +101,13 @@ text = "Paramètres de jeu"
 align = 1
 
 [node name="char_name" type="VBoxContainer" parent="window/hbox1/settings"]
-margin_top = 6.0
+margin_top = 12.0
 margin_right = 900.0
-margin_bottom = 61.0
+margin_bottom = 81.0
 
 [node name="hbox" type="HBoxContainer" parent="window/hbox1/settings/char_name"]
 margin_right = 900.0
-margin_bottom = 29.0
+margin_bottom = 43.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -114,82 +124,85 @@ margin_right = 8.0
 margin_bottom = 29.0
 
 [node name="name_label" type="Label" parent="window/hbox1/settings/char_name/hbox"]
-margin_right = 10.0
-margin_bottom = 29.0
+margin_right = 15.0
+margin_bottom = 43.0
 custom_fonts/font = ExtResource( 1 )
 text = "/"
 
 [node name="descr" type="Label" parent="window/hbox1/settings/char_name"]
-margin_top = 33.0
+margin_top = 47.0
 margin_right = 900.0
-margin_bottom = 47.0
+margin_bottom = 61.0
 autowrap = true
 
 [node name="HSeparator" type="HSeparator" parent="window/hbox1/settings/char_name"]
-margin_top = 51.0
-margin_right = 900.0
-margin_bottom = 55.0
-
-[node name="caracteristics" type="VBoxContainer" parent="window/hbox1/settings"]
 margin_top = 65.0
 margin_right = 900.0
-margin_bottom = 240.0
+margin_bottom = 69.0
+
+[node name="caracteristics" type="VBoxContainer" parent="window/hbox1/settings"]
+margin_top = 91.0
+margin_right = 900.0
+margin_bottom = 252.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="window/hbox1/settings/caracteristics"]
 margin_right = 900.0
-margin_bottom = 167.0
+margin_bottom = 153.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="window/hbox1/settings/caracteristics/VBoxContainer"]
 margin_right = 900.0
-margin_bottom = 29.0
+margin_bottom = 43.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Label" type="Label" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer2"]
-margin_right = 143.0
-margin_bottom = 29.0
+margin_right = 212.0
+margin_bottom = 43.0
 custom_fonts/font = ExtResource( 1 )
 text = "Caractéristiques"
 
 [node name="VSeparator" type="VSeparator" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer2"]
-margin_left = 147.0
-margin_right = 151.0
-margin_bottom = 29.0
+margin_left = 216.0
+margin_right = 220.0
+margin_bottom = 43.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="window/hbox1/settings/caracteristics/VBoxContainer"]
-margin_top = 33.0
+margin_top = 47.0
 margin_right = 900.0
-margin_bottom = 167.0
+margin_bottom = 153.0
 
 [node name="carac_names" type="VBoxContainer" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer"]
 margin_right = 84.0
-margin_bottom = 134.0
+margin_bottom = 106.0
 custom_constants/separation = 24
+alignment = 1
 
 [node name="label_diff" type="Label" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names"]
+margin_top = 8.0
 margin_right = 84.0
-margin_bottom = 14.0
+margin_bottom = 22.0
 rect_min_size = Vector2( 0, 14 )
 text = "Difficulté"
 
 [node name="label_hp" type="Label" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names"]
-margin_top = 38.0
+margin_top = 46.0
 margin_right = 84.0
-margin_bottom = 52.0
+margin_bottom = 60.0
 rect_min_size = Vector2( 0, 14 )
 text = "Points de Vie"
 
 [node name="label_impact_spell" type="Label" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names"]
+visible = false
 margin_top = 76.0
 margin_right = 84.0
 margin_bottom = 90.0
 text = "Sort d'impact"
 
 [node name="label_malus" type="Label" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names"]
-margin_top = 114.0
+margin_top = 84.0
 margin_right = 84.0
-margin_bottom = 128.0
+margin_bottom = 98.0
 text = "Malus"
 
 [node name="label_power" type="Label" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names"]
@@ -230,30 +243,33 @@ text = "Coût"
 [node name="VSeparator" type="VSeparator" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer"]
 margin_left = 88.0
 margin_right = 92.0
-margin_bottom = 134.0
+margin_bottom = 106.0
 
 [node name="carac_names2" type="VBoxContainer" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer"]
 margin_left = 96.0
-margin_right = 193.0
-margin_bottom = 134.0
+margin_right = 191.0
+margin_bottom = 106.0
 custom_constants/separation = 24
+alignment = 1
 
 [node name="diff_value" type="Label" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2"]
-margin_right = 97.0
-margin_bottom = 14.0
+margin_top = 8.0
+margin_right = 95.0
+margin_bottom = 22.0
 text = "<diff>"
 align = 1
 valign = 1
 
 [node name="hp_value" type="Label" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2"]
-margin_top = 38.0
-margin_right = 97.0
-margin_bottom = 52.0
+margin_top = 46.0
+margin_right = 95.0
+margin_bottom = 60.0
 text = "<hp>"
 align = 1
 valign = 1
 
 [node name="spell_name" type="Label" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2"]
+visible = false
 margin_top = 76.0
 margin_right = 97.0
 margin_bottom = 90.0
@@ -261,9 +277,9 @@ text = "<impact_spell>"
 align = 1
 
 [node name="malus_value" type="Label" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2"]
-margin_top = 114.0
-margin_right = 97.0
-margin_bottom = 128.0
+margin_top = 84.0
+margin_right = 95.0
+margin_bottom = 98.0
 text = "<malus_value>"
 align = 1
 
@@ -308,15 +324,16 @@ text = "Coût"
 align = 1
 
 [node name="VSeparator3" type="VSeparator" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer"]
-margin_left = 197.0
-margin_right = 201.0
-margin_bottom = 134.0
+margin_left = 195.0
+margin_right = 199.0
+margin_bottom = 106.0
 
 [node name="carac_names3" type="VBoxContainer" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer"]
-margin_left = 205.0
-margin_right = 405.0
-margin_bottom = 134.0
+margin_left = 203.0
+margin_right = 403.0
+margin_bottom = 106.0
 custom_constants/separation = 14
+alignment = 1
 
 [node name="bar_diff" type="TextureProgress" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names3"]
 margin_right = 200.0
@@ -337,6 +354,7 @@ rounded = true
 texture_under = ExtResource( 2 )
 
 [node name="ColorRect" type="ColorRect" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names3"]
+visible = false
 margin_top = 80.0
 margin_right = 200.0
 margin_bottom = 94.0
@@ -344,9 +362,9 @@ rect_min_size = Vector2( 200, 14 )
 color = Color( 0.231373, 0.231373, 0.231373, 0.117647 )
 
 [node name="malus_value" type="TextureProgress" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names3"]
-margin_top = 108.0
+margin_top = 80.0
 margin_right = 200.0
-margin_bottom = 134.0
+margin_bottom = 106.0
 rect_min_size = Vector2( 100, 14 )
 max_value = 4.0
 value = 4.0
@@ -412,37 +430,37 @@ rounded = true
 texture_under = ExtResource( 2 )
 
 [node name="VSeparator2" type="VSeparator" parent="window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer"]
-margin_left = 409.0
-margin_right = 413.0
-margin_bottom = 134.0
+margin_left = 407.0
+margin_right = 411.0
+margin_bottom = 106.0
 
 [node name="HSeparator" type="HSeparator" parent="window/hbox1/settings/caracteristics"]
-margin_top = 171.0
+margin_top = 157.0
 margin_right = 900.0
-margin_bottom = 175.0
+margin_bottom = 161.0
 
 [node name="informations" type="VBoxContainer" parent="window/hbox1/settings"]
-margin_top = 244.0
+margin_top = 262.0
 margin_right = 900.0
-margin_bottom = 501.0
+margin_bottom = 533.0
 
 [node name="label" type="Label" parent="window/hbox1/settings/informations"]
 margin_right = 900.0
-margin_bottom = 29.0
+margin_bottom = 43.0
 custom_fonts/font = ExtResource( 1 )
 text = "Description du style"
 
 [node name="text_info" type="Label" parent="window/hbox1/settings/informations"]
-margin_top = 33.0
+margin_top = 47.0
 margin_right = 900.0
-margin_bottom = 35.0
+margin_bottom = 49.0
 custom_fonts/font = SubResource( 2 )
 text = "<informations>"
 
 [node name="header" type="HBoxContainer" parent="window/hbox1/settings/informations"]
-margin_top = 39.0
+margin_top = 53.0
 margin_right = 900.0
-margin_bottom = 53.0
+margin_bottom = 67.0
 custom_constants/separation = 30
 
 [node name="Label" type="Label" parent="window/hbox1/settings/informations/header"]
@@ -462,9 +480,9 @@ margin_bottom = 14.0
 text = "Probabilité d'apparition"
 
 [node name="GridContainer" type="ScrollContainer" parent="window/hbox1/settings/informations"]
-margin_top = 57.0
+margin_top = 71.0
 margin_right = 900.0
-margin_bottom = 257.0
+margin_bottom = 271.0
 rect_min_size = Vector2( 900, 200 )
 scroll_horizontal_enabled = false
 
@@ -476,6 +494,7 @@ margin_bottom = 64.0
 margin_right = 328.0
 margin_bottom = 64.0
 custom_constants/separation = 30
+alignment = 1
 
 [node name="op" type="TextureRect" parent="window/hbox1/settings/informations/GridContainer/list/base"]
 margin_right = 64.0
@@ -499,7 +518,13 @@ margin_bottom = 45.0
 texture_under = ExtResource( 2 )
 texture_progress = ExtResource( 7 )
 
+[node name="HSeparator2" type="HSeparator" parent="window/hbox1/settings"]
+margin_top = 543.0
+margin_right = 900.0
+margin_bottom = 547.0
+
 [node name="incantation" type="VBoxContainer" parent="window/hbox1/settings"]
+visible = false
 margin_top = 505.0
 margin_right = 900.0
 margin_bottom = 635.0
@@ -518,42 +543,56 @@ margin_right = 900.0
 margin_bottom = 130.0
 
 [node name="diff" type="VBoxContainer" parent="window/hbox1/settings"]
-margin_top = 639.0
+margin_top = 557.0
 margin_right = 900.0
-margin_bottom = 721.0
+margin_bottom = 667.0
 
 [node name="Label" type="Label" parent="window/hbox1/settings/diff"]
 margin_right = 900.0
-margin_bottom = 29.0
+margin_bottom = 43.0
 custom_fonts/font = ExtResource( 1 )
 text = "Difficulté"
 
 [node name="HSlider" type="HSlider" parent="window/hbox1/settings/diff"]
-margin_top = 33.0
+margin_top = 47.0
 margin_right = 900.0
-margin_bottom = 49.0
+margin_bottom = 63.0
 max_value = 5.0
 
 [node name="diff_label" type="Label" parent="window/hbox1/settings/diff"]
-margin_top = 53.0
+margin_top = 67.0
 margin_right = 900.0
-margin_bottom = 82.0
+margin_bottom = 110.0
 custom_fonts/font = ExtResource( 1 )
 text = "Très facile"
+align = 1
 
-[node name="startbutton" type="Button" parent="window/hbox1/settings"]
-margin_top = 725.0
+[node name="HSeparator3" type="HSeparator" parent="window/hbox1/settings"]
+margin_top = 677.0
 margin_right = 900.0
-margin_bottom = 745.0
+margin_bottom = 681.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="window/hbox1/settings"]
+margin_top = 691.0
+margin_right = 900.0
+margin_bottom = 716.0
+alignment = 1
+
+[node name="startbutton" type="Button" parent="window/hbox1/settings/HBoxContainer"]
+margin_left = 348.0
+margin_right = 448.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 100, 25 )
 text = "Démarrer"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="return_button" type="Button" parent="window/hbox1/settings"]
-margin_top = 749.0
-margin_right = 900.0
-margin_bottom = 769.0
+[node name="return_button" type="Button" parent="window/hbox1/settings/HBoxContainer"]
+margin_left = 452.0
+margin_right = 552.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 100, 25 )
 text = "Retour"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -561,5 +600,5 @@ __meta__ = {
 
 [connection signal="item_selected" from="window/hbox1/characters/charlist" to="." method="_on_ItemList_item_selected"]
 [connection signal="value_changed" from="window/hbox1/settings/diff/HSlider" to="." method="_on_HSlider_value_changed"]
-[connection signal="button_down" from="window/hbox1/settings/startbutton" to="." method="_on_Button_button_down"]
-[connection signal="button_down" from="window/hbox1/settings/return_button" to="." method="_on_return_button_down"]
+[connection signal="button_down" from="window/hbox1/settings/HBoxContainer/startbutton" to="." method="_on_Button_button_down"]
+[connection signal="button_down" from="window/hbox1/settings/HBoxContainer/return_button" to="." method="_on_return_button_down"]
