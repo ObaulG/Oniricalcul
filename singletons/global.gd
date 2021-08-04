@@ -144,6 +144,8 @@ var BONUS = [
 const PATH = {
 	"OPERATIONS_JSON": "res://operations/operation_data.json",
 	"OPERATIONS_ATLAS": "res://operations/textures/op_icons.png",
+	"SAVE_FILE:": "res://save/savegame.save",
+	"ACHIEVEMENTS": "res://save/achievements.json"
 }
 # Informations sur les personnages. A convertir en JSON
 const characters = {
@@ -377,6 +379,7 @@ func _init():
 	op_atlas.set_atlas(load(PATH["OPERATIONS_ATLAS"]))
 	op_atlas.set_region(Rect2(0,0,64,64))
 
+	# loading save
 func get_resized_ImageTexture(t: Texture, w: int, h: int) -> Texture:
 	var img = t.get_data()
 	img.resize(w, h)

@@ -1,0 +1,116 @@
+{
+  "achievements": [
+  {
+    "id": 1,
+    "hidden": false,
+    "str_data" : {
+      "fr": {
+        "name": "Mini-monde",
+        "descr": "Débloquer tous les personnages."
+      },
+      "en": {
+        "name": "Lil world",
+        "descr": "Unlock all characters."
+      }
+    }
+  },
+  {
+    "id": 2,
+    "hidden": false,
+    "str_data" : {
+      "fr": {
+        "name": "Réveil forcé",
+        "descr": "Terminer le mode classique pour la première fois."
+      },
+      "en": {
+        "name": "Forced awakening",
+        "descr": "Finish classic mode for the first time."
+      }
+    }
+  },
+  {
+    "id": 3,
+    "hidden": true,
+    "str_data" : {
+      "fr": {
+        "name": "Vengeance",
+        "descr": "Être vaincu par Viriel dans le mode classique."
+      },
+      "en": {
+        "name": "Revenge",
+        "descr": "Be defeated by Viriel in classic mode."
+      }
+    }
+  },
+  {
+    "id": 4,
+    "hidden": false,
+    "str_data" : {
+      "fr": {
+        "name": "Fin de partie",
+        "descr": "Mourir."
+      },
+      "en": {
+        "name": "Game over",
+        "descr": "Perish."
+      }
+    }
+  },
+  {
+    "id": 5,
+    "hidden": false,
+    "str_data" : {
+      "fr": {
+        "name": "Diversification",
+        "descr": "Débloquer trois opérations."
+      },
+      "en": {
+        "name": "Diversification",
+        "descr": "Unlock three new operations."
+      }
+    }
+  },
+  {
+    "id": 6,
+    "hidden": false,
+    "str_data" : {
+      "fr": {
+        "name": "Excellent! 20/20!",
+        "descr": "Gagner une partie en difficulté extrême sans donner une mauvaise réponse, ni passer un calcul."
+      },
+      "en": {
+        "name": "Excellent! 20/20!",
+        "descr": "Win a game in extreme difficulty without giving a single wrong answer, nor skipping."
+      }
+    }
+  },
+  {
+    "id": 7,
+    "hidden": true,
+    "str_data" : {
+      "fr": {
+        "name": "??",
+        "descr": "Gagner avec Viriel contre Lina."
+      },
+      "en": {
+        "name": "??",
+        "descr": "Win against Lina, playing Viriel."
+      }
+    }
+  },
+  {
+    "id": 8,
+    "hidden": true,
+    "str_data" : {
+      "fr": {
+        "name": "??",
+        "descr": "Gagner avec Lina contre Viriel."
+      },
+      "en": {
+        "name": "??",
+        "descr": "Win against Viriel, playing Lina."
+      }
+    }
+  },
+  ]
+}

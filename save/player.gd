@@ -6,54 +6,59 @@ var pseudo
 var level
 var experience
 
-#Liste d'objets
 var inventory
-
-#Caractéristiques
-var base_pattern
-var base_power
-var agility
-
-#Equipements
-var ring1
-var ring2
-var hat
-var amulet
-var cloak
-
-#Trophées
-var trophy1
-var trophy2
-var trophy3
-var trophy4
-
+var unlocked
 var gametime
 var timestamp_lastplayed
 
+var continues
+var game_finished
+
 func _init(name = "CPU"):
-	if !self.loadData():
+	var data = loadData()
+	if data["success"]:
+		pseudo = data["pseudo"]
+		level = data["level"]
+		experience = data["experience"]
+		inventory = data["inventory"]
+		unlocked = data["unlocked"]
+		gametime = data["gametime"]
+		timestamp_lastplayed = data["timestamp_lastplayed"]
+		continues = data["continues"]
+		game_finished = data["game_finished"]
+	else:
 		pseudo = name
 		level = 1
 		experience = 0
 		inventory = []
 		
-		base_pattern = []
-		ring1 = null
-		ring2 = null
-		hat = null
-		amulet = null
-		cloak = null
-		
-		trophy1 = null
-		trophy2 = null
-		trophy3 = null
-		trophy4 = null
-		
 		gametime = 0
 		timestamp_lastplayed = null
-	
+		unlocked = {
+			"characters": [],
+			"bonus": [],
+			"operations": [],
+			"achievements": [],
+		}
+		continues = 3
+		game_finished = false
+		
 func loadData():
-	pass
+	var file = File.new()
+	var path = global.PATH["SAVE_FILE"]
+	file.open(path, file.READ)
+	var textdata = file.get_as_text()
+	file.close()
+	var result_JSON = JSON.parse(textdata)
+	if result_JSON.error != OK:
+		print("[load_json_file] Error loading JSON file '" + path + "'.")
+		print("\tError: ", result_JSON.error)
+		print("\tError Line: ", result_JSON.error_line)
+		print("\tError String: ", result_JSON.error_string)
+		result_JSON["success"] = false
+	else:
+		result_JSON["success"] = true
+	return result_JSON
 	
 func save():
 	var save_dict = {
@@ -61,19 +66,12 @@ func save():
 		"level": level,
 		"experience": experience,
 		"inventory": inventory,
-		"base_pattern": base_pattern,
-		"base_power": base_power,
-		"agility": agility,
-		"ring1": ring1,
-		"ring2": ring2,
-		"hat": hat,
-		"amulet": amulet,
-		"cloak": cloak,
-		"trophy1": trophy1,
-		"trophy2": trophy2,
-		"trophy3": trophy3,
-		"trophy4": trophy4,
+		"unlocked": unlocked,
 		"gametime": 0,
+		"continues": continues,
+		"game_finished": game_finished,
 		"timestamp_lastplayed": OS.get_unix_time()
 	}
-	return save_dict
+	var save_game = File.new()
+	save_game.open(global.PATH["SAVE_FILE"], File.WRITE)
+	save_game.store_line(to_json(save_dict))
