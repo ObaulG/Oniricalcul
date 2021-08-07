@@ -50,12 +50,12 @@ margin_bottom = 998.0
 custom_constants/separation = 154
 
 [node name="characters" type="VBoxContainer" parent="window/hbox1"]
-margin_right = 512.0
+margin_right = 400.0
 margin_bottom = 998.0
 custom_constants/separation = 29
 
 [node name="Label" type="Label" parent="window/hbox1/characters"]
-margin_right = 512.0
+margin_right = 400.0
 margin_bottom = 43.0
 custom_fonts/font = ExtResource( 1 )
 text = "Choisissez votre personnage"
@@ -63,7 +63,7 @@ align = 1
 
 [node name="charlist" type="ItemList" parent="window/hbox1/characters"]
 margin_top = 72.0
-margin_right = 512.0
+margin_right = 400.0
 margin_bottom = 272.0
 grow_horizontal = 0
 rect_min_size = Vector2( 400, 200 )
@@ -73,7 +73,7 @@ same_column_width = true
 
 [node name="Label2" type="Label" parent="window/hbox1/characters"]
 margin_top = 301.0
-margin_right = 512.0
+margin_right = 400.0
 margin_bottom = 344.0
 custom_fonts/font = ExtResource( 1 )
 text = "Cycle d'incantation"
@@ -83,12 +83,12 @@ align = 1
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 373.0
-margin_right = 512.0
-margin_bottom = 885.0
+margin_right = 400.0
+margin_bottom = 682.0
 
 [node name="settings" type="VBoxContainer" parent="window/hbox1"]
-margin_left = 666.0
-margin_right = 1566.0
+margin_left = 554.0
+margin_right = 1454.0
 margin_bottom = 998.0
 rect_min_size = Vector2( 900, 300 )
 custom_constants/separation = 10

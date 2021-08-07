@@ -30,7 +30,7 @@ gradient = SubResource( 2 )
 
 [node name="vbox" type="VBoxContainer" parent="."]
 margin_right = 200.0
-margin_bottom = 49.0
+margin_bottom = 63.0
 custom_constants/separation = -6
 __meta__ = {
 "_edit_use_anchors_": false
@@ -41,7 +41,7 @@ material = SubResource( 3 )
 margin_right = 200.0
 margin_bottom = 26.0
 step = 0.1
-value = 100.0
+value = 10.0
 texture_under = ExtResource( 3 )
 texture_progress = ExtResource( 2 )
 __meta__ = {
@@ -51,7 +51,7 @@ __meta__ = {
 [node name="labels" type="HBoxContainer" parent="vbox"]
 margin_top = 20.0
 margin_right = 200.0
-margin_bottom = 49.0
+margin_bottom = 63.0
 custom_constants/separation = 8
 alignment = 1
 __meta__ = {
@@ -59,9 +59,9 @@ __meta__ = {
 }
 
 [node name="current_hp" type="Label" parent="vbox/labels"]
-margin_left = 72.0
+margin_left = 62.0
 margin_right = 92.0
-margin_bottom = 29.0
+margin_bottom = 43.0
 custom_fonts/font = ExtResource( 4 )
 text = "35"
 align = 1
@@ -72,8 +72,8 @@ __meta__ = {
 
 [node name="slash" type="Label" parent="vbox/labels"]
 margin_left = 100.0
-margin_right = 110.0
-margin_bottom = 29.0
+margin_right = 115.0
+margin_bottom = 43.0
 custom_fonts/font = ExtResource( 4 )
 text = "/"
 align = 1
@@ -83,9 +83,9 @@ __meta__ = {
 }
 
 [node name="max_hp" type="Label" parent="vbox/labels"]
-margin_left = 118.0
-margin_right = 127.0
-margin_bottom = 29.0
+margin_left = 123.0
+margin_right = 137.0
+margin_bottom = 43.0
 custom_fonts/font = ExtResource( 4 )
 text = "?"
 align = 1

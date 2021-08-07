@@ -11,6 +11,7 @@ var player
 
 #id of character selected in char select
 var character = -1
+var enemy_character = -1
 #diff selected in char select
 var diff = 0
 

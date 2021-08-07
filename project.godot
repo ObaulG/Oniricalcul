@@ -119,6 +119,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://operations/scripts/square_root.gd"
 }, {
+"base": "Control",
+"class": "StatDisplay",
+"language": "GDScript",
+"path": "res://UI/StatDisplay.gd"
+}, {
 "base": "Calcul",
 "class": "Substraction",
 "language": "GDScript",
@@ -152,6 +157,7 @@ _global_script_class_icons={
 "ReliquatNumber": "",
 "RootOP": "",
 "SquareRootOP": "",
+"StatDisplay": "",
 "Substraction": "",
 "Threat": ""
 }

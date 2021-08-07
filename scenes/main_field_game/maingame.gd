@@ -73,7 +73,7 @@ func _ready():
 	domain1.create(1, player1, null, global.character)
 	player2 = Player.new()
 	domain2 = $window/game_elements/hbox/p2_field/domain_p2
-	domain2.create(2, player2, null, 5)
+	domain2.create(2, player2, null, global.enemy_character)
 	answer_time_p2 = 0.0
 	
 	pre_game_timer = $pre_game_timer
