@@ -1,5 +1,6 @@
 extends Node
 
+enum SELECTION_STATE{ZERO, ONE, TWO}
 func set_3textures_bar(node_dict, crescent_order, value, compare_value1, compare_value2):
 	if node_dict["value_label"] != null:
 		node_dict["value_label"].text = str(value)
@@ -24,7 +25,7 @@ func set_3textures_bar(node_dict, crescent_order, value, compare_value1, compare
 	
 	bar.rect_size = Vector2(100,14)
 	
-	
+var two_character_selection: bool
 #{index de ItemList: clef de global.characters}
 var association = {}
 var itemList
@@ -33,6 +34,8 @@ var char_descr
 var icon_size = [128,128]
 
 var charselected
+var enemycharacter
+var selection_state
 var char_info
 
 
@@ -45,58 +48,27 @@ var op_display
 var op_display_bis
 var diff_range: HSlider
 var diff_label: Label
-
+var char_select_label
 onready var caracs_nodes = {
 	"hp": {
 		"name_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names/label_hp,
 		"value_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2/hp_value,
 		"bar": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names3/hp_value,
 	},
-	"difficulty": {
-		"name_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names/label_diff,
-		"value_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2/diff_value,
-		"bar": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names3/bar_diff,
-	},
-	"impact_spell": {
-		"name_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names/label_impact_spell,
-		"value_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2/spell_name,
-		"bar": null,
-	},
-	"malus": {
-		"name_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names/label_malus,
-		"value_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2/malus_value,
-		"bar": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names3/malus_value,
-	},
-	"spell_power": {
-		"name_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names/label_power,
-		"value_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2/power_value,
-		"bar": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names3/power_value,
-	},
-	"threat_delay": {
-		"name_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names/label_delay,
-		"value_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2/impact_delay,
-		"bar": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names3/impact_delay,
-	},
-	"threat_hp": {
-		"name_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names/label_toughness,
-		"value_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2/toughness_value,
-		"bar": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names3/toughness_value,
-	},
-	"atk_speed": {
-		"name_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names/label_speed,
-		"value_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2/casting_speed,
-		"bar": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names3/casting_speed,
-	},
-	"spell_cost": {
-		"name_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names/label_cost,
-		"value_label": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names2/cost_value,
-		"bar": $window/hbox1/settings/caracteristics/VBoxContainer/HBoxContainer/carac_names3/cost_value,
-	},
 }
 
 func _ready():
-	global.character = 0
-	
+	charselected = -1
+	enemycharacter = -1
+	match global.game_mode:
+		1:
+			pass
+		2:
+			pass
+		3:
+			pass
+		4:
+			pass
 	itemList = $window/hbox1/characters/charlist
 	char_name = $window/hbox1/settings/char_name/hbox/name_label
 	char_descr = $window/hbox1/settings/char_name/descr
@@ -141,21 +113,35 @@ func _ready():
 	
 	diff_label = $window/hbox1/settings/diff/diff_label
 	diff_range = $window/hbox1/settings/diff/HSlider
+	char_select_label = $window/hbox1/characters/Label
 	
 func _on_Button_button_down():
-	if global.character != 0:
-		global.diff = int(diff_range.value)
-		get_tree().change_scene("res://scenes/main_field_game/maingame.tscn")
-	else:
-		print("Aucun personnage sélectionné !")
-		#Pop-up ("no character selected!!!")
-		
-		
+	match selection_state:
+		SELECTION_STATE.ZERO:
+			print("Aucun personnage sélectionné !")
+			#Pop-up ("no character selected!!!")
+		SELECTION_STATE.ONE:
+			print("Sélectionnez un personnage adversaire")
+			#Pop-up ("no character selected!!!")
+		SELECTION_STATE.TWO:
+			global.character = charselected
+			global.enemy_character = enemycharacter
+			global.diff = int(diff_range.value)
+			get_tree().change_scene("res://scenes/main_field_game/maingame.tscn")
+
 #Sur sélection d'une icône
 func _on_ItemList_item_selected(index):
 	var id = association[index]
-	#Récupération de l'index correspondant
-	print("Index ", index, " sélectionné: ", global.characters[association[index]]["name"])
+	
+	match selection_state:
+		SELECTION_STATE.ZERO:
+			pass
+		SELECTION_STATE.ONE:
+			pass
+		SELECTION_STATE.TWO:
+			pass
+	
+
 	global.character = association[index]
 	
 	var character = global.char_data[id]
@@ -196,17 +182,8 @@ func _on_ItemList_item_selected(index):
 		
 		i += 1
 	
-	
-func _on_perfection_contract_number_value_changed(value):
-	$window/hbox1/settings/option5/Label3.text = "Réalisé si au moins " + str(value) + " opéations sont justes lors d'une manche."
-	
-
-func _on_speed_contract_number_value_changed(value):
-	$window/hbox1/settings/option2/Label3.text = "Réalisé si une chaîne de " + str(value) + " opérations justes est réalisées lors d'une manche."
-
 func _on_return_button_down():
 	global.game_mode = 0
-	
 	get_tree().change_scene("res://scenes/titlescreen/title.tscn")
 
 

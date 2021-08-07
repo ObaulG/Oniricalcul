@@ -11,6 +11,7 @@ var player
 
 #id of character selected in char select
 var character = -1
+var enemy_character = -1
 #diff selected in char select
 var diff = 0
 
@@ -144,7 +145,7 @@ var BONUS = [
 const PATH = {
 	"OPERATIONS_JSON": "res://operations/operation_data.json",
 	"OPERATIONS_ATLAS": "res://operations/textures/op_icons.png",
-	"SAVE_FILE:": "res://save/savegame.save",
+	"SAVE_FILE": "res://save/savegame.save",
 	"ACHIEVEMENTS": "res://save/achievements.json"
 }
 # Informations sur les personnages. A convertir en JSON
@@ -352,7 +353,7 @@ var char_data: Dictionary
 var op_atlas: AtlasTexture 
 var lang = "fr"
 var op_data: Dictionary
-
+var time_played: float
 func _init():
 	# character data loading 
 	for char_id in characters.keys():
@@ -393,8 +394,11 @@ func _init():
 		print("\tError Line: ", result_JSON.error_line)
 		print("\tError String: ", result_JSON.error_string)
 		
-	achievements_dico = result_JSON.duplicate()
-	# loading save
+	achievements_dico = result_JSON.get_result()
+
+func _process(delta):
+	time_played += delta
+	
 func get_resized_ImageTexture(t: Texture, w: int, h: int) -> Texture:
 	var img = t.get_data()
 	img.resize(w, h)
@@ -402,15 +406,28 @@ func get_resized_ImageTexture(t: Texture, w: int, h: int) -> Texture:
 	im_t.create_from_image(img)
 	return im_t
 	
+func load_game():
+	player = Player.new()
+	print(player)
+	
 func save_game():
 	var save_file = File.new()
 	save_file.open("user://savegame.save", File.WRITE)
-	save_file.store_var(to_json(player.save()))
+	save_file.store_var(to_json(player.save(time_played)))
 	save_file.close()
 
-
+func get_file_path(index):
+	if str(index) in PATH:
+		return PATH[index]
+	else:
+		return ""
 func get_op_power(type: int, diff: int) -> int:
 	return op_data[type].get_potential(diff)
 
 func get_op_power_by_obj(values: Array) -> int:
 	return op_data[values[0]].get_potential(values[1])
+
+func _notification(what):
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+		save_game()
+		get_tree().quit()

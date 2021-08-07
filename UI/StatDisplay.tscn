@@ -1,0 +1,49 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://UI/StatDisplay.gd" type="Script" id=1]
+[ext_resource path="res://textures/barHorizontal_green.png" type="Texture" id=2]
+[ext_resource path="res://textures/barHorizontal_darkgrey.png" type="Texture" id=3]
+[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=4]
+[ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=5]
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 5 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+
+[node name="StatDisplay" type="Control"]
+rect_min_size = Vector2( 200, 26 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+current_value = 40.0
+
+[node name="bar" type="TextureProgress" parent="."]
+material = SubResource( 2 )
+margin_right = 200.0
+margin_bottom = 26.0
+max_value = 35.0
+step = 0.1
+texture_under = ExtResource( 3 )
+texture_progress = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="value" type="Label" parent="."]
+margin_left = 73.8776
+margin_top = -10.8775
+margin_right = 124.878
+margin_bottom = 24.1225
+custom_fonts/font = ExtResource( 4 )
+text = "55"
+align = 1
+autowrap = true
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="."]

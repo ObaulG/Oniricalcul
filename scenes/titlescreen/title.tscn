@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scenes/titlescreen/title.gd" type="Script" id=1]
-[ext_resource path="res://titleimagewip.PNG" type="Texture" id=2]
+[ext_resource path="res://sketches28.png" type="Texture" id=2]
 [ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=3]
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=4]
 
@@ -12,126 +12,97 @@ script = ExtResource( 1 )
 wait_time = 3.8
 autostart = true
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-margin_right = 1920.0
-margin_bottom = 1080.0
-custom_constants/margin_right = 122
-custom_constants/margin_top = 80
-custom_constants/margin_left = 297
-custom_constants/margin_bottom = 80
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
-margin_left = 297.0
-margin_top = 80.0
-margin_right = 1836.0
-margin_bottom = 1208.0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
-margin_left = 297.0
-margin_top = 80.0
-margin_right = 1836.0
-margin_bottom = 1208.0
-custom_constants/separation = 2
-
-[node name="bg_image" type="TextureRect" parent="MarginContainer/HBoxContainer"]
-margin_right = 1155.0
-margin_bottom = 1128.0
+[node name="TextureRect" type="TextureRect" parent="."]
+margin_right = 2304.0
+margin_bottom = 1296.0
+rect_min_size = Vector2( 1920, 1080 )
+rect_scale = Vector2( 0.8, 0.8 )
 texture = ExtResource( 2 )
-stretch_mode = 4
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
-margin_left = 1157.0
-margin_right = 1539.0
-margin_bottom = 1128.0
-
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/HBoxContainer/MarginContainer"]
-margin_right = 382.0
-margin_bottom = 1128.0
-color = Color( 0.101961, 0.0980392, 0.101961, 0.215686 )
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MarginContainer"]
-margin_right = 382.0
-margin_bottom = 1128.0
-custom_constants/separation = 163
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 1414.17
+margin_top = 293.787
+margin_right = 1796.17
+margin_bottom = 949.787
+custom_constants/separation = 74
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="title_container" type="CenterContainer" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
+[node name="title_container" type="CenterContainer" parent="VBoxContainer"]
 margin_right = 382.0
 margin_bottom = 101.0
 
-[node name="title_label" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/title_container"]
+[node name="title_label" type="Label" parent="VBoxContainer/title_container"]
 margin_right = 382.0
 margin_bottom = 101.0
 custom_fonts/font = ExtResource( 3 )
 text = "Oniricalcul"
 
-[node name="buttons_container" type="CenterContainer" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer"]
-margin_top = 264.0
+[node name="buttons_container" type="CenterContainer" parent="VBoxContainer"]
+margin_top = 175.0
 margin_right = 382.0
-margin_bottom = 669.0
+margin_bottom = 656.0
 
-[node name="list" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container"]
-margin_left = 118.0
-margin_right = 263.0
-margin_bottom = 405.0
-custom_constants/separation = 39
+[node name="list" type="VBoxContainer" parent="VBoxContainer/buttons_container"]
+margin_left = 86.0
+margin_right = 295.0
+margin_bottom = 481.0
+custom_constants/separation = 95
 
-[node name="fast_game_button" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list"]
-margin_right = 145.0
-margin_bottom = 35.0
+[node name="fast_game_button" type="Button" parent="VBoxContainer/buttons_container/list"]
+margin_right = 209.0
+margin_bottom = 49.0
 custom_fonts/font = ExtResource( 4 )
 text = "Partie rapide"
 
-[node name="classic_game_button" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list"]
-margin_top = 74.0
-margin_right = 145.0
-margin_bottom = 109.0
+[node name="classic_game_button" type="Button" parent="VBoxContainer/buttons_container/list"]
+margin_top = 144.0
+margin_right = 209.0
+margin_bottom = 193.0
 custom_fonts/font = ExtResource( 4 )
 disabled = true
 text = "Mode classique"
 
-[node name="history_mode_button" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list"]
-margin_top = 148.0
-margin_right = 145.0
-margin_bottom = 183.0
-custom_fonts/font = ExtResource( 4 )
-disabled = true
-text = "Mode histoire"
-
-[node name="online_mode_button" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list"]
-margin_top = 222.0
-margin_right = 145.0
-margin_bottom = 257.0
-custom_fonts/font = ExtResource( 4 )
-disabled = true
-text = "Rêves distants"
-
-[node name="quit_button" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list"]
-margin_top = 296.0
-margin_right = 145.0
-margin_bottom = 331.0
-custom_fonts/font = ExtResource( 4 )
-text = "Quitter"
-
-[node name="options_button" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list"]
-margin_top = 370.0
-margin_right = 145.0
-margin_bottom = 405.0
+[node name="options_button" type="Button" parent="VBoxContainer/buttons_container/list"]
+margin_top = 288.0
+margin_right = 209.0
+margin_bottom = 337.0
 custom_fonts/font = ExtResource( 4 )
 disabled = true
 text = "Options"
 
-[connection signal="button_down" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list/fast_game_button" to="." method="_on_play_button_down" binds= [ 1 ]]
-[connection signal="button_down" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list/classic_game_button" to="." method="_on_play_button_down" binds= [ 2 ]]
-[connection signal="button_down" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list/history_mode_button" to="." method="_on_play_button_down" binds= [ 3 ]]
-[connection signal="button_down" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list/online_mode_button" to="." method="_on_play_button_down" binds= [ 4 ]]
-[connection signal="button_down" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list/quit_button" to="." method="_on_quit_button_down"]
-[connection signal="button_down" from="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer/buttons_container/list/options_button" to="." method="_on_options_button_down"]
+[node name="history_mode_button" type="Button" parent="VBoxContainer/buttons_container/list"]
+visible = false
+margin_top = 176.0
+margin_right = 209.0
+margin_bottom = 225.0
+custom_fonts/font = ExtResource( 4 )
+disabled = true
+text = "Mode histoire"
+
+[node name="online_mode_button" type="Button" parent="VBoxContainer/buttons_container/list"]
+visible = false
+margin_top = 176.0
+margin_right = 209.0
+margin_bottom = 225.0
+custom_fonts/font = ExtResource( 4 )
+disabled = true
+text = "Rêves distants"
+
+[node name="quit_button" type="Button" parent="VBoxContainer/buttons_container/list"]
+margin_top = 432.0
+margin_right = 209.0
+margin_bottom = 481.0
+custom_fonts/font = ExtResource( 4 )
+text = "Quitter"
+
+[connection signal="button_down" from="VBoxContainer/buttons_container/list/fast_game_button" to="." method="_on_play_button_down" binds= [ 1 ]]
+[connection signal="button_down" from="VBoxContainer/buttons_container/list/classic_game_button" to="." method="_on_play_button_down" binds= [ 2 ]]
+[connection signal="button_down" from="VBoxContainer/buttons_container/list/options_button" to="." method="_on_options_button_down"]
+[connection signal="button_down" from="VBoxContainer/buttons_container/list/history_mode_button" to="." method="_on_play_button_down" binds= [ 3 ]]
+[connection signal="button_down" from="VBoxContainer/buttons_container/list/online_mode_button" to="." method="_on_play_button_down" binds= [ 4 ]]
+[connection signal="button_down" from="VBoxContainer/buttons_container/list/quit_button" to="." method="_on_quit_button_down"]

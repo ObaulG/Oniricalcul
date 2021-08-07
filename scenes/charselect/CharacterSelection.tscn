@@ -1,0 +1,723 @@
+[gd_scene load_steps=24 format=2]
+
+[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=1]
+[ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=2]
+[ext_resource path="res://characters/01/icon.png" type="Texture" id=3]
+[ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=5]
+[ext_resource path="res://textures/operations/spritesheet.png" type="Texture" id=6]
+[ext_resource path="res://incantation/Incantation_Operations_Circle.tscn" type="PackedScene" id=8]
+[ext_resource path="res://fonts/LMROMAN10-BOLD.OTF" type="DynamicFontData" id=9]
+[ext_resource path="res://scenes/charselect/CharacterSelection.gd" type="Script" id=10]
+[ext_resource path="res://UI/StatDisplay.tscn" type="PackedScene" id=11]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+
+[sub_resource type="DynamicFontData" id=11]
+font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
+
+[sub_resource type="DynamicFont" id=15]
+size = 20
+font_data = SubResource( 11 )
+
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+
+[sub_resource type="AtlasTexture" id=4]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 256, 0, 64, 64 )
+
+[sub_resource type="ShaderMaterial" id=5]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+
+[sub_resource type="ShaderMaterial" id=6]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+
+[sub_resource type="ShaderMaterial" id=7]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+
+[sub_resource type="DynamicFont" id=13]
+size = 30
+font_data = SubResource( 11 )
+
+[sub_resource type="DynamicFont" id=14]
+size = 20
+font_data = SubResource( 11 )
+
+[sub_resource type="ShaderMaterial" id=8]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+
+[sub_resource type="ShaderMaterial" id=9]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+
+[sub_resource type="DynamicFont" id=10]
+size = 45
+font_data = ExtResource( 9 )
+
+[node name="CharacterSelection" type="Control"]
+rect_min_size = Vector2( 1920, 1080 )
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 1920.0
+margin_bottom = 1080.0
+color = Color( 0.380392, 0.937255, 0.329412, 0.152941 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="character_windows" type="HBoxContainer" parent="."]
+margin_right = 1925.0
+margin_bottom = 1076.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="char1" type="Control" parent="character_windows"]
+margin_right = 960.0
+margin_bottom = 1080.0
+rect_min_size = Vector2( 960, 1080 )
+rect_clip_content = true
+mouse_filter = 1
+
+[node name="char_icon" type="TextureRect" parent="character_windows/char1"]
+margin_left = 512.0
+margin_top = 128.0
+margin_right = 768.0
+margin_bottom = 384.0
+texture = ExtResource( 3 )
+stretch_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="info" type="Control" parent="character_windows/char1"]
+anchor_left = 0.025
+anchor_top = 0.052
+anchor_right = 0.025
+anchor_bottom = 0.052
+margin_top = -0.16
+margin_right = 424.0
+margin_bottom = 935.84
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="character_windows/char1/info"]
+margin_right = 424.0
+margin_bottom = 944.0
+color = Color( 1, 1, 1, 0.258824 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Incantation_Operations_Circle" parent="character_windows/char1/info" instance=ExtResource( 8 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 472.0
+margin_top = 368.0
+margin_right = 772.0
+margin_bottom = 677.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="character_windows/char1/info"]
+margin_left = 10.0
+margin_right = 424.0
+margin_bottom = 660.0
+rect_clip_content = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="name" type="Label" parent="character_windows/char1/info/VBoxContainer"]
+margin_right = 424.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "???"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="character_windows/char1/info/VBoxContainer"]
+margin_top = 47.0
+margin_right = 424.0
+margin_bottom = 137.0
+custom_constants/separation = 33
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="character_windows/char1/info/VBoxContainer/HBoxContainer"]
+margin_right = 171.0
+margin_bottom = 90.0
+alignment = 1
+
+[node name="hp_label" type="Label" parent="character_windows/char1/info/VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_right = 171.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "Points de vie"
+
+[node name="hardness_label" type="Label" parent="character_windows/char1/info/VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_top = 47.0
+margin_right = 171.0
+margin_bottom = 90.0
+custom_fonts/font = ExtResource( 1 )
+text = "Difficulté"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="character_windows/char1/info/VBoxContainer/HBoxContainer"]
+margin_left = 204.0
+margin_right = 404.0
+margin_bottom = 90.0
+rect_pivot_offset = Vector2( -928, -24 )
+custom_constants/separation = 20
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="hp_display" parent="character_windows/char1/info/VBoxContainer/HBoxContainer/VBoxContainer2" instance=ExtResource( 11 )]
+material = SubResource( 1 )
+margin_top = 9.0
+margin_right = 200.0
+margin_bottom = 35.0
+
+[node name="bar" parent="character_windows/char1/info/VBoxContainer/HBoxContainer/VBoxContainer2/hp_display" index="0"]
+max_value = 55.0
+step = 1.0
+
+[node name="hardness_display" parent="character_windows/char1/info/VBoxContainer/HBoxContainer/VBoxContainer2" instance=ExtResource( 11 )]
+material = SubResource( 2 )
+margin_top = 55.0
+margin_right = 200.0
+margin_bottom = 81.0
+reverse_gradient = true
+
+[node name="bar" parent="character_windows/char1/info/VBoxContainer/HBoxContainer/VBoxContainer2/hardness_display" index="0"]
+max_value = 5.0
+
+[node name="char_descr" type="RichTextLabel" parent="character_windows/char1/info/VBoxContainer"]
+margin_top = 141.0
+margin_right = 424.0
+margin_bottom = 261.0
+rect_min_size = Vector2( 0, 120 )
+custom_fonts/normal_font = SubResource( 15 )
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="character_windows/char1/info/VBoxContainer"]
+margin_top = 265.0
+margin_right = 424.0
+margin_bottom = 308.0
+custom_constants/separation = 51
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="character_windows/char1/info/VBoxContainer/HBoxContainer2"]
+margin_right = 153.0
+margin_bottom = 43.0
+
+[node name="backlash_label" type="Label" parent="character_windows/char1/info/VBoxContainer/HBoxContainer2/VBoxContainer"]
+margin_right = 153.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "Contrecoup"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="character_windows/char1/info/VBoxContainer/HBoxContainer2"]
+margin_left = 204.0
+margin_right = 404.0
+margin_bottom = 43.0
+rect_pivot_offset = Vector2( -928, -24 )
+custom_constants/separation = 20
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="backlash_display" parent="character_windows/char1/info/VBoxContainer/HBoxContainer2/VBoxContainer2" instance=ExtResource( 11 )]
+material = SubResource( 3 )
+margin_top = 8.0
+margin_right = 200.0
+margin_bottom = 34.0
+reverse_gradient = true
+
+[node name="bar" parent="character_windows/char1/info/VBoxContainer/HBoxContainer2/VBoxContainer2/backlash_display" index="0"]
+margin_top = -1.0
+margin_bottom = 25.0
+max_value = 4.0
+
+[node name="backlash_descr" type="RichTextLabel" parent="character_windows/char1/info/VBoxContainer"]
+margin_top = 312.0
+margin_right = 424.0
+margin_bottom = 432.0
+rect_min_size = Vector2( 0, 120 )
+custom_fonts/mono_font = ExtResource( 1 )
+custom_fonts/normal_font = ExtResource( 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="character_windows/char1/info/VBoxContainer"]
+margin_top = 436.0
+margin_right = 424.0
+margin_bottom = 739.0
+
+[node name="Label2" type="Label" parent="character_windows/char1/info/VBoxContainer/VBoxContainer"]
+margin_right = 424.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "Univers"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="character_windows/char1/info/VBoxContainer/VBoxContainer"]
+visible = false
+margin_top = 47.0
+margin_right = 424.0
+margin_bottom = 90.0
+custom_constants/separation = 31
+
+[node name="Label2" type="Label" parent="character_windows/char1/info/VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_right = 132.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "Opération"
+
+[node name="VSeparator" type="VSeparator" parent="character_windows/char1/info/VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 163.0
+margin_right = 167.0
+margin_bottom = 43.0
+
+[node name="Label3" type="Label" parent="character_windows/char1/info/VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 198.0
+margin_right = 332.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "Fréquence"
+
+[node name="GridContainer" type="ScrollContainer" parent="character_windows/char1/info/VBoxContainer/VBoxContainer"]
+margin_top = 47.0
+margin_right = 424.0
+margin_bottom = 303.0
+rect_min_size = Vector2( 424, 256 )
+scroll_horizontal_enabled = false
+
+[node name="element" type="VBoxContainer" parent="character_windows/char1/info/VBoxContainer/VBoxContainer/GridContainer"]
+margin_right = 355.0
+margin_bottom = 64.0
+custom_constants/separation = 15
+
+[node name="hbox" type="HBoxContainer" parent="character_windows/char1/info/VBoxContainer/VBoxContainer/GridContainer/element"]
+margin_right = 355.0
+margin_bottom = 64.0
+rect_pivot_offset = Vector2( -1040, -27 )
+custom_constants/separation = 91
+
+[node name="op" type="TextureRect" parent="character_windows/char1/info/VBoxContainer/VBoxContainer/GridContainer/element/hbox"]
+margin_right = 64.0
+margin_bottom = 64.0
+texture = SubResource( 4 )
+
+[node name="centering" type="CenterContainer" parent="character_windows/char1/info/VBoxContainer/VBoxContainer/GridContainer/element/hbox"]
+margin_left = 155.0
+margin_right = 355.0
+margin_bottom = 64.0
+
+[node name="probability_display" parent="character_windows/char1/info/VBoxContainer/VBoxContainer/GridContainer/element/hbox/centering" instance=ExtResource( 11 )]
+material = SubResource( 5 )
+margin_top = 19.0
+margin_right = 200.0
+margin_bottom = 45.0
+
+[node name="char2" type="Control" parent="character_windows"]
+margin_left = 964.0
+margin_right = 1924.0
+margin_bottom = 1080.0
+rect_min_size = Vector2( 960, 1080 )
+rect_clip_content = true
+mouse_filter = 1
+
+[node name="char_icon" type="TextureRect" parent="character_windows/char2"]
+margin_left = 190.0
+margin_top = 128.0
+margin_right = 446.0
+margin_bottom = 384.0
+texture = ExtResource( 3 )
+stretch_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="info" type="Control" parent="character_windows/char2"]
+anchor_left = 0.467
+anchor_top = 0.044
+anchor_right = 0.467
+anchor_bottom = 0.044
+margin_left = 59.68
+margin_top = 8.48
+margin_right = 483.68
+margin_bottom = 944.48
+rect_min_size = Vector2( 424, 936 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="character_windows/char2/info"]
+margin_right = 424.0
+margin_bottom = 944.0
+color = Color( 1, 1, 1, 0.258824 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Incantation_Operations_Circle" parent="character_windows/char2/info" instance=ExtResource( 8 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = -352.0
+margin_top = 368.0
+margin_right = -52.0
+margin_bottom = 677.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="character_windows/char2/info"]
+margin_left = 10.0
+margin_right = 424.0
+margin_bottom = 660.0
+rect_clip_content = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="name" type="Label" parent="character_windows/char2/info/VBoxContainer"]
+margin_right = 424.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "???"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="character_windows/char2/info/VBoxContainer"]
+margin_top = 47.0
+margin_right = 424.0
+margin_bottom = 137.0
+custom_constants/separation = 33
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="character_windows/char2/info/VBoxContainer/HBoxContainer"]
+margin_right = 171.0
+margin_bottom = 90.0
+alignment = 1
+
+[node name="hp_label" type="Label" parent="character_windows/char2/info/VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_right = 171.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "Points de vie"
+
+[node name="hardness_label" type="Label" parent="character_windows/char2/info/VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_top = 47.0
+margin_right = 171.0
+margin_bottom = 90.0
+custom_fonts/font = ExtResource( 1 )
+text = "Difficulté"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="character_windows/char2/info/VBoxContainer/HBoxContainer"]
+margin_left = 204.0
+margin_right = 404.0
+margin_bottom = 90.0
+rect_pivot_offset = Vector2( -928, -24 )
+custom_constants/separation = 20
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="hp_display" parent="character_windows/char2/info/VBoxContainer/HBoxContainer/VBoxContainer2" instance=ExtResource( 11 )]
+material = SubResource( 6 )
+margin_top = 9.0
+margin_right = 200.0
+margin_bottom = 35.0
+
+[node name="bar" parent="character_windows/char2/info/VBoxContainer/HBoxContainer/VBoxContainer2/hp_display" index="0"]
+max_value = 55.0
+step = 1.0
+
+[node name="hardness_display" parent="character_windows/char2/info/VBoxContainer/HBoxContainer/VBoxContainer2" instance=ExtResource( 11 )]
+material = SubResource( 7 )
+margin_top = 55.0
+margin_right = 200.0
+margin_bottom = 81.0
+reverse_gradient = true
+
+[node name="bar" parent="character_windows/char2/info/VBoxContainer/HBoxContainer/VBoxContainer2/hardness_display" index="0"]
+max_value = 5.0
+
+[node name="char_descr" type="RichTextLabel" parent="character_windows/char2/info/VBoxContainer"]
+margin_top = 141.0
+margin_right = 424.0
+margin_bottom = 261.0
+rect_min_size = Vector2( 0, 120 )
+custom_fonts/mono_font = SubResource( 13 )
+custom_fonts/normal_font = SubResource( 14 )
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="character_windows/char2/info/VBoxContainer"]
+margin_top = 265.0
+margin_right = 424.0
+margin_bottom = 308.0
+custom_constants/separation = 51
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="character_windows/char2/info/VBoxContainer/HBoxContainer2"]
+margin_right = 153.0
+margin_bottom = 43.0
+
+[node name="backlash_label" type="Label" parent="character_windows/char2/info/VBoxContainer/HBoxContainer2/VBoxContainer"]
+margin_right = 153.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "Contrecoup"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="character_windows/char2/info/VBoxContainer/HBoxContainer2"]
+margin_left = 204.0
+margin_right = 404.0
+margin_bottom = 43.0
+rect_pivot_offset = Vector2( -928, -24 )
+custom_constants/separation = 20
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="backlash_display" parent="character_windows/char2/info/VBoxContainer/HBoxContainer2/VBoxContainer2" instance=ExtResource( 11 )]
+material = SubResource( 8 )
+margin_top = 8.0
+margin_right = 200.0
+margin_bottom = 34.0
+reverse_gradient = true
+
+[node name="bar" parent="character_windows/char2/info/VBoxContainer/HBoxContainer2/VBoxContainer2/backlash_display" index="0"]
+max_value = 4.0
+
+[node name="backlash_descr" type="RichTextLabel" parent="character_windows/char2/info/VBoxContainer"]
+margin_top = 312.0
+margin_right = 424.0
+margin_bottom = 432.0
+rect_min_size = Vector2( 0, 120 )
+custom_fonts/mono_font = ExtResource( 1 )
+custom_fonts/normal_font = ExtResource( 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="character_windows/char2/info/VBoxContainer"]
+margin_top = 436.0
+margin_right = 424.0
+margin_bottom = 786.0
+
+[node name="Label2" type="Label" parent="character_windows/char2/info/VBoxContainer/VBoxContainer"]
+margin_right = 424.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "Univers"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="character_windows/char2/info/VBoxContainer/VBoxContainer"]
+margin_top = 47.0
+margin_right = 424.0
+margin_bottom = 90.0
+custom_constants/separation = 31
+
+[node name="Label2" type="Label" parent="character_windows/char2/info/VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_right = 132.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "Opération"
+
+[node name="VSeparator" type="VSeparator" parent="character_windows/char2/info/VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 163.0
+margin_right = 167.0
+margin_bottom = 43.0
+
+[node name="Label3" type="Label" parent="character_windows/char2/info/VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 198.0
+margin_right = 332.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "Fréquence"
+
+[node name="GridContainer" type="ScrollContainer" parent="character_windows/char2/info/VBoxContainer/VBoxContainer"]
+margin_top = 94.0
+margin_right = 424.0
+margin_bottom = 350.0
+rect_min_size = Vector2( 424, 256 )
+
+[node name="element" type="VBoxContainer" parent="character_windows/char2/info/VBoxContainer/VBoxContainer/GridContainer"]
+margin_right = 355.0
+margin_bottom = 64.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="character_windows/char2/info/VBoxContainer/VBoxContainer/GridContainer/element"]
+margin_right = 355.0
+margin_bottom = 64.0
+rect_pivot_offset = Vector2( -1040, -27 )
+custom_constants/separation = 91
+
+[node name="op" type="TextureRect" parent="character_windows/char2/info/VBoxContainer/VBoxContainer/GridContainer/element/HBoxContainer"]
+margin_right = 64.0
+margin_bottom = 64.0
+texture = SubResource( 4 )
+
+[node name="centering" type="CenterContainer" parent="character_windows/char2/info/VBoxContainer/VBoxContainer/GridContainer/element/HBoxContainer"]
+margin_left = 155.0
+margin_right = 355.0
+margin_bottom = 64.0
+
+[node name="StatDisplay2" parent="character_windows/char2/info/VBoxContainer/VBoxContainer/GridContainer/element/HBoxContainer/centering" instance=ExtResource( 11 )]
+material = SubResource( 9 )
+margin_top = 19.0
+margin_right = 200.0
+margin_bottom = 45.0
+
+[node name="Label" type="Label" parent="character_windows/char2"]
+margin_left = 472.0
+margin_top = 656.0
+margin_right = 862.0
+margin_bottom = 757.0
+custom_fonts/font = ExtResource( 5 )
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="vbox_info" type="VBoxContainer" parent="."]
+margin_left = 408.0
+margin_right = 1489.0
+margin_bottom = 1076.0
+custom_constants/separation = 695
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="vbox_info"]
+margin_right = 1081.0
+margin_bottom = 65.0
+custom_fonts/font = SubResource( 10 )
+text = "Sélectionnez les personnages"
+align = 1
+valign = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="vbox_info"]
+margin_top = 760.0
+margin_right = 1081.0
+margin_bottom = 1067.0
+custom_constants/separation = 9
+
+[node name="hardness_label" type="Label" parent="vbox_info/VBoxContainer"]
+margin_right = 1081.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 1 )
+text = "Difficulté"
+align = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="vbox_info/VBoxContainer"]
+margin_top = 52.0
+margin_right = 1081.0
+margin_bottom = 84.0
+
+[node name="hardness" type="HSlider" parent="vbox_info/VBoxContainer/CenterContainer2"]
+margin_left = 340.0
+margin_right = 740.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 400, 32 )
+max_value = 5.0
+
+[node name="CenterContainer" type="CenterContainer" parent="vbox_info/VBoxContainer"]
+margin_top = 93.0
+margin_right = 1081.0
+margin_bottom = 249.0
+
+[node name="characters" type="ItemList" parent="vbox_info/VBoxContainer/CenterContainer"]
+margin_left = 160.0
+margin_right = 920.0
+margin_bottom = 156.0
+rect_min_size = Vector2( 760, 156 )
+max_columns = 6
+same_column_width = true
+fixed_icon_size = Vector2( 128, 128 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="vbox_info/VBoxContainer"]
+margin_top = 258.0
+margin_right = 1081.0
+margin_bottom = 307.0
+custom_constants/separation = 50
+alignment = 1
+
+[node name="play_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
+margin_left = 183.0
+margin_right = 267.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 1 )
+text = "Jouer"
+
+[node name="cancel_choice_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
+margin_left = 317.0
+margin_right = 546.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 1 )
+text = "Annuler le choix"
+
+[node name="return_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
+margin_left = 596.0
+margin_right = 897.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 1 )
+text = "Revenir à l'écran titre"
+
+[connection signal="value_changed" from="vbox_info/VBoxContainer/CenterContainer2/hardness" to="." method="_on_hardness_value_changed"]
+[connection signal="item_selected" from="vbox_info/VBoxContainer/CenterContainer/characters" to="." method="_on_characters_item_selected"]
+[connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/play_button" to="." method="_on_play_button_down"]
+[connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/cancel_choice_button" to="." method="_on_cancel_choice_button_down"]
+[connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/return_button" to="." method="_on_return_button_down"]
+
+[editable path="character_windows/char1/info/VBoxContainer/HBoxContainer/VBoxContainer2/hp_display"]
+[editable path="character_windows/char1/info/VBoxContainer/HBoxContainer/VBoxContainer2/hardness_display"]
+[editable path="character_windows/char1/info/VBoxContainer/HBoxContainer2/VBoxContainer2/backlash_display"]
+[editable path="character_windows/char2/info/VBoxContainer/HBoxContainer/VBoxContainer2/hp_display"]
+[editable path="character_windows/char2/info/VBoxContainer/HBoxContainer/VBoxContainer2/hardness_display"]
+[editable path="character_windows/char2/info/VBoxContainer/HBoxContainer2/VBoxContainer2/backlash_display"]

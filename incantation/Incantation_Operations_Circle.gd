@@ -5,6 +5,8 @@ signal operation_confirmed_and_incantation_updated(index)
 
 class_name Incantation_Operations_Circle
 
+enum DISPLAY_TYPE{FULL, SHORT}
+var display_type
 var circle_container
 var potential_label
 
@@ -20,9 +22,9 @@ var operations_selectable: bool
 var multiple_selection: bool
 
 func _ready():
-	circle_container = $MarginContainer/VBoxContainer/CircularContainer
+	display_type = DISPLAY_TYPE.FULL
+	circle_container = $MarginContainer/VBoxContainer/CenterContainer2/CircularContainer
 	potential_label = $MarginContainer/VBoxContainer/CenterContainer/HBoxContainer/potential_value
-	
 	nb_op = Pattern.MAX_OP
 	#Modifier la taille de l'objet en f. du nb d'op? à voir..
 
@@ -87,7 +89,6 @@ func get_current_selected_operations(L: Array):
 	return selected
 	
 func on_operation_selected(index: int):
-	print("Le noeud Incantation a reçu la sélection de l'opération d'index " + str(index))
 	emit_signal("operation_selected", index)
 	if !multiple_selection:
 		for i in range(len(circle_container.get_children())):
@@ -99,7 +100,6 @@ func on_operation_selected(index: int):
 				op.set_selected(false)
 	
 func on_operation_unselected(index: int):
-	print("Le noeud Incantation a reçu la désélection de l'opération d'index " + str(index))
 	get_operation_by_index(index).set_selected(false)
 	emit_signal("operation_unselected", index)
 
@@ -113,14 +113,20 @@ func assign_operation_to_index(pattern_el: Array, index: int):
 	get_operation_by_index(index).change_operation(pattern_el[0], pattern_el[1])
 	
 func on_operation_confirmed(index: int):
-	print("Le noeud Incantation a reçu la confirmation de changement de l'opération d'index " + str(index))
-	 
 	emit_signal("operation_confirmed_and_incantation_updated", index)
 
+func set_display_type(type):
+	display_type = type
+	match display_type:
+		DISPLAY_TYPE.FULL:
+			pass
+		DISPLAY_TYPE.SHORT:
+			pass
 
 func _on_Incantation_Operations_gui_input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT and event.pressed :
-			print("Incantation Clic " + str(event.position))
+	pass
+#	if event is InputEventMouseButton:
+#		if event.button_index == BUTTON_LEFT and event.pressed :
+#			print("Incantation Clic " + str(event.position))
 
 
