@@ -6,8 +6,8 @@ class_name OperationData
 var id: int
 var name: Dictionary
 var descr: Dictionary
-var hardness_array: PoolIntArray
-var potential_array: PoolIntArray
+var hardness_array: Array
+var potential_array: Array
 
 var icon: Texture
 
@@ -22,14 +22,15 @@ func _init(dict: Dictionary):
 	hardness_array = dict["hardness_list"]
 	potential_array = dict["potential_list"]
 
-func get_hardness_array() -> PoolIntArray:
+func get_hardness_array() -> Array:
 	return hardness_array
 	
-func get_potential_array() -> PoolIntArray:
+func get_potential_array() -> Array:
 	return potential_array
 	
 func get_potential(hardness: int) -> int:
-	return potential_array[hardness]
+	var index = hardness_array.find(hardness)
+	return potential_array[index]
 	
 func get_name() -> String:
 	return name[global.lang]

@@ -24,24 +24,12 @@ shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
 shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
 shader_param/progression = 0.0
 
-[sub_resource type="DynamicFontData" id=11]
+[sub_resource type="DynamicFontData" id=3]
 font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
 
-[sub_resource type="DynamicFont" id=15]
+[sub_resource type="DynamicFont" id=4]
 size = 20
-font_data = SubResource( 11 )
-
-[sub_resource type="ShaderMaterial" id=3]
-resource_local_to_scene = true
-shader = ExtResource( 2 )
-shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
-shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
-shader_param/progression = 0.0
-
-[sub_resource type="AtlasTexture" id=4]
-flags = 4
-atlas = ExtResource( 6 )
-region = Rect2( 256, 0, 64, 64 )
+font_data = SubResource( 3 )
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -50,12 +38,10 @@ shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
 shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
 shader_param/progression = 0.0
 
-[sub_resource type="ShaderMaterial" id=6]
-resource_local_to_scene = true
-shader = ExtResource( 2 )
-shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
-shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
-shader_param/progression = 0.0
+[sub_resource type="AtlasTexture" id=6]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 256, 0, 64, 64 )
 
 [sub_resource type="ShaderMaterial" id=7]
 resource_local_to_scene = true
@@ -63,14 +49,6 @@ shader = ExtResource( 2 )
 shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
 shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
 shader_param/progression = 0.0
-
-[sub_resource type="DynamicFont" id=13]
-size = 30
-font_data = SubResource( 11 )
-
-[sub_resource type="DynamicFont" id=14]
-size = 20
-font_data = SubResource( 11 )
 
 [sub_resource type="ShaderMaterial" id=8]
 resource_local_to_scene = true
@@ -87,11 +65,34 @@ shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
 shader_param/progression = 0.0
 
 [sub_resource type="DynamicFont" id=10]
+size = 30
+font_data = SubResource( 3 )
+
+[sub_resource type="DynamicFont" id=11]
+size = 20
+font_data = SubResource( 3 )
+
+[sub_resource type="ShaderMaterial" id=12]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+
+[sub_resource type="ShaderMaterial" id=13]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+
+[sub_resource type="DynamicFont" id=14]
 size = 45
 font_data = ExtResource( 9 )
 
 [node name="CharacterSelection" type="Control"]
 rect_min_size = Vector2( 1920, 1080 )
+rect_scale = Vector2( 0.8, 0.8 )
 script = ExtResource( 10 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -240,7 +241,7 @@ margin_top = 141.0
 margin_right = 424.0
 margin_bottom = 261.0
 rect_min_size = Vector2( 0, 120 )
-custom_fonts/normal_font = SubResource( 15 )
+custom_fonts/normal_font = SubResource( 4 )
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="character_windows/char1/info/VBoxContainer"]
 margin_top = 265.0
@@ -273,7 +274,7 @@ __meta__ = {
 }
 
 [node name="backlash_display" parent="character_windows/char1/info/VBoxContainer/HBoxContainer2/VBoxContainer2" instance=ExtResource( 11 )]
-material = SubResource( 3 )
+material = SubResource( 5 )
 margin_top = 8.0
 margin_right = 200.0
 margin_bottom = 34.0
@@ -350,7 +351,7 @@ custom_constants/separation = 91
 [node name="op" type="TextureRect" parent="character_windows/char1/info/VBoxContainer/VBoxContainer/GridContainer/element/hbox"]
 margin_right = 64.0
 margin_bottom = 64.0
-texture = SubResource( 4 )
+texture = SubResource( 6 )
 
 [node name="centering" type="CenterContainer" parent="character_windows/char1/info/VBoxContainer/VBoxContainer/GridContainer/element/hbox"]
 margin_left = 155.0
@@ -358,7 +359,7 @@ margin_right = 355.0
 margin_bottom = 64.0
 
 [node name="probability_display" parent="character_windows/char1/info/VBoxContainer/VBoxContainer/GridContainer/element/hbox/centering" instance=ExtResource( 11 )]
-material = SubResource( 5 )
+material = SubResource( 7 )
 margin_top = 19.0
 margin_right = 200.0
 margin_bottom = 45.0
@@ -470,7 +471,7 @@ __meta__ = {
 }
 
 [node name="hp_display" parent="character_windows/char2/info/VBoxContainer/HBoxContainer/VBoxContainer2" instance=ExtResource( 11 )]
-material = SubResource( 6 )
+material = SubResource( 8 )
 margin_top = 9.0
 margin_right = 200.0
 margin_bottom = 35.0
@@ -480,7 +481,7 @@ max_value = 55.0
 step = 1.0
 
 [node name="hardness_display" parent="character_windows/char2/info/VBoxContainer/HBoxContainer/VBoxContainer2" instance=ExtResource( 11 )]
-material = SubResource( 7 )
+material = SubResource( 9 )
 margin_top = 55.0
 margin_right = 200.0
 margin_bottom = 81.0
@@ -494,8 +495,8 @@ margin_top = 141.0
 margin_right = 424.0
 margin_bottom = 261.0
 rect_min_size = Vector2( 0, 120 )
-custom_fonts/mono_font = SubResource( 13 )
-custom_fonts/normal_font = SubResource( 14 )
+custom_fonts/mono_font = SubResource( 10 )
+custom_fonts/normal_font = SubResource( 11 )
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="character_windows/char2/info/VBoxContainer"]
 margin_top = 265.0
@@ -528,7 +529,7 @@ __meta__ = {
 }
 
 [node name="backlash_display" parent="character_windows/char2/info/VBoxContainer/HBoxContainer2/VBoxContainer2" instance=ExtResource( 11 )]
-material = SubResource( 8 )
+material = SubResource( 12 )
 margin_top = 8.0
 margin_right = 200.0
 margin_bottom = 34.0
@@ -600,7 +601,7 @@ custom_constants/separation = 91
 [node name="op" type="TextureRect" parent="character_windows/char2/info/VBoxContainer/VBoxContainer/GridContainer/element/HBoxContainer"]
 margin_right = 64.0
 margin_bottom = 64.0
-texture = SubResource( 4 )
+texture = SubResource( 6 )
 
 [node name="centering" type="CenterContainer" parent="character_windows/char2/info/VBoxContainer/VBoxContainer/GridContainer/element/HBoxContainer"]
 margin_left = 155.0
@@ -608,7 +609,7 @@ margin_right = 355.0
 margin_bottom = 64.0
 
 [node name="StatDisplay2" parent="character_windows/char2/info/VBoxContainer/VBoxContainer/GridContainer/element/HBoxContainer/centering" instance=ExtResource( 11 )]
-material = SubResource( 9 )
+material = SubResource( 13 )
 margin_top = 19.0
 margin_right = 200.0
 margin_bottom = 45.0
@@ -637,7 +638,7 @@ __meta__ = {
 [node name="Label" type="Label" parent="vbox_info"]
 margin_right = 1081.0
 margin_bottom = 65.0
-custom_fonts/font = SubResource( 10 )
+custom_fonts/font = SubResource( 14 )
 text = "Sélectionnez les personnages"
 align = 1
 valign = 1
@@ -689,31 +690,47 @@ custom_constants/separation = 50
 alignment = 1
 
 [node name="play_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
-margin_left = 183.0
-margin_right = 267.0
+margin_left = 37.0
+margin_right = 121.0
 margin_bottom = 49.0
 custom_fonts/font = ExtResource( 1 )
 text = "Jouer"
 
 [node name="cancel_choice_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
-margin_left = 317.0
-margin_right = 546.0
+margin_left = 171.0
+margin_right = 400.0
 margin_bottom = 49.0
 custom_fonts/font = ExtResource( 1 )
 text = "Annuler le choix"
 
 [node name="return_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
-margin_left = 596.0
-margin_right = 897.0
+margin_left = 450.0
+margin_right = 751.0
 margin_bottom = 49.0
 custom_fonts/font = ExtResource( 1 )
 text = "Revenir à l'écran titre"
+
+[node name="add_op_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
+margin_left = 801.0
+margin_right = 904.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 1 )
+text = "+1 OP"
+
+[node name="remove_op_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
+margin_left = 954.0
+margin_right = 1044.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 1 )
+text = "-1 OP"
 
 [connection signal="value_changed" from="vbox_info/VBoxContainer/CenterContainer2/hardness" to="." method="_on_hardness_value_changed"]
 [connection signal="item_selected" from="vbox_info/VBoxContainer/CenterContainer/characters" to="." method="_on_characters_item_selected"]
 [connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/play_button" to="." method="_on_play_button_down"]
 [connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/cancel_choice_button" to="." method="_on_cancel_choice_button_down"]
 [connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/return_button" to="." method="_on_return_button_down"]
+[connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/add_op_button" to="." method="_on_add_op_button_down"]
+[connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/remove_op_button" to="." method="_on_remove_op_button_down"]
 
 [editable path="character_windows/char1/info/VBoxContainer/HBoxContainer/VBoxContainer2/hp_display"]
 [editable path="character_windows/char1/info/VBoxContainer/HBoxContainer/VBoxContainer2/hardness_display"]

@@ -16,7 +16,11 @@ var enemy_character = -1
 var diff = 0
 
 var sprite_sheet_operations = load("res://textures/operations/spritesheet.png")
-
+var SOUND_ID = {
+	1: load("res://sound/sfx-blipmale.wav"),
+	2: load("res://sound/sfx-blipfemale.wav"),
+	3: load("res://sound/sfx-dramapound.wav"),
+}
 var text = {
 	1: {"fr": "Choisissez votre personnage",
 		"en": "Choose your character"},
@@ -416,6 +420,12 @@ func save_game():
 	save_file.store_var(to_json(player.save(time_played)))
 	save_file.close()
 
+func get_nb_continues():
+	return player.get_continues()
+	
+func lose_continue():
+	player.lose_continue()
+	
 func get_file_path(index):
 	if str(index) in PATH:
 		return PATH[index]

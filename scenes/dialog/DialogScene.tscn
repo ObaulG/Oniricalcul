@@ -1,42 +1,86 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=1]
+[ext_resource path="res://scenes/dialog/DialogScene.gd" type="Script" id=2]
+[ext_resource path="res://sound/sfx-blipmale.wav" type="AudioStream" id=3]
+[ext_resource path="res://scenes/dialog/DialogueVoicePlayer.gd" type="Script" id=4]
+[ext_resource path="res://scenes/dialog/PauseCalculator.gd" type="Script" id=5]
+[ext_resource path="res://scenes/dialog/CustomTagParser.gd" type="Script" id=6]
 
-[node name="DialogWindow" type="Node2D"]
+[node name="DialogWindow" type="Control"]
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+margin_left = 1.33484
+margin_right = 1933.33
+margin_bottom = 1086.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Panel" type="Panel" parent="."]
-margin_left = 1.0
-margin_top = -1.0
-margin_right = 1527.0
-margin_bottom = 596.0
+margin_left = 241.22
+margin_top = 460.412
+margin_right = 1767.22
+margin_bottom = 1057.41
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="name" type="RichTextLabel" parent="."]
-margin_left = 33.7119
-margin_top = 50.9424
-margin_right = 292.712
-margin_bottom = 130.942
+[node name="name" type="RichTextLabel" parent="Panel"]
+margin_left = 118.335
+margin_top = 51.9424
+margin_right = 377.335
+margin_bottom = 131.942
 custom_fonts/normal_font = ExtResource( 1 )
 custom_colors/default_color = Color( 1, 1, 1, 1 )
 bbcode_enabled = true
-bbcode_text = "Nom"
-text = "Nom"
+bbcode_text = "Test"
+text = "Test"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="dialogue" type="RichTextLabel" parent="."]
-margin_left = 8.00903
-margin_top = 202.896
-margin_right = 1303.01
-margin_bottom = 488.896
+[node name="dialogue" type="RichTextLabel" parent="Panel"]
+margin_left = 7.00903
+margin_top = 203.896
+margin_right = 1302.01
+margin_bottom = 489.896
 custom_fonts/normal_font = ExtResource( 1 )
 custom_colors/default_color = Color( 1, 1, 1, 1 )
 bbcode_enabled = true
-bbcode_text = "Dialogue"
-text = "Dialogue"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="TypeTyper" type="Timer" parent="."]
+wait_time = 0.08
+
+[node name="PauseTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="DialogueVoicePlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 3 )
+attenuation = 1.03526
+script = ExtResource( 4 )
+
+[node name="PauseCalculator" type="Node" parent="."]
+script = ExtResource( 5 )
+
+[node name="CustomTagParser" type="Node" parent="."]
+script = ExtResource( 6 )
+
+[node name="SoundPlayer" type="AudioStreamPlayer2D" parent="."]
+
+[connection signal="timeout" from="TypeTyper" to="." method="_on_TypeTyper_timeout"]
+[connection signal="timeout" from="PauseTimer" to="." method="_on_PauseTimer_timeout"]
+[connection signal="finished" from="DialogueVoicePlayer" to="." method="_on_DialogueVoicePlayer_finished"]
+[connection signal="pause_requested" from="PauseCalculator" to="." method="_on_PauseCalculator_pause_requested"]
+[connection signal="pause_requested" from="CustomTagParser" to="." method="_on_CustomTagParser_pause_requested"]
+[connection signal="pitch_change_requested" from="CustomTagParser" to="." method="_on_CustomTagParser_pitch_change_requested"]
+[connection signal="sound_requested" from="CustomTagParser" to="." method="_on_CustomTagParser_sound_requested"]
+[connection signal="speed_change_requested" from="CustomTagParser" to="." method="_on_CustomTagParser_speed_change_requested"]
+[connection signal="volume_change_requested" from="CustomTagParser" to="." method="_on_CustomTagParser_volume_change_requested"]

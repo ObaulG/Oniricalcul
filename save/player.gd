@@ -83,6 +83,8 @@ func save(time_played: float):
 	save_game.open(global.PATH["SAVE_FILE"], File.WRITE)
 	save_game.store_line(to_json(save_dict))
 
+func get_continues():
+	return continues
 func lose_continue():
 	continues = max(0, continues-1)
 	if continues == 0:

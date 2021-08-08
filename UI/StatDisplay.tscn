@@ -6,7 +6,7 @@
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=4]
 [ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=5]
 
-[sub_resource type="ShaderMaterial" id=2]
+[sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 5 )
 shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
 shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
@@ -21,7 +21,7 @@ __meta__ = {
 current_value = 40.0
 
 [node name="bar" type="TextureProgress" parent="."]
-material = SubResource( 2 )
+material = SubResource( 1 )
 margin_right = 200.0
 margin_bottom = 26.0
 max_value = 35.0

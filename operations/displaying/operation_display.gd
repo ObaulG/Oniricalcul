@@ -159,7 +159,7 @@ func _on_operation_focus_exited():
 func _on_Button_pressed():
 	emit_signal("wants_to_buy_op", self)
 
-func _on_Area2D_input_event(viewport, event, shape_idx):
+func _on_Area2D_input_event(_viewport, event, _shape_idx):
 	print("CLIC")
 	if event is InputEventMouseButton:
 		if selectable and event.pressed and event.button_index == BUTTON_LEFT:

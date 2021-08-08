@@ -23,11 +23,11 @@ var multiple_selection: bool
 
 func _ready():
 	display_type = DISPLAY_TYPE.FULL
-	circle_container = $MarginContainer/VBoxContainer/CenterContainer2/CircularContainer
-	potential_label = $MarginContainer/VBoxContainer/CenterContainer/HBoxContainer/potential_value
+	circle_container = $CircularContainer
+	#potential_label = $MarginContainer/VBoxContainer/CenterContainer/HBoxContainer/potential_value
 	nb_op = Pattern.MAX_OP
 	#Modifier la taille de l'objet en f. du nb d'op? à voir..
-
+	operations_list = []
 	for i in range(nb_op):
 		var operation = global.operation_display.instance()
 		circle_container.add_child(operation)
@@ -44,6 +44,7 @@ func _ready():
 
 func update_operations(L: Array, dragable = false):
 	list = L.duplicate()
+	operations_list = list
 	var n = len(L)
 	var potential = 0
 	
@@ -65,8 +66,8 @@ func update_operations(L: Array, dragable = false):
 	update_potential(potential)
 
 func update_potential(p: int):
-	potential_label.text = str(p)
-	
+	#potential_label.text = str(p)
+	pass
 func set_operations_selectable(b = true, multiple = false):
 	operations_selectable = b
 	multiple_selection = multiple
@@ -88,6 +89,8 @@ func get_current_selected_operations(L: Array):
 			selected.append(i)
 	return selected
 	
+func get_list():
+	return operations_list
 func on_operation_selected(index: int):
 	emit_signal("operation_selected", index)
 	if !multiple_selection:

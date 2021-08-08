@@ -277,3 +277,17 @@ func _on_cancel_choice_button_down():
 	p1_data["character_descr"].set_text("")
 	p2_data["character_descr"].set_text("")
 	
+
+
+func _on_add_op_button_down():
+	var current_list = p1_data["incantation_node"].get_list()
+	if len(current_list) < 8:
+		current_list.append([2,3])
+	p1_data["incantation_node"].update_operations(current_list)
+
+
+func _on_remove_op_button_down():
+	var current_list = p1_data["incantation_node"].get_list()
+	if len(current_list) > 3:
+		current_list.pop_back()
+	p1_data["incantation_node"].update_operations(current_list)
