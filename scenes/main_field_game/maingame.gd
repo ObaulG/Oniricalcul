@@ -22,6 +22,7 @@ var pre_round_duration: float
 var round_duration: float
 var shopping_duration: float
 
+var game_finished: bool
 var ai_diff: int
 var calcul_factory
 var player1
@@ -56,7 +57,7 @@ var round_time_bar
 var timer_node
 
 func _ready():
-	
+	game_finished = false
 	pre_round_duration = 1.0
 	round_duration = 31.0
 	shopping_duration = 10.0
@@ -181,27 +182,31 @@ func send_threat(sender_id, target_id, character, threat_type, atk_hp, power, de
 	emit_signal("send_threat", dico_threat, sender_id, target_id)
 
 func _on_domain_end(id_domain):
-	var text = "Victoire !"
-	if id_domain == 1:
-		text = "Défaite..."
-		emit_signal("game_won")
-	else:
-		emit_signal("game_lost")
-	$window/game_elements/end_label.text = text
-	$window/game_elements/end_label.visible = true 
-	
-	get_tree().paused = true
-	
-	# looking for achievements
-	var unlocked = player1.unlocked
-	
-	for achievement in global.achievements_dico["achievements"]:
-		var id = achievement["id"]
-		if not id in unlocked["achievements"]:
-			match id:
-				6:
-					if ai_diff == 5 and domain1.get_nb_calculs() == domain1.get_good_answers():
-						emit_signal("achievement", 6)
+	if !game_finished:
+		game_finished = true
+		
+		var text = "Victoire !"
+		if id_domain == 1:
+			text = "Défaite..."
+			emit_signal("game_won")
+		else:
+			emit_signal("game_lost")
+			
+		$window/game_elements/end_label.text = text
+		$window/game_elements/end_label.visible = true 
+		
+		get_tree().paused = true
+		
+		# looking for achievements
+		var unlocked = player1.unlocked
+		
+		for achievement in global.achievements_dico["achievements"]:
+			var id = achievement["id"]
+			if not id in unlocked["achievements"]:
+				match id:
+					6:
+						if ai_diff == 5 and domain1.get_nb_calculs() == domain1.get_good_answers():
+							emit_signal("achievement", 6)
 
 	var stats = domain1.get_operations_stats()
 	
@@ -324,6 +329,7 @@ func _on_round_timer_timeout():
 		ai_shop_play(best_action)
 		actions = shopping_possible_actions(domain2, bonus_menu_p2)
 		print(actions)
+		
 func ai_shop_play(action):
 	var action_type = action[0]
 	var op = action[1]

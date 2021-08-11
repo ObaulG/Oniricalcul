@@ -8,6 +8,7 @@
 [ext_resource path="res://sound/sfx-blipmale.wav" type="AudioStream" id=6]
 
 [node name="DialogBox" type="Control"]
+rect_min_size = Vector2( 600, 200 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false

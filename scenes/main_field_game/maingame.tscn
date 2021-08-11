@@ -136,9 +136,11 @@ __meta__ = {
 margin_top = 304.0
 margin_right = 500.0
 margin_bottom = 370.0
+alignment = 1
 
 [node name="CenterContainer3" type="CenterContainer" parent="window/game_elements/hbox/central_field/global_data"]
-margin_right = 14.0
+margin_left = 141.0
+margin_right = 155.0
 margin_bottom = 66.0
 
 [node name="time_left_label" type="Label" parent="window/game_elements/hbox/central_field/global_data/CenterContainer3"]
@@ -149,25 +151,22 @@ custom_fonts/font = SubResource( 1 )
 text = "Temps restant "
 
 [node name="TimeDisplay" parent="window/game_elements/hbox/central_field/global_data" instance=ExtResource( 6 )]
-margin_left = 18.0
-margin_right = 218.0
+margin_left = 159.0
+margin_right = 359.0
 margin_bottom = 66.0
 
 [node name="p2_field" type="VBoxContainer" parent="window/game_elements/hbox"]
 margin_left = 1262.0
-margin_right = 1490.0
+margin_right = 1262.0
 margin_bottom = 1200.0
 
 [node name="answer_time_ai" type="CenterContainer" parent="window/game_elements/hbox/p2_field"]
-margin_right = 228.0
-margin_bottom = 66.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="window/game_elements/hbox/p2_field/answer_time_ai"]
-margin_right = 228.0
-margin_bottom = 66.0
 custom_constants/separation = 0
 
 [node name="Label" type="Label" parent="window/game_elements/hbox/p2_field/answer_time_ai/HBoxContainer"]
+visible = false
 margin_top = 32.0
 margin_right = 28.0
 margin_bottom = 34.0
@@ -175,21 +174,19 @@ custom_fonts/font = SubResource( 2 )
 text = "Temps réponse de l'ennemi : "
 
 [node name="TimeDisplay" parent="window/game_elements/hbox/p2_field/answer_time_ai/HBoxContainer" instance=ExtResource( 6 )]
-margin_left = 28.0
-margin_right = 228.0
+visible = false
 margin_bottom = 66.0
 
 [node name="domain_p2" parent="window/game_elements/hbox/p2_field" instance=ExtResource( 2 )]
-margin_top = 70.0
-margin_right = 228.0
-margin_bottom = 70.0
+margin_top = 4.0
+margin_bottom = 4.0
 
 [node name="p2_playing_timer" type="Timer" parent="window/game_elements/hbox/p2_field"]
 wait_time = 1.31
 
 [node name="other_field" type="VBoxContainer" parent="window/game_elements/hbox"]
-margin_left = 1621.0
-margin_right = 1621.0
+margin_left = 1393.0
+margin_right = 1393.0
 margin_bottom = 1200.0
 
 [node name="end_label" type="Label" parent="window/game_elements"]

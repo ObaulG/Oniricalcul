@@ -1,0 +1,74 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=1]
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 1920.0
+margin_bottom = 1080.0
+color = Color( 0.0980392, 0.690196, 0.431373, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+margin_top = 3.0
+margin_right = 1927.0
+margin_bottom = 104.0
+custom_fonts/font = ExtResource( 1 )
+text = "Victoire!"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Control" type="Control" parent="."]
+margin_left = 30.7404
+margin_top = 173.26
+margin_right = 966.74
+margin_bottom = 984.26
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect2" type="ColorRect" parent="Control"]
+margin_left = 1.52429
+margin_top = 18.8593
+margin_right = 501.524
+margin_bottom = 841.859
+color = Color( 0.827451, 0.843137, 0.835294, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="stats" type="VBoxContainer" parent="Control"]
+margin_left = 511.0
+margin_top = 108.0
+margin_right = 1262.0
+margin_bottom = 699.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Control3" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect2" type="ColorRect" parent="Control3"]
+margin_left = 1546.3
+margin_top = 308.151
+margin_right = 1836.3
+margin_bottom = 785.151
+color = Color( 0.827451, 0.843137, 0.835294, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

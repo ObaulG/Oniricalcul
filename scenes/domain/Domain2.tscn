@@ -1,0 +1,74 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://scenes/domain/domain.gd" type="Script" id=1]
+[ext_resource path="res://UI/HealthDisplay.tscn" type="PackedScene" id=2]
+[ext_resource path="res://textures/atk_texture_progress.png" type="Texture" id=3]
+[ext_resource path="res://textures/atk_texture_under.png" type="Texture" id=4]
+[ext_resource path="res://textures/atk_texture_over.png" type="Texture" id=5]
+
+[node name="domain" type="Control"]
+margin_top = -184.0
+margin_bottom = -184.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="incantation_progress" type="TextureProgress" parent="."]
+margin_left = 736.0
+margin_top = 240.0
+margin_right = 864.0
+margin_bottom = 368.0
+value = 100.0
+texture_under = ExtResource( 4 )
+texture_over = ExtResource( 5 )
+texture_progress = ExtResource( 3 )
+fill_mode = 4
+tint_under = Color( 0.764706, 0.176471, 0.176471, 1 )
+tint_over = Color( 0.52549, 0.882353, 0.345098, 1 )
+tint_progress = Color( 0.341176, 0.92549, 0.34902, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="char_icon" type="TextureRect" parent="."]
+margin_right = 128.0
+margin_bottom = 128.0
+rect_min_size = Vector2( 128, 128 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_left = 224.0
+margin_top = 280.0
+margin_right = 368.0
+margin_bottom = 520.0
+color = Color( 0.0745098, 0.0862745, 0.286275, 0.141176 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Terrain" type="PanelContainer" parent="."]
+margin_top = 200.0
+margin_right = 224.0
+margin_bottom = 634.0
+rect_min_size = Vector2( 224, 434 )
+rect_clip_content = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="Terrain"]
+margin_left = 7.0
+margin_top = 210.0
+margin_right = 217.0
+margin_bottom = 224.0
+
+[node name="atk_timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="hp_bar" parent="." instance=ExtResource( 2 )]
+margin_top = 192.0
+margin_right = 224.0
+margin_bottom = 255.0

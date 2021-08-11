@@ -1,12 +1,13 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://UI/CircularContainer.gd" type="Script" id=1]
+[ext_resource path="res://operations/displaying/operation_display.tscn" type="PackedScene" id=2]
 
 [node name="CircularContainer" type="Container"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_right = -1792.0
-margin_bottom = -952.0
+anchor_right = 0.067
+anchor_bottom = 0.119
+margin_right = -0.639999
+margin_bottom = -0.520004
 rect_min_size = Vector2( 128, 128 )
 script = ExtResource( 1 )
 __meta__ = {
@@ -15,3 +16,9 @@ __meta__ = {
 }
 completance = null
 base_angle = null
+
+[node name="operation" parent="." instance=ExtResource( 2 )]
+margin_left = 64.0
+margin_top = 32.0
+margin_right = 0.0
+margin_bottom = -32.0

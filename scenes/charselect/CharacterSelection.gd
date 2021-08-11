@@ -123,21 +123,22 @@ func initialize_op_data(player_id: int):
 	else:
 		op_p_display_base = $character_windows/char2/info/VBoxContainer/VBoxContainer/GridContainer/element
 	# generate operation probability value display
+	var base_display_element = op_p_display_base.get_node("hbox")
 	for op_index in global.OP_ID.keys():
-		var op_node = op_p_display_base.get_node("hbox").duplicate()
-		var bar = op_node.get_node("centering/probability_display")
-		var op_sprite = op_node.get_node("op")
+		var new_display_element = base_display_element.duplicate()
+		var bar = new_display_element.get_node("centering/probability_display")
+		var sprite = new_display_element.get_node("op")
 		var atlas = AtlasTexture.new()
 		atlas.set_atlas(global.sprite_sheet_operations)
 		atlas.set_region(Rect2(64*(op_index-1), 0, 64, 64))
 
-		op_sprite.texture = atlas
-		op_node.set_name("operation"+str(op_index))
+		sprite.texture = atlas
+		new_display_element.set_name("operation"+str(op_index))
 		
-		op_p_display_base.add_child(op_node)
+		op_p_display_base.add_child(new_display_element)
 		
 	#we don't show void operation...
-	op_p_display_base.visible = false
+	base_display_element.visible = false
 func change_screen_data(player: int, char_selected_id: int):
 	var character = global.char_data[char_selected_id]
 	#useless now
@@ -169,14 +170,16 @@ func change_screen_data(player: int, char_selected_id: int):
 		var i = 0
 		for op_index in probabilities:
 			var hbox_node = p1_data["op_data"].get_node("element/operation"+str(op_index))
+			#retrie new value
 			var new_p_value = probabilities[op_index]
-			hbox_node.get_node("element/hbox/centering/probability_display").set_new_value(new_p_value)
+			#set new value
+			hbox_node.get_node("centering/probability_display").set_new_value(new_p_value)
 			
 			#tri par ordre décroissant (par insertion)
 			var new_index = 0
-			while new_index < i and p1_data["op_data"].get_child(new_index).get_node("hbox/centering/probability_display").get_current_value() > new_p_value :
+			while new_index < i and p1_data["op_data"].get_node("element").get_child(new_index).get_node("centering/probability_display").get_current_value() > new_p_value :
 				new_index += 1
-			p1_data["op_data"].move_child(hbox_node, new_index)
+			p1_data["op_data"].get_node("element").move_child(hbox_node, new_index)
 			i += 1
 	else:
 		p2_data["character_ID"] = char_selected_id
@@ -193,15 +196,17 @@ func change_screen_data(player: int, char_selected_id: int):
 		var probabilities = character.get_operation_preference()
 		var i = 0
 		for op_index in probabilities:
-			var hbox_node = p2_data["op_data"].get_node("operation"+str(op_index))
+			var hbox_node = p2_data["op_data"].get_node("element/operation"+str(op_index))
+			#retrie new value
 			var new_p_value = probabilities[op_index]
-			hbox_node.get_node("hbox/centering/probability_display").set_new_value(new_p_value)
+			#set new value
+			hbox_node.get_node("centering/probability_display").set_new_value(new_p_value)
 			
 			#tri par ordre décroissant (par insertion)
 			var new_index = 0
-			while new_index < i and p2_data["op_data"].get_child(new_index).get_node("hbox/centering/probability_display").get_current_value() > new_p_value :
+			while new_index < i and p2_data["op_data"].get_node("element").get_child(new_index).get_node("centering/probability_display").get_current_value() > new_p_value :
 				new_index += 1
-			p2_data["op_data"].move_child(hbox_node, new_index)
+			p2_data["op_data"].get_node("element").move_child(hbox_node, new_index)
 			i += 1
 			
 func _on_return_button_down():
