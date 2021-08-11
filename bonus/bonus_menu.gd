@@ -82,9 +82,11 @@ func set_state(state):
 func set_erase_price(value):
 	erase_price = value
 	erase_button.text = "Effacer (" + str(erase_price) + "points)"
+	
 func set_swap_price(value):
 	swap_price = value
 	swap_button.text = "Echanger (" + str(swap_price) + "points)"
+	
 func set_new_operations(list_player: Array, list_enemy: Array):
 	for child in new_operations_grid.get_children():
 		new_operations_grid.remove_child(child)
@@ -120,6 +122,25 @@ func set_new_operations(list_player: Array, list_enemy: Array):
 		new_op.set_display_type(Operation_Display.DISPLAY_TYPE.BUYING)
 		new_op.connect("wants_to_buy_op", self, "on_trying_to_buy_op")
 		
+func get_erase_price():
+	return erase_price
+	
+func get_swap_price():
+	return swap_price
+	
+func get_new_operations():
+	var list_of_new_op = []
+	for child in new_operations_grid.get_children():
+		list_of_new_op.append(child)
+	return list_of_new_op
+	
+func get_buyable_new_operations():
+	var list_of_new_op = []
+	for child in new_operations_grid.get_children():
+		if child.is_buyable():
+			list_of_new_op.append(child)
+	return list_of_new_op
+	
 func set_display_potential(value: int):
 	incantation.update_potential(value)
 	

@@ -58,8 +58,8 @@ var timer_node
 func _ready():
 	
 	pre_round_duration = 1.0
-	round_duration = 1.0
-	shopping_duration = 15.0
+	round_duration = 31.0
+	shopping_duration = 10.0
 	
 	calcul_factory = Calcul_Factory.new()
 	
@@ -83,7 +83,7 @@ func _ready():
 	timer_node = $window/game_elements/hbox/central_field/global_data/TimeDisplay
 	timer_p2 = $window/game_elements/hbox/p2_field/p2_playing_timer
 	bar_answering_p2 = $window/game_elements/hbox/p2_field/answer_time_ai/HBoxContainer/TimeDisplay
-	
+	bonus_menu_p2 = $window/game_elements/CenterContainer/bonus_window/bonus_menu2
 	answer_p1.text = ""
 	
 	round_counter = 1
@@ -195,16 +195,16 @@ func _on_domain_end(id_domain):
 	# looking for achievements
 	var unlocked = player1.unlocked
 	
-	for achievement in global.achievements_dico:
+	for achievement in global.achievements_dico["achievements"]:
 		var id = achievement["id"]
-		var char1 = global.player.get_id()
-		if not id in unlocked:
+		if not id in unlocked["achievements"]:
 			match id:
 				6:
 					if ai_diff == 5 and domain1.get_nb_calculs() == domain1.get_good_answers():
 						emit_signal("achievement", 6)
 
-	var stats = domain1.get_stats()
+	var stats = domain1.get_operations_stats()
+	
 func determine_ai_time_to_answer():
 	var op = domain2.get_current_pattern_element()
 	var type = op[0]
@@ -295,8 +295,103 @@ func _on_round_timer_timeout():
 	var bonus_p1 = domain1.get_bonus_dict()
 	var bonus_p2 = domain2.get_bonus_dict()
 	
+	bonus_menu_p2.set_pattern(domain2.get_pattern())
+	bonus_menu_p2.set_new_operations(new_operations_p2, new_operations_p1)
+	bonus_menu_p2.set_erase_price(domain2.get_erase_price())
+	bonus_menu_p2.set_swap_price(domain2.get_swap_price())
+	
 	#make ai shopping
+	var actions = shopping_possible_actions(domain2, bonus_menu_p2)
+	var did_action = true
+	while did_action and len(actions) > 0 and $shop_timer.time_left > 1:
+		var inc_min_op_pow = domain2.get_least_powerful_op()
+		var new_buyable_op = bonus_menu_p2.get_buyable_new_operations()
+		var list_op_as_tuple = []
+		for op in new_buyable_op:
+			list_op_as_tuple.append(op.get_pattern_element())
+		var shop_max_op_pow = global.most_powerful_op(list_op_as_tuple)
+		
+		var best_action = actions[0]
+		var best_score = 0
+		print("a??")
+		for action in actions:
+			
+			var score = evaluation(action, domain2, bonus_menu_p2, inc_min_op_pow, shop_max_op_pow)
+			if score > best_score:
+				best_action = action
+				best_score = score
+		print("a?")
+		ai_shop_play(best_action)
+		actions = shopping_possible_actions(domain2, bonus_menu_p2)
+		print(actions)
+func ai_shop_play(action):
+	var action_type = action[0]
+	var op = action[1]
+	var price = action[2]
 
+	match action_type:
+		"BUY":
+			domain2.new_operation(op[0], op[1], price)
+			print(str(action) + " DONE")
+			return true
+		"ERASE":
+			domain2.erase_operation(op)
+			print(str(action) + " DONE")
+			return true
+	return false
+func evaluation(action, domain, bonus_menu, inc_min_op_pow, shop_max_op_pow):
+	var action_type = action[0]
+	#ayaaaaaaaaa (flemme)
+	var op_or_index = action[1]
+	var price = action[2]
+	var score = 0
+	var pattern = domain.get_pattern()
+	
+	match action:
+		"BUY":
+			score += global.get_op_potential_by_obj(op_or_index)
+		"ERASE":
+			if len(pattern) < 7:
+				score = -10
+			else:
+				score += global.get_op_power_by_obj(shop_max_op_pow) - global.get_op_power_by_obj(pattern[op_or_index])
+	return score
+	
+func shopping_possible_actions(domain, bonus_menu):
+	var actions = []
+	var money = domain.get_money()
+	var new_buyable_op = bonus_menu.get_buyable_new_operations()
+	
+	if len(domain.get_pattern()) < 8:
+		for op in new_buyable_op:
+			var price = op.get_price()
+			if price <= money:
+				actions.append(["BUY", op.get_pattern_element(), price])
+	
+	if bonus_menu.get_erase_price() <= money:
+		#loop variable needed
+		var pattern = domain.get_pattern()
+		for i in range(len(pattern)):
+			actions.append(["ERASE", i, bonus_menu.get_erase_price()])
+	
+	return actions
+	
+func can_buy_anything(domain, bonus_menu):
+	var can_i = true
+	var money = domain.get_money()
+	can_i = bonus_menu.get_swap_price() <= money and bonus_menu.get_erase_price()
+	var new_op = bonus_menu.get_buyable_new_operations()
+	var n = len(new_op)
+	if !can_i and n > 0:
+		var min_price = new_op[0].get_price()
+		for i in range(n):
+			var price = new_op[i].get_price()
+			if min_price > price:
+				min_price = price
+		can_i = money >= min_price
+		
+	return can_i
+	
 func _on_pre_game_timer_timeout():
 	bonus_menu_p1.visible = false
 	game_state = 1

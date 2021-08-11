@@ -1,4 +1,4 @@
-class_name Dialogue
+class_name DialogueBox
 extends Control
 
 onready var pause_calculator := get_node("PauseCalculator") as PauseCalculator
@@ -18,8 +18,8 @@ signal message_completed()
 
 func _ready():
 	type_timer.set_wait_time(reading_speed)
-	update_message("{s=3}S{p=4.0}... lorem ipsum {s=3}S{p=2.0}{s=3}{p=2.0}prêt pour {s=3}fra{s=3}ca{s=3}sser{s=3}?")
-
+	update_message("{p=1.0}Fra{s=3}cass{s=3} {p=1.0}NOW!")
+	
 func _process(_delta):
 	pass
 	#print("Temps restant avant reprise: " + str(pause_timer.get_time_left()))

@@ -45,7 +45,7 @@ one_shot = true
 
 [node name="window" type="MarginContainer" parent="."]
 margin_right = 1920.0
-margin_bottom = 1080.0
+margin_bottom = 1269.0
 mouse_filter = 2
 custom_constants/margin_right = 37
 custom_constants/margin_top = -2
@@ -135,22 +135,23 @@ __meta__ = {
 [node name="global_data" type="HBoxContainer" parent="window/game_elements/hbox/central_field"]
 margin_top = 304.0
 margin_right = 500.0
-margin_bottom = 356.0
+margin_bottom = 370.0
 
 [node name="CenterContainer3" type="CenterContainer" parent="window/game_elements/hbox/central_field/global_data"]
 margin_right = 14.0
-margin_bottom = 52.0
+margin_bottom = 66.0
 
 [node name="time_left_label" type="Label" parent="window/game_elements/hbox/central_field/global_data/CenterContainer3"]
-margin_top = 25.0
+margin_top = 32.0
 margin_right = 14.0
-margin_bottom = 27.0
+margin_bottom = 34.0
 custom_fonts/font = SubResource( 1 )
 text = "Temps restant "
 
 [node name="TimeDisplay" parent="window/game_elements/hbox/central_field/global_data" instance=ExtResource( 6 )]
 margin_left = 18.0
 margin_right = 218.0
+margin_bottom = 66.0
 
 [node name="p2_field" type="VBoxContainer" parent="window/game_elements/hbox"]
 margin_left = 1262.0
@@ -159,28 +160,29 @@ margin_bottom = 1200.0
 
 [node name="answer_time_ai" type="CenterContainer" parent="window/game_elements/hbox/p2_field"]
 margin_right = 228.0
-margin_bottom = 52.0
+margin_bottom = 66.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="window/game_elements/hbox/p2_field/answer_time_ai"]
 margin_right = 228.0
-margin_bottom = 52.0
+margin_bottom = 66.0
 custom_constants/separation = 0
 
 [node name="Label" type="Label" parent="window/game_elements/hbox/p2_field/answer_time_ai/HBoxContainer"]
-margin_top = 25.0
+margin_top = 32.0
 margin_right = 28.0
-margin_bottom = 27.0
+margin_bottom = 34.0
 custom_fonts/font = SubResource( 2 )
 text = "Temps réponse de l'ennemi : "
 
 [node name="TimeDisplay" parent="window/game_elements/hbox/p2_field/answer_time_ai/HBoxContainer" instance=ExtResource( 6 )]
 margin_left = 28.0
 margin_right = 228.0
+margin_bottom = 66.0
 
 [node name="domain_p2" parent="window/game_elements/hbox/p2_field" instance=ExtResource( 2 )]
-margin_top = 56.0
+margin_top = 70.0
 margin_right = 228.0
-margin_bottom = 56.0
+margin_bottom = 70.0
 
 [node name="p2_playing_timer" type="Timer" parent="window/game_elements/hbox/p2_field"]
 wait_time = 1.31
@@ -225,6 +227,11 @@ visible = false
 margin_right = 1400.0
 margin_bottom = 500.0
 
+[node name="bonus_menu2" parent="window/game_elements/CenterContainer/bonus_window" instance=ExtResource( 7 )]
+visible = false
+margin_right = 1400.0
+margin_bottom = 500.0
+
 [connection signal="game_pause" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_pause"]
 [connection signal="game_pause" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_pause"]
 [connection signal="game_resume" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_resume"]
@@ -247,3 +254,6 @@ margin_bottom = 500.0
 [connection signal="player_ask_to_buy_operation" from="window/game_elements/CenterContainer/bonus_window/bonus_menu" to="." method="_on_bonus_menu_player_ask_to_buy_operation"]
 [connection signal="player_wants_to_erase_operation" from="window/game_elements/CenterContainer/bonus_window/bonus_menu" to="." method="_on_bonus_menu_player_wants_to_erase_operation"]
 [connection signal="player_wants_to_swap_operations" from="window/game_elements/CenterContainer/bonus_window/bonus_menu" to="." method="_on_bonus_menu_player_wants_to_swap_operations"]
+[connection signal="player_ask_to_buy_operation" from="window/game_elements/CenterContainer/bonus_window/bonus_menu2" to="." method="_on_bonus_menu_player_ask_to_buy_operation"]
+[connection signal="player_wants_to_erase_operation" from="window/game_elements/CenterContainer/bonus_window/bonus_menu2" to="." method="_on_bonus_menu_player_wants_to_erase_operation"]
+[connection signal="player_wants_to_swap_operations" from="window/game_elements/CenterContainer/bonus_window/bonus_menu2" to="." method="_on_bonus_menu_player_wants_to_swap_operations"]

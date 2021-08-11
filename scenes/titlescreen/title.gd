@@ -24,7 +24,7 @@ func _on_play_button_down(extra_arg_0: int):
 	global.game_mode = extra_arg_0
 	match extra_arg_0:
 		1:
-			get_tree().change_scene("res://scenes/dialog/DialogScene.tscn")
+			get_tree().change_scene("res://scenes/charselect/CharacterSelection.tscn")
 		2:
 			get_tree().change_scene("res://scenes/charselect/charselect.tscn")
 		3:

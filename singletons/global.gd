@@ -431,12 +431,33 @@ func get_file_path(index):
 		return PATH[index]
 	else:
 		return ""
+		
 func get_op_power(type: int, diff: int) -> int:
 	return op_data[type].get_potential(diff)
 
 func get_op_power_by_obj(values: Array) -> int:
 	return op_data[values[0]].get_potential(values[1])
 
+#list is a list of element pattern ([type, diff])
+func most_powerful_op(list: Array):
+	var maxi = 0
+	var maxi_v = global.get_op_power_by_obj(list[0])
+	for i in range(1,len(list)):
+		var v = global.get_op_power_by_obj(list[i])
+		if v > maxi:
+			maxi = i
+			maxi_v = v
+	return list[maxi]
+
+func least_powerful_op(list: Array):
+	var mini = 0
+	var mini_v = global.get_op_power_by_obj(list[0])
+	for i in range(1,len(list)):
+		var v = global.get_op_power_by_obj(list[i])
+		if v < mini:
+			mini = i
+			mini_v = v
+	return list[mini]
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		save_game()

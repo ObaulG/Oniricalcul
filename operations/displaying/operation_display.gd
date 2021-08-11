@@ -138,6 +138,9 @@ func get_price() -> int:
 func is_selected():
 	return selected
 
+func is_buyable():
+	return display_type != DISPLAY_TYPE.BOUGHT
+	
 func set_selectable(b: bool):
 	if type != -1:
 		selectable = b

@@ -523,6 +523,7 @@ func get_pattern():
 	
 func get_base_potential():
 	return pattern.get_power()
+	
 func get_operation_preference():
 	return character.get_operation_preference()
 	
@@ -569,6 +570,29 @@ func get_bonus_dict() -> Dictionary:
 func get_operations_stats():
 	return operations_stats
 	
+func get_most_powerful_op():
+	var list = pattern.get_list()
+	var maxi = 0
+	var maxi_v = global.get_op_power_by_obj(list[0])
+	for i in range(1,len(list)):
+		var v = global.get_op_power_by_obj(list[i])
+		if v > maxi:
+			maxi = i
+			maxi_v = v
+	return list[maxi]
+
+func get_least_powerful_op():
+	var list = pattern.get_list()
+	var mini = 0
+	var mini_v = global.get_op_power_by_obj(list[0])
+	for i in range(1,len(list)):
+		var v = global.get_op_power_by_obj(list[i])
+		if v < mini:
+			mini = i
+			mini_v = v
+	return list[mini]
+
+
 func set_money(value: int):
 	money = value
 	
@@ -597,7 +621,7 @@ func buying_operation_attempt(value: int):
 	else:
 		return BUYING_OP_ATTEMPT_RESULT.NO_MONEY
 		
-func new_operation(id: int, diff: int, value: int, index: int):
+func new_operation(id: int, diff: int, value: int, index = -1):
 	spend_money(value)
 	if index > -1:
 		pattern.add_to([id, diff], index)

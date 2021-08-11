@@ -49,10 +49,15 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scenes/dialog/CustomTagParser.gd"
 }, {
-"base": "Control",
-"class": "Dialogue",
+"base": "Reference",
+"class": "DialogueBox",
 "language": "GDScript",
-"path": "res://scenes/dialog/DialogScene.gd"
+"path": "res://scenes/dialog/DialogueBox.gd"
+}, {
+"base": "Control",
+"class": "DialogueScene",
+"language": "GDScript",
+"path": "res://scenes/dialog/DialogueScene.gd"
 }, {
 "base": "AudioStreamPlayer2D",
 "class": "DialogueVoicePlayer",
@@ -122,7 +127,7 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "Pitch",
 "language": "GDScript",
-"path": "res://Pitch.gd"
+"path": "res://scenes/dialog/Pitch.gd"
 }, {
 "base": "Object",
 "class": "Player",
@@ -152,7 +157,7 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "SpeedChange",
 "language": "GDScript",
-"path": "res://SpeedChange.gd"
+"path": "res://scenes/dialog/SpeedChange.gd"
 }, {
 "base": "Calcul_1O",
 "class": "SquareRootOP",
@@ -177,7 +182,7 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "VolumeChange",
 "language": "GDScript",
-"path": "res://VolumeChange.gd"
+"path": "res://scenes/dialog/VolumeChange.gd"
 } ]
 _global_script_class_icons={
 "Addition": "",
@@ -188,7 +193,8 @@ _global_script_class_icons={
 "Character": "",
 "Conversion": "",
 "CustomTagParser": "",
-"Dialogue": "",
+"DialogueBox": "",
+"DialogueScene": "",
 "DialogueVoicePlayer": "",
 "Domain": "",
 "Exponentiation": "",

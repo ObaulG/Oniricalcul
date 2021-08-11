@@ -45,6 +45,12 @@ func _ready():
 		"name_label": $character_windows/char2/info/VBoxContainer/HBoxContainer2/VBoxContainer/backlash_label,
 		"bar": $character_windows/char2/info/VBoxContainer/HBoxContainer2/VBoxContainer2/backlash_display,
 	}}
+	caracs_nodes_p1["hp"]["bar"].set_reverse_gradient(true)
+	caracs_nodes_p2["hp"]["bar"].set_reverse_gradient(true)
+	caracs_nodes_p1["diff"]["bar"].set_reverse_gradient(false)
+	caracs_nodes_p1["diff"]["bar"].set_reverse_gradient(false)
+	caracs_nodes_p1["backlash"]["bar"].set_reverse_gradient(false)
+	caracs_nodes_p1["backlash"]["bar"].set_reverse_gradient(false)
 	
 	p1_data = {}
 	p2_data = {}
@@ -115,12 +121,12 @@ func initialize_op_data(player_id: int):
 	if player_id == 1:
 		op_p_display_base = $character_windows/char1/info/VBoxContainer/VBoxContainer/GridContainer/element
 	else:
-		op_p_display_base = $character_windows/char1/info/VBoxContainer/VBoxContainer/GridContainer/element
+		op_p_display_base = $character_windows/char2/info/VBoxContainer/VBoxContainer/GridContainer/element
 	# generate operation probability value display
 	for op_index in global.OP_ID.keys():
-		var op_node = op_p_display_base.duplicate()
-		var bar = op_node.get_node("hbox/centering/probability_display")
-		var op_sprite = op_node.get_node("hbox/op")
+		var op_node = op_p_display_base.get_node("hbox").duplicate()
+		var bar = op_node.get_node("centering/probability_display")
+		var op_sprite = op_node.get_node("op")
 		var atlas = AtlasTexture.new()
 		atlas.set_atlas(global.sprite_sheet_operations)
 		atlas.set_region(Rect2(64*(op_index-1), 0, 64, 64))
@@ -128,10 +134,8 @@ func initialize_op_data(player_id: int):
 		op_sprite.texture = atlas
 		op_node.set_name("operation"+str(op_index))
 		
-		if player_id == 1:
-			p1_data["op_data"].add_child(op_node)
-		else:
-			p2_data["op_data"].add_child(op_node)
+		op_p_display_base.add_child(op_node)
+		
 	#we don't show void operation...
 	op_p_display_base.visible = false
 func change_screen_data(player: int, char_selected_id: int):
@@ -164,9 +168,9 @@ func change_screen_data(player: int, char_selected_id: int):
 		var probabilities = character.get_operation_preference()
 		var i = 0
 		for op_index in probabilities:
-			var hbox_node = p1_data["op_data"].get_node("operation"+str(op_index))
+			var hbox_node = p1_data["op_data"].get_node("element/operation"+str(op_index))
 			var new_p_value = probabilities[op_index]
-			hbox_node.get_node("hbox/centering/probability_display").set_new_value(new_p_value)
+			hbox_node.get_node("element/hbox/centering/probability_display").set_new_value(new_p_value)
 			
 			#tri par ordre décroissant (par insertion)
 			var new_index = 0

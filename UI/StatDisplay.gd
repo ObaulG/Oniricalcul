@@ -13,7 +13,6 @@ export(float) var current_value
 
 func _ready():
 	current_value = 0
-	reverse_gradient = false
 	set_new_value(0)
 	
 func set_min(value):
@@ -22,7 +21,9 @@ func set_min(value):
 func set_max(value):
 	bar.max_value = value
 
-	
+func set_reverse_gradient(b: bool):
+	reverse_gradient = b
+
 func _process(_delta):
 	#updating label
 	bar.value = current_value
@@ -30,8 +31,7 @@ func _process(_delta):
 	#maybe the pos?
 	#then the color
 	var progress = current_value / bar.max_value
-	if reverse_gradient:
-		progress = 1 - progress
+	bar.get_material().set_shader_param("reverse", reverse_gradient)
 	bar.get_material().set_shader_param("progression", progress)
 	
 func set_new_value(value):
@@ -42,5 +42,6 @@ func set_new_value(value):
 
 func get_current_value():
 	return current_value
+	
 func update_label(value):
 	value_label.text = str(value)
