@@ -59,7 +59,7 @@ var timer_node
 func _ready():
 	game_finished = false
 	pre_round_duration = 1.0
-	round_duration = 31.0
+	round_duration = 1.0
 	shopping_duration = 10.0
 	
 	calcul_factory = Calcul_Factory.new()
@@ -249,9 +249,13 @@ func _on_p2_playing_timer_timeout():
 				domain2.set_stance(Domain.INCANTATIONS.ATTACK)
 	
 func ponderate_random_choice_dict(dict: Dictionary):
-	#Returns a random key ponderated by numbers in [0,100[.
-	#ex: with {"A": 40, "B": 60}, P(x=A) = 0.4 and P(x=B) = 0.6.
-	var r = rng.randf()*100
+	#Returns a random key from dict.
+	#Evaluate first the sum S of all values and generate
+	#then a random number x to determine the key picked.
+	var S = 0
+	for v in dict.values():
+		S += v
+	var r = rng.randf()*S
 	var total = 0
 	
 	var list = dict.keys()

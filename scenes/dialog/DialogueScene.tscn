@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://scenes/dialog/DialogueBox.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/dialog/DialogueScene.gd" type="Script" id=2]
+[ext_resource path="res://scenes/dialog/DialogParser.gd" type="Script" id=3]
 
 [node name="DialogueScene" type="Control"]
 anchor_right = 1.0
@@ -11,10 +12,34 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="TextureRect" type="ColorRect" parent="."]
+margin_right = 1920.0
+margin_bottom = 1080.0
+color = Color( 0.717647, 0.858824, 0.937255, 0.411765 )
+
 [node name="DialogueBox" parent="." instance=ExtResource( 1 )]
+margin_left = 483.661
+margin_top = 633.568
+margin_right = 1083.66
+margin_bottom = 833.568
 
 [node name="name" type="NinePatchRect" parent="."]
-margin_left = 296.0
-margin_top = 416.0
-margin_right = 616.0
-margin_bottom = 504.0
+margin_left = 375.196
+margin_top = 582.877
+margin_right = 695.196
+margin_bottom = 670.877
+
+[node name="DialogParser" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="Node2" type="Node" parent="."]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="main_char_1" type="Sprite" parent="."]
+
+[node name="main_char_2" type="Sprite" parent="."]
+
+[node name="side_char_1" type="Sprite" parent="."]
+
+[node name="side_char_2" type="Sprite" parent="."]

@@ -22,9 +22,12 @@ func power_evaluation():
 	for i in range(len(operations_list)):
 		var type = operations_list[i][0]
 		var diff = operations_list[i][1]
+		print(str([type,diff]))
+		print("Potentiel opération numero " + str(i) + ": " + str(global.get_op_power(type, diff)))
 		total += global.get_op_power(type, diff) * pow(scaling_coeff, i)
+		
 	power.set_value(total)
-	
+	print("Potentiel: " + str(total))
 func add_to(operation, i):
 	operations_list.insert(i, operation)
 	power_evaluation()

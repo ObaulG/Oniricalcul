@@ -19,16 +19,19 @@ func _init(dict: Dictionary):
 	for lang in dict["str_data"].keys():
 		name[lang] = dict["str_data"][lang]["name"]
 		descr[lang] = dict["str_data"][lang]["descr"]
-	hardness_array = dict["hardness_list"]
-	potential_array = dict["potential_list"]
-
+		
+	#these values should be integers but they are stored as floats...
+	hardness_array = Array(dict["hardness_list"])
+	potential_array = Array(dict["potential_list"])
+	
 func get_hardness_array() -> Array:
 	return hardness_array
 	
 func get_potential_array() -> Array:
 	return potential_array
 	
-func get_potential(hardness: int) -> int:
+#dirty but it works
+func get_potential(hardness: float) -> int:
 	var index = hardness_array.find(hardness)
 	return potential_array[index]
 	
@@ -43,3 +46,6 @@ func set_icon(texture: Texture):
 	
 func get_descr() -> String:
 	return descr[global.lang]
+
+func _to_string() -> String:
+	return get_name() + str(get_potential_array())

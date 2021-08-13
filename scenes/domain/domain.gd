@@ -522,7 +522,7 @@ func get_pattern():
 	return pattern.get_list()
 	
 func get_base_potential():
-	return pattern.get_power()
+	return pattern.get_power(0, true)
 	
 func get_operation_preference():
 	return character.get_operation_preference()
