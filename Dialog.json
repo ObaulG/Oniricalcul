@@ -1,0 +1,128 @@
+{
+  "dialogue_lines":{
+    "1":{
+      "fr": "Dialogue de test."
+    },
+    "2":{
+      "fr": "Me voilà à nouveau dans mon petit monde. Pas de signe de Viriel pour l'instant, je pourrais aller {s=3}... elle m'a déjà trouvé ??"
+    },
+    "3":{
+      "fr": "..."
+    },
+    "4":{
+      "fr": "Hein...je ne me souviens pas de toi, d'où est-ce que tu viens?"
+    },
+    "5":{
+      "fr": "Je ne suis rien d'autre qu'une des créations de ton cerveau. Tu as inconsciemment lié l'accès à ce monde avec ses souvenirs. "
+    },
+    "6":{
+      "fr": "Rester dans ce monde me convient parfaitement. J'ai suffisemment vécu dans le monde réel. Ici, je suis immortel. Je vais juste me construire une maison, avec des consoles de jeux pour... "
+    },
+    "7":{
+      "fr": "Tu ne comprends pas ce qu'il se passe. Ecoute attentivement. La chute pourpre, on l'entend d'ici."
+    },
+    "8":{
+      "fr": "On l'a toujours entendue. Je vais aller faire une sieste. A très bientôt!"
+    },
+    "9":{
+      "fr": "Non! Tu vas retourner dans le monde réel pour te soigner à nouveau, et pour ça, tu dois aller voir Viriel. Elle est notre seul espoir. Tu as été absent pendant 11 jours, il faut impérativement que tu retrouves les pleins pouvoirs de ce monde ! "
+    },
+    "10":{
+      "fr": "Je n'ai plus la volonté. Viriel me tuera en un instant dès que j'apparaîtrai dans son champ de vision. "
+    },
+    "11":{
+      "fr": "Entraînons-nous, maintenant! En garde !"
+    }
+  },
+  
+  "dialogues":{
+    "beginning":{
+      
+      "background": "null",
+      "tree":[
+      {
+        "char_id": 1,
+        "char_expression": "normal",
+        "string_id": 2
+        
+      },
+      {
+        "char_id": 4,
+        "char_expression": "normal",
+        "string_id": 3
+        
+      }
+      {
+        "char_id": 1,
+        "char_expression": "normal",
+        "string_id": 4
+        
+      }
+      {
+        "char_id": 4,
+        "char_expression": "normal",
+        "string_id": 5
+        
+      }
+      {
+        "char_id": 1,
+        "char_expression": "normal",
+        "string_id": 6
+        
+      }
+      {
+        "char_id": 4,
+        "char_expression": "normal",
+        "string_id": 7
+        
+      }
+      {
+        "char_id": 1,
+        "char_expression": "normal",
+        "string_id": 8
+        
+      }
+      {
+        "char_id": 4,
+        "char_expression": "normal",
+        "string_id": 9
+        
+      }
+      {
+        "char_id": 1,
+        "char_expression": "normal",
+        "string_id": 10
+        
+      }
+      {
+        "char_id": 4,
+        "char_expression": "normal",
+        "string_id": 11
+        
+      }
+      ],
+      
+    },
+    
+    "encounter_1":{},
+    
+    "winning_1": {},
+    
+    "losing_1": {},
+    
+    "encounter_2":{},
+    
+    "winning_2": {},
+    
+    "losing_2": {},
+    
+    "encounter_f":{},
+    
+    "winning_f": {},
+    
+    "losing_f": {},
+    
+    "ending": {}
+    
+  }
+}
