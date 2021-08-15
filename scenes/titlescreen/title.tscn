@@ -64,7 +64,6 @@ margin_top = 144.0
 margin_right = 209.0
 margin_bottom = 193.0
 custom_fonts/font = ExtResource( 4 )
-disabled = true
 text = "Mode classique"
 
 [node name="options_button" type="Button" parent="VBoxContainer/buttons_container/list"]

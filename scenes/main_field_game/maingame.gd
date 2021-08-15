@@ -210,6 +210,7 @@ func _on_domain_end(id_domain):
 
 	var stats = domain1.get_operations_stats()
 	
+	
 func determine_ai_time_to_answer():
 	var op = domain2.get_current_pattern_element()
 	var type = op[0]

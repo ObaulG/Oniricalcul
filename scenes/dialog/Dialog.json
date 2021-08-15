@@ -39,68 +39,83 @@
     "beginning":{
       
       "background": "null",
+      
       "tree":[
       {
+        "starting_actions": {
+          "set_left_main_char": 1
+        },
         "char_id": 1,
         "char_expression": "normal",
         "string_id": 2
         
       },
       {
+        "starting_actions": {
+          "set_right_main_char": 4
+        },
         "char_id": 4,
         "char_expression": "normal",
         "string_id": 3
         
-      }
+      },
       {
+        "starting_actions": {},
         "char_id": 1,
         "char_expression": "normal",
         "string_id": 4
         
-      }
+      },
       {
+        "starting_actions": {},
         "char_id": 4,
         "char_expression": "normal",
         "string_id": 5
         
-      }
+      },
       {
+        "starting_actions": {},
         "char_id": 1,
         "char_expression": "normal",
         "string_id": 6
         
-      }
+      },
       {
+        "starting_actions": {},
         "char_id": 4,
         "char_expression": "normal",
         "string_id": 7
         
-      }
+      },
       {
+        "starting_actions": {},
         "char_id": 1,
         "char_expression": "normal",
         "string_id": 8
         
-      }
+      },
       {
+        "starting_actions": {},
         "char_id": 4,
         "char_expression": "normal",
         "string_id": 9
         
-      }
+      },
       {
+        "starting_actions": {},
         "char_id": 1,
         "char_expression": "normal",
         "string_id": 10
         
-      }
+      },
       {
+        "starting_actions": {},
         "char_id": 4,
         "char_expression": "normal",
         "string_id": 11
         
       }
-      ],
+      ]
       
     },
     

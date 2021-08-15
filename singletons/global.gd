@@ -2,13 +2,17 @@ extends Node
 
 #Données de jeu
 var lives = 3
-var continues = 1
+
+var game_mode = 0
+var continues = 2
+
 var last_played = null
 
 
-var game_mode = 0
+
 var player
 
+var current_dialog
 #id of character selected in char select
 var character = -1
 var enemy_character = -1
@@ -150,7 +154,8 @@ const PATH = {
 	"OPERATIONS_JSON": "res://operations/operation_data.json",
 	"OPERATIONS_ATLAS": "res://operations/textures/op_icons.png",
 	"SAVE_FILE": "res://save/savegame.save",
-	"ACHIEVEMENTS": "res://save/achievements.json"
+	"ACHIEVEMENTS": "res://save/achievements.json",
+	"DIALOG": "res://scenes/dialog/Dialog.json",
 }
 # Informations sur les personnages. A convertir en JSON
 const characters = {
@@ -354,11 +359,15 @@ const OP_ID = {
 	6: OPERATIONS.ROOT,
 }
 var char_data: Dictionary
+var dialog_data: Dictionary
 var op_atlas: AtlasTexture 
 var lang = "fr"
 var op_data: Dictionary
 var time_played: float
+
+
 func _init():
+	
 	# character data loading 
 	for char_id in characters.keys():
 		char_data[char_id] = Character.new(characters[char_id])
@@ -400,6 +409,22 @@ func _init():
 		
 	achievements_dico = result_JSON.get_result()
 
+	#loading dialogs
+	file = File.new()
+	path = PATH["DIALOG"]
+	file.open(path, file.READ)
+	textdata = file.get_as_text()
+	file.close()
+	result_JSON = JSON.parse(textdata)
+	if result_JSON.error != OK:
+		print("[load_json_file] Error loading JSON file '" + path + "'.")
+		print("\tError: ", result_JSON.error)
+		print("\tError Line: ", result_JSON.error_line)
+		print("\tError String: ", result_JSON.error_string)
+		
+	dialog_data = result_JSON.get_result()
+	current_dialog = "null"
+	
 func _process(delta):
 	time_played += delta
 	
@@ -438,6 +463,14 @@ func get_op_power(type: int, diff: int) -> int:
 func get_op_power_by_obj(values: Array) -> int:
 	return op_data[values[0]].get_potential(values[1])
 
+func get_dialog_line(id):
+	return dialog_data["dialogue_lines"][str(id)][lang]
+	
+func get_dialog_tree(name: String):
+	return dialog_data["dialogues"][name]
+	
+func get_char_name(id: int):
+	return char_data[id].get_name()
 #list is a list of element pattern ([type, diff])
 func most_powerful_op(list: Array):
 	var maxi = 0
@@ -458,6 +491,7 @@ func least_powerful_op(list: Array):
 			mini = i
 			mini_v = v
 	return list[mini]
+	
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		save_game()

@@ -229,16 +229,16 @@ visible = false
 margin_right = 1400.0
 margin_bottom = 500.0
 
-[connection signal="game_pause" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_pause"]
 [connection signal="game_pause" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_pause"]
-[connection signal="game_resume" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_resume"]
+[connection signal="game_pause" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_pause"]
 [connection signal="game_resume" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_resume"]
-[connection signal="new_round" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_new_round"]
+[connection signal="game_resume" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_resume"]
 [connection signal="new_round" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_new_round"]
-[connection signal="send_threat" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_send_threat"]
+[connection signal="new_round" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_new_round"]
 [connection signal="send_threat" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_send_threat"]
-[connection signal="shopping_time" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_shopping_time"]
+[connection signal="send_threat" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_send_threat"]
 [connection signal="shopping_time" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_shopping_time"]
+[connection signal="shopping_time" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_shopping_time"]
 [connection signal="timeout" from="round_timer" to="." method="_on_round_timer_timeout"]
 [connection signal="timeout" from="pre_game_timer" to="." method="_on_pre_game_timer_timeout"]
 [connection signal="timeout" from="shop_timer" to="." method="_on_shop_timer_timeout"]

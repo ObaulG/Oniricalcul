@@ -18,16 +18,24 @@ margin_bottom = 1080.0
 color = Color( 0.717647, 0.858824, 0.937255, 0.411765 )
 
 [node name="DialogueBox" parent="." instance=ExtResource( 1 )]
+anchor_right = 5.08626e-07
 margin_left = 483.661
 margin_top = 633.568
 margin_right = 1083.66
 margin_bottom = 833.568
 
 [node name="name" type="NinePatchRect" parent="."]
-margin_left = 375.196
-margin_top = 582.877
-margin_right = 695.196
-margin_bottom = 670.877
+margin_left = 376.0
+margin_top = 584.0
+margin_right = 696.0
+margin_bottom = 672.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RichTextLabel" type="RichTextLabel" parent="name"]
+margin_right = 40.0
+margin_bottom = 40.0
 
 [node name="DialogParser" type="Node" parent="."]
 script = ExtResource( 3 )
@@ -43,3 +51,6 @@ script = ExtResource( 3 )
 [node name="side_char_1" type="Sprite" parent="."]
 
 [node name="side_char_2" type="Sprite" parent="."]
+
+[connection signal="gui_input" from="." to="." method="_on_DialogueScene_gui_input"]
+[connection signal="gui_input" from="DialogueBox" to="." method="_on_DialogueBox_gui_input"]
