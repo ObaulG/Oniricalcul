@@ -26,7 +26,8 @@ func _on_play_button_down(extra_arg_0: int):
 		1:
 			get_tree().change_scene("res://scenes/charselect/CharacterSelection.tscn")
 		2:
-			get_tree().change_scene("res://scenes/charselect/charselect.tscn")
+			ClassicMode.reset_game()
+			get_tree().change_scene("res://scenes/dialog/DialogueScene.tscn")
 		3:
 			pass
 		4:

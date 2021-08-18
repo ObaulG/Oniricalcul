@@ -1,5 +1,7 @@
 extends Node
 
+signal change_background(name)
+signal dialogue_end()
 var index
 var current_dialog
 var dialog_end_actions
@@ -34,6 +36,7 @@ func next_line():
 			index += 1
 
 	else:
+		emit_signal("dialogue_end")
 		return {}
 		
 func previous_line():
@@ -60,6 +63,7 @@ func end_actions():
 				var player_char_id = value["player_char_id"]
 				var cpu_char_id = value["cpu_char_id"]
 				var hardness = int(value["hardness"])
+				return [player_char_id, cpu_char_id, hardness]
 
 func is_first_line():
 	return index == 0
@@ -69,3 +73,6 @@ func is_last_line():
 	
 func get_dialog_size() -> int:
 	return len(current_dialog)
+
+func get_end_actions():
+	return dialog_end_actions

@@ -118,7 +118,12 @@
       ]
       
     },
+    "encounter_0":{},
     
+    "winning_0": {},
+    
+    "losing_0": {},
+	
     "encounter_1":{},
     
     "winning_1": {},
@@ -137,7 +142,12 @@
     
     "losing_f": {},
     
-    "ending": {}
+    "good_ending_1": {},
     
+	"good_ending_2": {},
+	
+	"good_ending_3": {},
+	
+	"bad_ending": {},
   }
 }

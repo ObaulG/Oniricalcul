@@ -54,3 +54,4 @@ script = ExtResource( 3 )
 
 [connection signal="gui_input" from="." to="." method="_on_DialogueScene_gui_input"]
 [connection signal="gui_input" from="DialogueBox" to="." method="_on_DialogueBox_gui_input"]
+[connection signal="dialogue_end" from="DialogParser" to="." method="_on_DialogParser_dialogue_end"]

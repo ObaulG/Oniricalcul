@@ -1,8 +1,10 @@
 extends Node
 
+enum GAME_MODES{
+	CLASSIC,
+	VERSUS,
+}
 #Données de jeu
-var lives = 3
-
 var game_mode = 0
 var continues = 2
 
@@ -444,6 +446,11 @@ func save_game():
 	save_file.open("user://savegame.save", File.WRITE)
 	save_file.store_var(to_json(player.save(time_played)))
 	save_file.close()
+
+func set_game_settings(settings: Dictionary):
+	global.character = settings["character_id"]
+	global.enemy_character = settings["cpu_character_id"]
+	global.diff = settings["hardness"]
 
 func get_nb_continues():
 	return player.get_continues()

@@ -58,9 +58,9 @@ var timer_node
 
 func _ready():
 	game_finished = false
-	pre_round_duration = 1.0
-	round_duration = 1.0
-	shopping_duration = 10.0
+	pre_round_duration = 2.0
+	round_duration = 45.0
+	shopping_duration = 15.0
 	
 	calcul_factory = Calcul_Factory.new()
 	
@@ -183,11 +183,13 @@ func send_threat(sender_id, target_id, character, threat_type, atk_hp, power, de
 
 func _on_domain_end(id_domain):
 	if !game_finished:
+		var won = true
 		game_finished = true
 		
 		var text = "Victoire !"
 		if id_domain == 1:
 			text = "Défaite..."
+			won = false
 			emit_signal("game_won")
 		else:
 			emit_signal("game_lost")
@@ -207,10 +209,14 @@ func _on_domain_end(id_domain):
 					6:
 						if ai_diff == 5 and domain1.get_nb_calculs() == domain1.get_good_answers():
 							emit_signal("achievement", 6)
-
-	var stats = domain1.get_operations_stats()
-	
-	
+		var stats = domain1.get_operations_stats()
+		
+		ClassicMode.next_step(won)
+		if global.game_mode == global.GAME_MODES.CLASSIC:
+			get_tree().change_scene("res://scenes/dialog/DialogueScene.tscn")
+		else:
+			pass
+		
 func determine_ai_time_to_answer():
 	var op = domain2.get_current_pattern_element()
 	var type = op[0]
