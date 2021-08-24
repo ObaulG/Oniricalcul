@@ -16,13 +16,9 @@ __meta__ = {
 margin_right = 1920.0
 margin_bottom = 1080.0
 color = Color( 0.717647, 0.858824, 0.937255, 0.411765 )
-
-[node name="DialogueBox" parent="." instance=ExtResource( 1 )]
-anchor_right = 5.08626e-07
-margin_left = 483.661
-margin_top = 633.568
-margin_right = 1083.66
-margin_bottom = 833.568
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="name" type="NinePatchRect" parent="."]
 margin_left = 376.0
@@ -36,22 +32,38 @@ __meta__ = {
 [node name="RichTextLabel" type="RichTextLabel" parent="name"]
 margin_right = 40.0
 margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="DialogParser" type="Node" parent="."]
 script = ExtResource( 3 )
+
+[node name="DialogueBox" parent="DialogParser" instance=ExtResource( 1 )]
+anchor_right = 5.08626e-07
+margin_left = 239.236
+margin_top = 600.81
+margin_right = 839.235
+margin_bottom = 800.81
+
+[node name="main_char_1" type="Sprite" parent="DialogParser"]
+
+[node name="main_char_2" type="Sprite" parent="DialogParser"]
+
+[node name="side_char_1" type="Sprite" parent="DialogParser"]
+
+[node name="side_char_2" type="Sprite" parent="DialogParser"]
 
 [node name="Node2" type="Node" parent="."]
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 
-[node name="main_char_1" type="Sprite" parent="."]
-
-[node name="main_char_2" type="Sprite" parent="."]
-
-[node name="side_char_1" type="Sprite" parent="."]
-
-[node name="side_char_2" type="Sprite" parent="."]
+[node name="automatic_dialogue_play_timer" type="Timer" parent="."]
+one_shot = true
 
 [connection signal="gui_input" from="." to="." method="_on_DialogueScene_gui_input"]
-[connection signal="gui_input" from="DialogueBox" to="." method="_on_DialogueBox_gui_input"]
 [connection signal="dialogue_end" from="DialogParser" to="." method="_on_DialogParser_dialogue_end"]
+[connection signal="message_completed" from="DialogParser/DialogueBox" to="." method="_on_DialogueBox_message_completed"]
+[connection signal="timeout" from="automatic_dialogue_play_timer" to="." method="_on_automatic_dialogue_play_timer_timeout"]
+
+[editable path="DialogParser/DialogueBox"]

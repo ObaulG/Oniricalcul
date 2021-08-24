@@ -169,7 +169,7 @@ const characters = {
 	  "fr": "L'enfant des étoiles. Capable d'invoquer des météorites, ce qui est un comble vu ce qui l'attend.",
 	  "en": "The starchild. Can summon meteors, funny if we consider what he's going to experience."
 	},
-	"info": "Enchaîne les calculs simples. Bonus de puissance pour les longues chaînes de calculs justes, mais subit un malus important en cas d'erreur.",
+	"info": "Enchaîne les calculs simples. Bonus de puissance pour les réponses rapides et les longues chaînes de calculs justes, mais subit un malus important en cas d'erreur.",
 	"supporting_spell": "",
 	"supporting_spell-info": "",
 	"malus_level": 4,

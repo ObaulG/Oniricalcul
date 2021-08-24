@@ -9,7 +9,9 @@ var dialog_end_actions
 onready var dialogue_box := $DialogueBox
 onready var main_char_left := $main_char_1
 onready var main_char_right:= $main_char_2
-onready var talking_char_label := $name/RichTextLabel
+#onready var talking_char_label := $name/RichTextLabel
+
+
 func _ready():
 	current_dialog = []
 	index = -1
@@ -18,23 +20,23 @@ func _ready():
 func load_dialogue(name: String):
 	var data = global.get_dialog_tree(name)
 	current_dialog = data["tree"]
-	dialog_end_actions = data["dialog_end_actions"]
-	emit_signal("change_background", data["background"])
+	print(current_dialog)
+	#dialog_end_actions = data["dialog_end_actions"]
+	#emit_signal("change_background", data["background"])
 	
 func next_line():
+	index += 1
 	if not is_last_line():
-		var data = next_line()
+		var data = current_dialog[index]
 		if data != {}:
 			var starting_actions = data["starting_actions"]
-			var dialog_id = data["string_id"]
+			var dialog_id = str(data["string_id"])
 			var char_id = int(data["char_id"])
 			var starting_char_expression = data["char_expression"]
 		
 			parse_starting_actions(starting_actions)
-			talking_char_label.set_text(global.get_char_name(int(char_id)))
-			dialogue_box.update_message(dialog_id)
-			index += 1
-
+			dialogue_box.update_char_name(global.get_char_name(int(char_id)))
+			dialogue_box.update_message(global.get_dialog_line(dialog_id))
 	else:
 		emit_signal("dialogue_end")
 		return {}
@@ -69,7 +71,7 @@ func is_first_line():
 	return index == 0
 	
 func is_last_line():
-	return index < get_dialog_size() - 1
+	return index > get_dialog_size() - 1
 	
 func get_dialog_size() -> int:
 	return len(current_dialog)

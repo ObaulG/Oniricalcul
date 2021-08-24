@@ -1,11 +1,32 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://scenes/dialog/DialogueBox.gd" type="Script" id=1]
 [ext_resource path="res://scenes/dialog/PauseCalculator.gd" type="Script" id=2]
 [ext_resource path="res://scenes/dialog/CustomTagParser.gd" type="Script" id=3]
 [ext_resource path="res://scenes/dialog/DialogueVoicePlayer.gd" type="Script" id=4]
-[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=5]
+[ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=5]
 [ext_resource path="res://sound/sfx-blipmale.wav" type="AudioStream" id=6]
+
+[sub_resource type="Gradient" id=3]
+offsets = PoolRealArray( 0, 0.961702, 1 )
+colors = PoolColorArray( 0, 0, 0, 1, 0.557447, 0.557447, 0.557447, 1, 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture" id=4]
+gradient = SubResource( 3 )
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
+
+[sub_resource type="DynamicFont" id=2]
+size = 60
+font_data = SubResource( 1 )
+
+[sub_resource type="Gradient" id=5]
+offsets = PoolRealArray( 0.0170213, 1 )
+colors = PoolColorArray( 0.803922, 0.913725, 0.180392, 1, 0.956863, 0.156863, 0.156863, 1 )
+
+[sub_resource type="GradientTexture" id=6]
+gradient = SubResource( 5 )
 
 [node name="DialogBox" type="Control"]
 rect_min_size = Vector2( 600, 200 )
@@ -14,28 +35,54 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="NinePatchRect" type="NinePatchRect" parent="."]
-margin_left = 1.33484
-margin_right = 1933.33
-margin_bottom = 1086.0
+[node name="Panel" type="NinePatchRect" parent="."]
+margin_left = 8.0
+margin_top = 39.0
+margin_right = 1534.0
+margin_bottom = 439.0
+rect_pivot_offset = Vector2( -1186.66, -394.93 )
+texture = SubResource( 4 )
+patch_margin_top = 165
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Panel" type="NinePatchRect" parent="."]
-margin_left = 241.22
-margin_top = 460.412
-margin_right = 1767.22
-margin_bottom = 1057.41
-
 [node name="dialogue" type="RichTextLabel" parent="Panel"]
-margin_left = 7.00903
-margin_top = 203.896
-margin_right = 1302.01
-margin_bottom = 489.896
-custom_fonts/normal_font = ExtResource( 5 )
+margin_left = 172.0
+margin_top = 102.0
+margin_right = 1432.0
+margin_bottom = 366.0
+focus_mode = 2
+custom_fonts/normal_font = SubResource( 2 )
 custom_colors/default_color = Color( 1, 1, 1, 1 )
+bbcode_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+scroll_active = false
+selection_enabled = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="name_panel" type="NinePatchRect" parent="."]
+margin_left = 33.583
+margin_top = 5.85785
+margin_right = 556.583
+margin_bottom = 118.858
+texture = SubResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="name_label" type="RichTextLabel" parent="name_panel"]
+margin_left = 10.0
+margin_top = 2.0
+margin_right = 524.0
+margin_bottom = 113.0
+custom_fonts/normal_font = ExtResource( 5 )
 bbcode_enabled = true
+bbcode_text = "Test"
+text = "Test"
+scroll_active = false
 __meta__ = {
 "_edit_use_anchors_": false
 }

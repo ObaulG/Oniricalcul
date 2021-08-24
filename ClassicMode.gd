@@ -79,6 +79,7 @@ var dying_points = [0,0,0]
 			
 func get_next_dialogue_to_be_played():
 	if current_state in [0,2,3]:
+		print(DIALOGUES[progression][get_type_name_of_dialogue()][continues_used])
 		return DIALOGUES[progression][get_type_name_of_dialogue()][continues_used]
 	elif current_state == STATES.GOOD_ENDING:
 		return GOOD_ENDING_DIALOGUES[continues_used]

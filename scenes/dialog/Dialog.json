@@ -4,7 +4,7 @@
       "fr": "Dialogue de test."
     },
     "2":{
-      "fr": "Me voilà à nouveau dans mon petit monde. Pas de signe de Viriel pour l'instant, je pourrais aller {s=3}... elle m'a déjà trouvé ??"
+      "fr": "Me voilà à nouveau dans mon petit monde. Pas de signe de Viriel pour l'instant, je pourrais aller {s=3}... {p=1.5} elle m'a déjà trouvé ??"
     },
     "3":{
       "fr": "..."
@@ -118,7 +118,88 @@
       ]
       
     },
-    "encounter_0":{},
+	
+    "encounter_0":{
+      
+      "background": "null",
+      
+      "tree":[
+      {
+        "starting_actions": {
+          "set_left_main_char": 1
+        },
+        "char_id": 1,
+        "char_expression": "normal",
+        "string_id": 2
+        
+      },
+      {
+        "starting_actions": {
+          "set_right_main_char": 4
+        },
+        "char_id": 4,
+        "char_expression": "normal",
+        "string_id": 3
+        
+      },
+      {
+        "starting_actions": {},
+        "char_id": 1,
+        "char_expression": "normal",
+        "string_id": 4
+        
+      },
+      {
+        "starting_actions": {},
+        "char_id": 4,
+        "char_expression": "normal",
+        "string_id": 5
+        
+      },
+      {
+        "starting_actions": {},
+        "char_id": 1,
+        "char_expression": "normal",
+        "string_id": 6
+        
+      },
+      {
+        "starting_actions": {},
+        "char_id": 4,
+        "char_expression": "normal",
+        "string_id": 7
+        
+      },
+      {
+        "starting_actions": {},
+        "char_id": 1,
+        "char_expression": "normal",
+        "string_id": 8
+        
+      },
+      {
+        "starting_actions": {},
+        "char_id": 4,
+        "char_expression": "normal",
+        "string_id": 9
+        
+      },
+      {
+        "starting_actions": {},
+        "char_id": 1,
+        "char_expression": "normal",
+        "string_id": 10
+        
+      },
+      {
+        "starting_actions": {},
+        "char_id": 4,
+        "char_expression": "normal",
+        "string_id": 11
+        
+      }
+      ]
+	},
     
     "winning_0": {},
     
