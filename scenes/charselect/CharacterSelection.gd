@@ -18,7 +18,7 @@ var diff_slider
 var selection_state
 
 func _ready():
-	
+	SoundPlayer.play_bg_music("titlescreen")
 	var caracs_nodes_p1 = {
 	"hp": {
 		"name_label": $character_windows/char1/info/VBoxContainer/HBoxContainer/VBoxContainer/hp_label,

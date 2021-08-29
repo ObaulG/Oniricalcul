@@ -8,7 +8,7 @@ var quit_button
 var options_button
 
 var meteor_timer
-
+var bg_music_timer
 func _ready():
 	fast_game_button = $VBoxContainer/buttons_container/list/fast_game_button
 	classic_game_button = $VBoxContainer/buttons_container/list/classic_game_button
@@ -17,8 +17,10 @@ func _ready():
 	options_button = $VBoxContainer/buttons_container/list/options_button
 
 	meteor_timer = $meteor_timer
-
+	bg_music_timer = $bgmusic_timer
 	global.load_game()
+	
+	
 	
 func _on_play_button_down(extra_arg_0: int):
 	global.game_mode = extra_arg_0
@@ -40,3 +42,7 @@ func _on_options_button_down():
 
 func _on_quit_button_down():
 	get_tree().quit()
+
+
+func _on_bgmusic_timer_timeout():
+	SoundPlayer.play_bg_music("titlescreen")

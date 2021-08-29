@@ -360,6 +360,17 @@ const OP_ID = {
 	5: OPERATIONS.EXPONENTIATION,
 	6: OPERATIONS.ROOT,
 }
+
+#sound effects
+#accept and decline: ViRix / David McKee
+
+#titlescreen music : 
+#Impact Prelude by Kevin MacLeod
+#Link: https://incompetech.filmmusic.io/song/7565-impact-prelude
+#License: https://filmmusic.io/standard-license
+
+
+
 var char_data: Dictionary
 var dialog_data: Dictionary
 var op_atlas: AtlasTexture 

@@ -12,6 +12,11 @@ script = ExtResource( 1 )
 wait_time = 3.8
 autostart = true
 
+[node name="bgmusic_timer" type="Timer" parent="."]
+wait_time = 1.589
+one_shot = true
+autostart = true
+
 [node name="TextureRect" type="TextureRect" parent="."]
 margin_right = 2304.0
 margin_bottom = 1296.0
@@ -99,6 +104,7 @@ margin_bottom = 481.0
 custom_fonts/font = ExtResource( 4 )
 text = "Quitter"
 
+[connection signal="timeout" from="bgmusic_timer" to="." method="_on_bgmusic_timer_timeout"]
 [connection signal="button_down" from="VBoxContainer/buttons_container/list/fast_game_button" to="." method="_on_play_button_down" binds= [ 1 ]]
 [connection signal="button_down" from="VBoxContainer/buttons_container/list/classic_game_button" to="." method="_on_play_button_down" binds= [ 2 ]]
 [connection signal="button_down" from="VBoxContainer/buttons_container/list/options_button" to="." method="_on_options_button_down"]

@@ -15,9 +15,13 @@ enum EFFECTS{
 const PAUSE_PATTERN := "({p=\\d([.]\\d+)?[}])"
 
 const SOUND_PATTERN := "({s=\\d([.]\\d+)?[}])"
+const MUSIC_PATTERN := "({m=[a-zA-Z0-9_]+[}])"
+const ANIMATION_PATTERN := "({m=[a-zA-Z0-9_]+,t=[a-zA-Z0-9_]+[}])"
 const VOLUME_PATTERN := "({v=\\d([.]\\d+)?[}])"
 const PITCH_PATTERN := "({h=\\d([.]\\d+)?[}])"
 const SPEED_PATTERN := "({c=\\d([.]\\d+)?[}])"
+
+
 # Additional cleanup patterns
 const FLOAT_PATTERN := "\\d+\\.\\d+"
 const BBCODE_I_PATTERN := "\\[(?!\\/)(.*?)\\]"
@@ -30,6 +34,8 @@ const CUSTOM_TAG_PATTERN := "({(.*?)})"
 # Lists of custom effects.
 var _pauses := []
 var _sounds := []
+var _musics := []
+var _animations := []
 var _volumes := []
 var _pitches := []
 var _speeds := []
@@ -37,6 +43,8 @@ var _speeds := []
 # Pause Regex
 var _pause_regex := RegEx.new()
 var _sound_regex := RegEx.new()
+var _music_regex := RegEx.new()
+var _animation_regex := RegEx.new()
 var _volume_regex := RegEx.new()
 var _pitch_regex := RegEx.new()
 var _speed_regex := RegEx.new()
@@ -49,6 +57,8 @@ var _custom_tag_regex := RegEx.new()
 
 signal pause_requested(duration)
 signal sound_requested(id)
+signal music_requested(name)
+signal animation_requested(name, target)
 signal volume_change_requested(value)
 signal pitch_change_requested(value)
 signal speed_change_requested(value)
@@ -59,6 +69,8 @@ func _ready() -> void:
 	# Tags
 	_pause_regex.compile(PAUSE_PATTERN)
 	_sound_regex.compile(SOUND_PATTERN)
+	_music_regex.compile(MUSIC_PATTERN)
+	_animation_regex.compile(ANIMATION_PATTERN)
 	_volume_regex.compile(VOLUME_PATTERN)
 	_pitch_regex.compile(PITCH_PATTERN)
 	_speed_regex.compile(SPEED_PATTERN)
@@ -81,6 +93,8 @@ func extract_pauses_from_string(source_string: String) -> String:
 func extract_tags_from_string(source_string: String) -> String:
 	_pauses = []
 	_sounds = []
+	_musics = []
+	_animations = []
 	_volumes = []
 	_pitches = []
 	_speeds = []
@@ -98,6 +112,14 @@ func check_at_position(pos: int) -> void:
 	for _sound in _sounds:
 		if _sound.sound_pos == pos:
 			emit_signal("sound_requested", _sound.sound_id)
+	
+	for _music in _musics:
+		if _music.music_pos == pos:
+			emit_signal("music_requested", _music.music_name)
+			
+	for _animation in _animations:
+		if _animation.animation_pos == pos:
+			emit_signal("animation_requested", _animation.animation_name, _animation.animation_target)
 			
 	for _volume in _volumes:
 		if _volume.volume_pos == pos:
@@ -132,6 +154,8 @@ func _find_tags(from_string: String) -> void:
 
 	var _found_pauses := _pause_regex.search_all(from_string)
 	var _found_sounds := _sound_regex.search_all(from_string)
+	var _found_musics := _music_regex.search_all(from_string)
+	var _found_animations := _animation_regex.search_all(from_string)
 	var _found_volumes := _volume_regex.search_all(from_string)
 	var _found_pitches := _pitch_regex.search_all(from_string)
 	var _found_speeds := _speed_regex.search_all(from_string)
@@ -158,6 +182,26 @@ func _find_tags(from_string: String) -> void:
 		var _sound = SoundPlay.new(_tag_position, _tag_string)
 		_sounds.append(_sound)
 	
+	for _music_regex_result in _found_musics:
+		var _tag_string := _music_regex_result.get_string() as String
+
+		var _tag_position := _adjust_position(
+			_music_regex_result.get_start(),
+			from_string
+		)
+		var _music = MusicPlay.new(_tag_position, _tag_string)
+		_musics.append(_music)
+		
+	for _animation_regex_result in _found_animations:
+		var _tag_string := _animation_regex_result.get_string() as String
+
+		var _tag_position := _adjust_position(
+			_animation_regex_result.get_start(),
+			from_string
+		)
+		var _animation = AnimationPlay.new(_tag_position, _tag_string)
+		_animations.append(_animation)
+		
 	for _volume_regex_result in _found_volumes:
 		var _tag_string := _volume_regex_result.get_string() as String
 		
