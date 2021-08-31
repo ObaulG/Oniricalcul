@@ -154,7 +154,7 @@ var BONUS = [
 ]
 const PATH = {
 	"OPERATIONS_JSON": "res://operations/operation_data.json",
-	"OPERATIONS_ATLAS": "res://operations/textures/op_icons.png",
+	"OPERATIONS_ATLAS": "res://textures/operations/spritesheet.png",
 	"SAVE_FILE": "res://save/savegame.save",
 	"ACHIEVEMENTS": "res://save/achievements.json",
 	"DIALOG": "res://scenes/dialog/Dialog.json",
@@ -163,7 +163,7 @@ const PATH = {
 const characters = {
   1: {
 	"id": 1,
-	"name": "Xénio",
+	"name": "Nério",
 	"icon_path": "res://textures/xenio2.png",
 	"descr": {
 	  "fr": "L'enfant des étoiles. Capable d'invoquer des météorites, ce qui est un comble vu ce qui l'attend.",
@@ -177,10 +177,10 @@ const characters = {
 	"difficulty": 3,
 	"base_pattern": [[1, 1], [2, 1], [3, 1]],
 	"operations_preference": {
-		1: 40,
-		2: 0,
-		3: 30,
-		4: 30,
+		1: 4,
+		2: 3,
+		3: 3,
+		4: 0,
 	},
 	"difficulty_preference": {
 		1: 90,
@@ -214,9 +214,9 @@ const characters = {
 	"base_pattern": [[1, 3], [3, 2], [3, 2]],
 	"operations_preference": {
 		1: 30,
-		2: 0,
+		2: 35,
 		3: 35,
-		4: 35,
+		4: 0,
 	},
 	"difficulty_preference": {
 		1: 20,
@@ -249,10 +249,10 @@ const characters = {
 	"difficulty": 3,
 	"base_pattern": [[1, 1], [2, 1], [3, 3]],
 	"operations_preference": {
-		1: 30,
-		2: 10,
-		3: 30,
-		4: 30,
+		1: 3,
+		2: 3,
+		3: 3,
+		4: 1,
 	},
 	"difficulty_preference": {
 		1: 35,
@@ -285,10 +285,10 @@ const characters = {
 	"difficulty": 4,
 	"base_pattern": [[1, 2], [2, 2], [3, 2]],
 	"operations_preference": {
-		1: 20,
-		2: 0,
-		3: 50,
-		4: 30,
+		1: 2,
+		2: 5,
+		3: 3,
+		4: 0,
 	},
 	"difficulty_preference": {
 		1: 10,
@@ -321,10 +321,10 @@ const characters = {
 	"difficulty": 1,
 	"base_pattern": [[1, 2], [1, 2], [3, 1]],
 	"operations_preference": {
-		1: 40,
-		2: 0,
-		3: 30,
-		4: 30,
+		1: 3,
+		2: 3,
+		3: 4,
+		4: 0,
 	},
 	"difficulty_preference": {
 		1: 90,
@@ -349,20 +349,13 @@ const OPERATIONS = {
 	SUBSTRACTION = 2,
 	PRODUCT = 3,
 	CONVERSION = 4,
-	EXPONENTIATION = 5,
-	ROOT = 6,
 }
 const OP_ID = {
 	1: OPERATIONS.ADDITION,
 	2: OPERATIONS.SUBSTRACTION,
 	3: OPERATIONS.PRODUCT,
 	4: OPERATIONS.CONVERSION,
-	5: OPERATIONS.EXPONENTIATION,
-	6: OPERATIONS.ROOT,
 }
-
-
-
 
 
 var char_data: Dictionary

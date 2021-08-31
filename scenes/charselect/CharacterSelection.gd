@@ -17,7 +17,10 @@ var diff_slider
 
 var selection_state
 
+var anim_player 
 func _ready():
+	anim_player = $SceneTransitionRect/AnimationPlayer
+	anim_player.play_backwards("fade")
 	SoundPlayer.play_bg_music("titlescreen")
 	var caracs_nodes_p1 = {
 	"hp": {
@@ -73,8 +76,8 @@ func _ready():
 	p1_data["backlash_descr"] = $character_windows/char1/info/VBoxContainer/backlash_descr
 	p2_data["backlash_descr"] = $character_windows/char2/info/VBoxContainer/backlash_descr
 	
-	p1_data["incantation_node"] = $character_windows/char1/info/Incantation_Operations_Circle
-	p2_data["incantation_node"] = $character_windows/char2/info/Incantation_Operations_Circle
+	p1_data["incantation_node"] = $character_windows/char1/info/Incantation
+	p2_data["incantation_node"] = $character_windows/char2/info/Incantation
 	
 	p1_data["op_data"] = $character_windows/char1/info/VBoxContainer/VBoxContainer/GridContainer
 	p2_data["op_data"] = $character_windows/char2/info/VBoxContainer/VBoxContainer/GridContainer
@@ -136,15 +139,17 @@ func initialize_op_data(player_id: int):
 		new_display_element.set_name("operation"+str(op_index))
 		
 		op_p_display_base.add_child(new_display_element)
-		
+		bar.set_new_value(0)
 	#we don't show void operation...
 	base_display_element.visible = false
+	
 func change_screen_data(player: int, char_selected_id: int):
 	var character = global.char_data[char_selected_id]
 	#useless now
 	#var char_dico = global.characters[id]
 	
 	if player == 1:
+		
 		p1_data["character_ID"] = char_selected_id
 		#Modifier le label du nom
 		p1_data["char_name_label"].set_text(character.get_name())
@@ -165,22 +170,54 @@ func change_screen_data(player: int, char_selected_id: int):
 
 		p1_data["incantation_node"].update_operations(character.get_base_pattern())
 		p1_data["op_data"].visible = true
-		#puis modifier les probabilités d'apparition des opérations
-		var probabilities = character.get_operation_preference()
-		var i = 0
-		for op_index in probabilities:
-			var hbox_node = p1_data["op_data"].get_node("element/operation"+str(op_index))
-			#retrie new value
-			var new_p_value = probabilities[op_index]
-			#set new value
-			hbox_node.get_node("centering/probability_display").set_new_value(new_p_value)
-			
+		
+		var probabilities: Dictionary = character.get_operation_preference()
+		print("new probabilities: \n" +str(probabilities))
+		var max_prob_value = 0
+		var key_list = probabilities.keys()
+		
+		#updating probability values
+		for i in range(len(probabilities)):
+			var key = key_list[i]
+			var new_value = probabilities[key]
+			var bar = p1_data["op_data"].get_node("element")\
+							.get_node("operation"+str(key))\
+							.get_node("centering/probability_display")
+			bar.set_new_value(new_value)
+			if new_value > max_prob_value:
+				max_prob_value = new_value
+				
+		#updating bar max values 
+		for i in range(len(probabilities)):
+			var key = key_list[i]
+			var new_value = probabilities[key]
+			var bar = p1_data["op_data"].get_node("element")\
+							.get_node("operation"+str(key))\
+							.get_node("centering/probability_display")
+			bar.set_max(max_prob_value)
+
+		#then order them by decrescent order
+		for i in range(len(probabilities)-2,-1,-1):
+
+			var key = key_list[i]
+			var hbox_node = p1_data["op_data"].get_node("element")\
+											.get_child(i)
+			var bar = hbox_node.get_node("centering/probability_display")
+			var new_p_value = bar.get_current_value()
 			#tri par ordre décroissant (par insertion)
-			var new_index = 0
-			while new_index < i and p1_data["op_data"].get_node("element").get_child(new_index).get_node("centering/probability_display").get_current_value() > new_p_value :
-				new_index += 1
-			p1_data["op_data"].get_node("element").move_child(hbox_node, new_index)
-			i += 1
+			var j = i
+
+			#looking for the new index j
+			while j < len(probabilities) - 1 and \
+			p1_data["op_data"].get_node("element")\
+							.get_child(j+1)\
+							.get_node("centering/probability_display")\
+							.get_current_value() > new_p_value :
+				j += 1
+			print("new index: " + str(j))
+			p1_data["op_data"].get_node("element")\
+							.move_child(hbox_node, j)
+		
 	else:
 		p2_data["character_ID"] = char_selected_id
 		p2_data["char_name_label"].set_text(character.get_name())
@@ -193,25 +230,55 @@ func change_screen_data(player: int, char_selected_id: int):
 		p2_data["incantation_node"].update_operations(character.get_base_pattern())
 		
 		p2_data["op_data"].visible = true
-		var probabilities = character.get_operation_preference()
-		var i = 0
-		for op_index in probabilities:
-			var hbox_node = p2_data["op_data"].get_node("element/operation"+str(op_index))
-			#retrie new value
-			var new_p_value = probabilities[op_index]
-			#set new value
-			hbox_node.get_node("centering/probability_display").set_new_value(new_p_value)
+		var probabilities: Dictionary = character.get_operation_preference()
+		print("new probabilities: \n" +str(probabilities))
+		var max_prob_value = 0
+		var key_list = probabilities.keys()
+		#updating probability values
+		for i in range(len(probabilities)):
+			var key = key_list[i]
+			var new_value = probabilities[key]
+			var bar = p2_data["op_data"].get_node("element")\
+							.get_node("operation"+str(key))\
+							.get_node("centering/probability_display")
+			bar.set_new_value(new_value)
+			if new_value > max_prob_value:
+				max_prob_value = new_value
+
+		#updating bar max values values
+		for i in range(len(probabilities)):
+			var key = key_list[i]
+			var new_value = probabilities[key]
+			var bar = p2_data["op_data"].get_node("element")\
+							.get_node("operation"+str(key))\
+							.get_node("centering/probability_display")
+			bar.set_max(max_prob_value)
 			
+		#then order them by decrescent order
+		for i in range(len(probabilities)-2,-1,-1):
+
+			var key = key_list[i]
+			var hbox_node = p2_data["op_data"].get_node("element")\
+											.get_child(i)
+			var bar = hbox_node.get_node("centering/probability_display")
+			var new_p_value = bar.get_current_value()
 			#tri par ordre décroissant (par insertion)
-			var new_index = 0
-			while new_index < i and p2_data["op_data"].get_node("element").get_child(new_index).get_node("centering/probability_display").get_current_value() > new_p_value :
-				new_index += 1
-			p2_data["op_data"].get_node("element").move_child(hbox_node, new_index)
-			i += 1
+			var j = i
+
+			#looking for the new index j
+			while j < len(probabilities) - 1 and \
+			p2_data["op_data"].get_node("element")\
+							.get_child(j+1)\
+							.get_node("centering/probability_display")\
+							.get_current_value() > new_p_value :
+				j += 1
+			print("new index: " + str(j))
+			p2_data["op_data"].get_node("element")\
+							.move_child(hbox_node, j)
 			
 func _on_return_button_down():
 	global.game_mode = 0
-	get_tree().change_scene("res://scenes/titlescreen/title.tscn")
+	leave_scene("res://scenes/titlescreen/title.tscn")
 
 
 func _on_hardness_value_changed(value):
@@ -266,7 +333,7 @@ func _on_play_button_down():
 		global.character = p1_data["character_ID"]
 		global.enemy_character = p2_data["character_ID"]
 		global.diff = int(diff_slider.value)
-		get_tree().change_scene("res://scenes/main_field_game/maingame.tscn")
+		leave_scene("res://scenes/main_field_game/maingame.tscn")
 
 
 func _on_cancel_choice_button_down():
@@ -286,8 +353,11 @@ func _on_cancel_choice_button_down():
 	p1_data["character_descr"].set_text("")
 	p2_data["character_descr"].set_text("")
 	
-
-
+func leave_scene(dest: String):
+	anim_player.play("fade")
+	yield(anim_player,"animation_finished")
+	get_tree().change_scene(dest)
+	
 func _on_add_op_button_down():
 	var current_list = p1_data["incantation_node"].get_list()
 	if len(current_list) < 8:

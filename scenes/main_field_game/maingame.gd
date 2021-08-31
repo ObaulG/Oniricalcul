@@ -56,7 +56,10 @@ var round_timer
 var round_time_bar
 var timer_node
 
+var anim_player
 func _ready():
+	anim_player = $SceneTransitionRect/AnimationPlayer
+	anim_player.play_backwards("fade")
 	game_finished = false
 	pre_round_duration = 2.0
 	round_duration = 45.0

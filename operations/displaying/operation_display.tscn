@@ -1,11 +1,14 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://operations/displaying/operation_display.gd" type="Script" id=1]
-[ext_resource path="res://textures/operations/spritesheet.png" type="Texture" id=2]
+
+[sub_resource type="StreamTexture" id=21]
+flags = 4
+load_path = "res://.import/spritesheet.png-a4004e263790264e14d9e203658dc48a.stex"
 
 [sub_resource type="AtlasTexture" id=1]
 flags = 4
-atlas = ExtResource( 2 )
+atlas = SubResource( 21 )
 region = Rect2( 256, 0, 64, 64 )
 
 [sub_resource type="RectangleShape2D" id=2]

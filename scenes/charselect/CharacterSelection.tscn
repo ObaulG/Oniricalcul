@@ -1,11 +1,10 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=1]
 [ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=2]
 [ext_resource path="res://characters/01/icon.png" type="Texture" id=3]
+[ext_resource path="res://incantation/Incantation.tscn" type="PackedScene" id=4]
 [ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=5]
-[ext_resource path="res://textures/operations/spritesheet.png" type="Texture" id=6]
-[ext_resource path="res://incantation/Incantation_Operations_Circle.tscn" type="PackedScene" id=8]
 [ext_resource path="res://fonts/LMROMAN10-BOLD.OTF" type="DynamicFontData" id=9]
 [ext_resource path="res://scenes/charselect/CharacterSelection.gd" type="Script" id=10]
 [ext_resource path="res://UI/StatDisplay.tscn" type="PackedScene" id=11]
@@ -65,9 +64,13 @@ shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
 shader_param/progression = 0.0
 shader_param/reverse = null
 
+[sub_resource type="StreamTexture" id=21]
+flags = 4
+load_path = "res://.import/spritesheet.png-a4004e263790264e14d9e203658dc48a.stex"
+
 [sub_resource type="AtlasTexture" id=9]
 flags = 4
-atlas = ExtResource( 6 )
+atlas = SubResource( 21 )
 region = Rect2( 256, 0, 64, 64 )
 
 [sub_resource type="ShaderMaterial" id=10]
@@ -138,6 +141,21 @@ shader_param/reverse = null
 size = 45
 font_data = ExtResource( 9 )
 
+[sub_resource type="Animation" id=20]
+resource_name = "fade"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 1 ) ]
+}
+
 [node name="CharacterSelection" type="Control"]
 rect_min_size = Vector2( 1920, 1080 )
 script = ExtResource( 10 )
@@ -169,9 +187,9 @@ mouse_filter = 1
 
 [node name="char_icon" type="TextureRect" parent="character_windows/char1"]
 margin_left = 512.0
-margin_top = 128.0
+margin_top = 64.0
 margin_right = 768.0
-margin_bottom = 384.0
+margin_bottom = 320.0
 texture = ExtResource( 3 )
 stretch_mode = 1
 __meta__ = {
@@ -198,13 +216,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Incantation_Operations_Circle" parent="character_windows/char1/info" instance=ExtResource( 8 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 472.0
-margin_top = 368.0
-margin_right = 772.0
-margin_bottom = 677.0
+[node name="Incantation" parent="character_windows/char1/info" instance=ExtResource( 4 )]
+margin_left = 552.0
+margin_top = 280.0
+margin_right = 264.0
+margin_bottom = -272.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="character_windows/char1/info"]
 margin_left = 10.0
@@ -428,10 +444,10 @@ rect_clip_content = true
 mouse_filter = 1
 
 [node name="char_icon" type="TextureRect" parent="character_windows/char2"]
-margin_left = 190.0
-margin_top = 128.0
-margin_right = 446.0
-margin_bottom = 384.0
+margin_left = 188.0
+margin_top = 64.0
+margin_right = 444.0
+margin_bottom = 320.0
 texture = ExtResource( 3 )
 stretch_mode = 1
 __meta__ = {
@@ -460,13 +476,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Incantation_Operations_Circle" parent="character_windows/char2/info" instance=ExtResource( 8 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = -352.0
-margin_top = 368.0
-margin_right = -52.0
-margin_bottom = 677.0
+[node name="Incantation" parent="character_windows/char2/info" instance=ExtResource( 4 )]
+margin_left = -256.0
+margin_top = 280.0
+margin_right = -544.0
+margin_bottom = -272.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="character_windows/char2/info"]
 margin_left = 10.0
@@ -784,6 +798,19 @@ margin_right = 1044.0
 margin_bottom = 49.0
 custom_fonts/font = ExtResource( 1 )
 text = "-1 OP"
+
+[node name="SceneTransitionRect" type="ColorRect" parent="."]
+modulate = Color( 0, 0, 0, 0 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="SceneTransitionRect"]
+anims/fade = SubResource( 20 )
 
 [connection signal="value_changed" from="vbox_info/VBoxContainer/CenterContainer2/hardness" to="." method="_on_hardness_value_changed"]
 [connection signal="item_selected" from="vbox_info/VBoxContainer/CenterContainer/characters" to="." method="_on_characters_item_selected"]
