@@ -463,6 +463,7 @@ func get_file_path(index):
 		return ""
 		
 func get_op_power(type: int, diff: int) -> int:
+	print(op_data)
 	return op_data[type].get_potential(diff)
 
 func get_op_power_by_obj(values: Array) -> int:

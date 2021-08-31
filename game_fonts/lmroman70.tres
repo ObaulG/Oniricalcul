@@ -1,7 +1,8 @@
 [gd_resource type="DynamicFont" load_steps=2 format=2]
 
-[ext_resource path="res://fonts/LMROMAN10-BOLD.OTF" type="DynamicFontData" id=1]
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://fonts/LMROMAN10-BOLD.OTF"
 
 [resource]
 size = 70
-font_data = ExtResource( 1 )
+font_data = SubResource( 1 )

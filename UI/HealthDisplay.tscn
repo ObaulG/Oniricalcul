@@ -17,6 +17,7 @@ shader = ExtResource( 5 )
 shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
 shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
 shader_param/progression = 0.0
+shader_param/reverse = null
 
 [node name="HealthDisplay" type="AspectRatioContainer"]
 material = SubResource( 1 )

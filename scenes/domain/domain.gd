@@ -600,7 +600,7 @@ func add_bonus(bonus_id: int):
 	if bonus_id in bonus.keys():
 		bonus[bonus_id] += 1
 	else:
-		bonus[bonus_id]
+		bonus[bonus_id] = 1
 		
 func spend_money(value: int):
 	assert (value <= money)
