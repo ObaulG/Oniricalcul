@@ -2,6 +2,13 @@ extends Node
 
 #class_name SoundPlayer
 
+#sound effects
+#accept and decline: ViRix / David McKee
+
+#titlescreen music : 
+#Impact Prelude by Kevin MacLeod
+#Link: https://incompetech.filmmusic.io/song/7565-impact-prelude
+#License: https://filmmusic.io/standard-license
 var sound_effects = {
 	"accept" : load("res://sound/Accept.mp3"),
 	"decline": load("res://sound/Decline.wav"),
