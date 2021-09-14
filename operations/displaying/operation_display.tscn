@@ -2,16 +2,16 @@
 
 [ext_resource path="res://operations/displaying/operation_display.gd" type="Script" id=1]
 
-[sub_resource type="StreamTexture" id=21]
+[sub_resource type="StreamTexture" id=1]
 flags = 4
 load_path = "res://.import/spritesheet.png-a4004e263790264e14d9e203658dc48a.stex"
 
-[sub_resource type="AtlasTexture" id=1]
+[sub_resource type="AtlasTexture" id=2]
 flags = 4
-atlas = SubResource( 21 )
+atlas = SubResource( 1 )
 region = Rect2( 256, 0, 64, 64 )
 
-[sub_resource type="RectangleShape2D" id=2]
+[sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 33, 33 )
 
 [node name="operation" type="Container"]
@@ -51,7 +51,7 @@ mouse_filter = 2
 [node name="sprite" type="Sprite" parent="MarginContainer/VBoxContainer/CenterContainer"]
 position = Vector2( 31.8198, 31.8198 )
 scale = Vector2( 0.75, 0.75 )
-texture = SubResource( 1 )
+texture = SubResource( 2 )
 region_enabled = true
 region_rect = Rect2( 0, 0, 64, 64 )
 
@@ -89,7 +89,7 @@ collision_layer = 33825
 [node name="click_zone" type="CollisionShape2D" parent="Area2D"]
 position = Vector2( 32, 32 )
 z_index = 1
-shape = SubResource( 2 )
+shape = SubResource( 3 )
 disabled = true
 
 [connection signal="gui_input" from="." to="." method="_on_operation_gui_input"]

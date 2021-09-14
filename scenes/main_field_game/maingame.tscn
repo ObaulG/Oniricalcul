@@ -1,31 +1,18 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://scenes/main_field_game/maingame.gd" type="Script" id=1]
 [ext_resource path="res://scenes/domain/domain.tscn" type="PackedScene" id=2]
 [ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=3]
 [ext_resource path="res://fonts/LMROMAN10-BOLD.OTF" type="DynamicFontData" id=4]
+[ext_resource path="res://scenes/pause/PauseMenu.tscn" type="PackedScene" id=5]
 [ext_resource path="res://UI/TimeDisplay.tscn" type="PackedScene" id=6]
 [ext_resource path="res://bonus/bonus_menu.tscn" type="PackedScene" id=7]
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=8]
+[ext_resource path="res://scenes/scene_transition/SceneTransitionRect.tscn" type="PackedScene" id=9]
 
 [sub_resource type="DynamicFont" id=1]
 size = 125
 font_data = ExtResource( 4 )
-
-[sub_resource type="Animation" id=4]
-resource_name = "fade"
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 1 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 1 ) ]
-}
 
 [node name="GameMaster" type="Node2D"]
 script = ExtResource( 1 )
@@ -52,7 +39,7 @@ wait_time = 15.0
 one_shot = true
 
 [node name="window" type="MarginContainer" parent="."]
-margin_right = 1920.0
+margin_right = 2023.0
 margin_bottom = 1269.0
 mouse_filter = 2
 custom_constants/margin_right = 37
@@ -230,29 +217,25 @@ visible = false
 margin_right = 1400.0
 margin_bottom = 500.0
 
-[node name="SceneTransitionRect" type="ColorRect" parent="."]
+[node name="PauseMenu" parent="." instance=ExtResource( 5 )]
+visible = false
+
+[node name="SceneTransitionRect" parent="." instance=ExtResource( 9 )]
+pause_mode = 2
 modulate = Color( 0, 0, 0, 1 )
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-color = Color( 0, 0, 0, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+margin_right = 1973.0
+margin_bottom = 1176.0
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="SceneTransitionRect"]
-anims/fade = SubResource( 4 )
-
-[connection signal="game_pause" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_pause"]
 [connection signal="game_pause" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_pause"]
-[connection signal="game_resume" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_resume"]
+[connection signal="game_pause" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_pause"]
 [connection signal="game_resume" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_resume"]
-[connection signal="new_round" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_new_round"]
+[connection signal="game_resume" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_resume"]
 [connection signal="new_round" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_new_round"]
-[connection signal="send_threat" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_send_threat"]
+[connection signal="new_round" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_new_round"]
 [connection signal="send_threat" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_send_threat"]
-[connection signal="shopping_time" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_shopping_time"]
+[connection signal="send_threat" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_send_threat"]
 [connection signal="shopping_time" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_shopping_time"]
+[connection signal="shopping_time" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_shopping_time"]
 [connection signal="timeout" from="round_timer" to="." method="_on_round_timer_timeout"]
 [connection signal="timeout" from="pre_game_timer" to="." method="_on_pre_game_timer_timeout"]
 [connection signal="timeout" from="shop_timer" to="." method="_on_shop_timer_timeout"]
@@ -268,3 +251,5 @@ anims/fade = SubResource( 4 )
 [connection signal="player_ask_to_buy_operation" from="window/game_elements/CenterContainer/bonus_window/bonus_menu2" to="." method="_on_bonus_menu_player_ask_to_buy_operation"]
 [connection signal="player_wants_to_erase_operation" from="window/game_elements/CenterContainer/bonus_window/bonus_menu2" to="." method="_on_bonus_menu_player_wants_to_erase_operation"]
 [connection signal="player_wants_to_swap_operations" from="window/game_elements/CenterContainer/bonus_window/bonus_menu2" to="." method="_on_bonus_menu_player_wants_to_swap_operations"]
+[connection signal="resume" from="PauseMenu" to="." method="_on_PauseMenu_resume"]
+[connection signal="save_n_quit" from="PauseMenu" to="." method="_on_PauseMenu_save_n_quit"]

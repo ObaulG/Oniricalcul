@@ -56,10 +56,11 @@ var round_timer
 var round_time_bar
 var timer_node
 
-var anim_player
+var scene_transition
+onready var pause_menu := $PauseMenu
 func _ready():
-	anim_player = $SceneTransitionRect/AnimationPlayer
-	anim_player.play_backwards("fade")
+	scene_transition = $SceneTransitionRect
+	scene_transition.play(true)
 	game_finished = false
 	pre_round_duration = 2.0
 	round_duration = 45.0
@@ -161,6 +162,13 @@ func _input(event):
 			elif event.scancode == keypad_numbers[9] or event.scancode == numpad_numbers[9]:
 				answer_p1.text += '9'
 		
+		if event.is_action("pause") && event.is_pressed() && !event.is_echo():
+			make_pause()
+			
+func make_pause():
+	get_tree().paused = true
+	pause_menu.visible = true
+	
 func show_calcul():
 	current_calcul_label.text = domain1.get_current_calcul().get_str_show()
 
@@ -513,7 +521,12 @@ func _on_bonus_menu_player_wants_to_erase_operation():
 		pop_up.popup_centered()
 		
 
-
+func leave_scene(dest: String):
+	pause_menu.set_cliquable_buttons(false)
+	scene_transition.play()
+	yield(scene_transition,"transition_finished")
+	get_tree().change_scene(dest)
+	
 func _on_bonus_menu_player_wants_to_swap_operations():
 	if domain1.can_swap_operations():
 		var pop_up = AcceptDialog.new()
@@ -525,3 +538,13 @@ func _on_bonus_menu_player_wants_to_swap_operations():
 		add_child(pop_up)
 		pop_up.set_text("Vous n'avez pas assez d'argent!")
 		pop_up.popup_centered()
+
+
+func _on_PauseMenu_resume():
+	game_state = 1
+	pause_menu.visible = false
+	get_tree().paused = false
+
+
+func _on_PauseMenu_save_n_quit():
+	leave_scene("res://scenes/titlescreen/title.tscn")

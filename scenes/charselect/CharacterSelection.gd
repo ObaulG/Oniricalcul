@@ -16,11 +16,12 @@ var diff_label
 var diff_slider
 
 var selection_state
+onready var scene_transition = $SceneTransitionRect 
 
-var anim_player 
+onready var add_op_button := $vbox_info/VBoxContainer/HBoxContainer/add_op_button
+onready var remove_op_button := $vbox_info/VBoxContainer/HBoxContainer/remove_op_button
 func _ready():
-	anim_player = $SceneTransitionRect/AnimationPlayer
-	anim_player.play_backwards("fade")
+	scene_transition.play(true)
 	SoundPlayer.play_bg_music("titlescreen")
 	var caracs_nodes_p1 = {
 	"hp": {
@@ -149,7 +150,7 @@ func change_screen_data(player: int, char_selected_id: int):
 	#var char_dico = global.characters[id]
 	
 	if player == 1:
-		
+		p1_data["incantation_node"].visible = true
 		p1_data["character_ID"] = char_selected_id
 		#Modifier le label du nom
 		p1_data["char_name_label"].set_text(character.get_name())
@@ -219,6 +220,7 @@ func change_screen_data(player: int, char_selected_id: int):
 							.move_child(hbox_node, j)
 		
 	else:
+		p2_data["incantation_node"].visible = true
 		p2_data["character_ID"] = char_selected_id
 		p2_data["char_name_label"].set_text(character.get_name())
 		p2_data["character_icon"].set_texture(character.get_icon_texture())
@@ -309,6 +311,8 @@ func _on_characters_item_selected(index):
 		SELECTION_STATE.ZERO:
 			id_player = 1
 			selection_state += 1
+			add_op_button.disabled = false
+			remove_op_button.disabled = false
 		SELECTION_STATE.ONE:
 			id_player = 2
 			selection_state += 1
@@ -338,6 +342,12 @@ func _on_play_button_down():
 
 func _on_cancel_choice_button_down():
 	selection_state = SELECTION_STATE.ZERO
+	
+	add_op_button.disabled = true
+	remove_op_button.disabled = true
+	
+	p1_data["incantation_node"].visible = false
+	p2_data["incantation_node"].visible = false
 	p1_data["character_ID"] = -1
 	p1_data["character_icon"].visible = false
 	p2_data["character_ID"] = -1
@@ -354,19 +364,19 @@ func _on_cancel_choice_button_down():
 	p2_data["character_descr"].set_text("")
 	
 func leave_scene(dest: String):
-	anim_player.play("fade")
-	yield(anim_player,"animation_finished")
+	scene_transition.play()
+	yield(scene_transition,"transition_finished")
 	get_tree().change_scene(dest)
 	
 func _on_add_op_button_down():
-	var current_list = p1_data["incantation_node"].get_list()
+	var current_list = p1_data["incantation_node"].get_operation_pattern()
 	if len(current_list) < 8:
 		current_list.append([2,3])
 	p1_data["incantation_node"].update_operations(current_list)
 
 
 func _on_remove_op_button_down():
-	var current_list = p1_data["incantation_node"].get_list()
+	var current_list = p1_data["incantation_node"].get_operation_pattern()
 	if len(current_list) > 3:
 		current_list.pop_back()
 	p1_data["incantation_node"].update_operations(current_list)

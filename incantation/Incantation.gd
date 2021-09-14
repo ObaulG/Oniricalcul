@@ -9,6 +9,7 @@ enum DISPLAY_TYPE{FULL, SHORT}
 var display_type
 
 var nb_op
+var current_nb_op
 var size
 
 # List of Operation_Display nodes
@@ -20,7 +21,7 @@ var multiple_selection: bool
 
 func _ready():
 	display_type = DISPLAY_TYPE.FULL
-
+	current_nb_op = 3
 	nb_op = Pattern.MAX_OP
 	operations_list = [
 		$operation,
@@ -66,24 +67,36 @@ func update_operations(L: Array, dragable = false):
 			op.change_operation(type, diff, subtype)
 		else:
 			op.clean()
+	current_nb_op = n
 	update_potential(potential)
 
+func update_nb_operations_in_incantation():
+	var n = 0
+	var end = false
+	while n < 8 and not end:
+		var op = operations_list[n].get_pattern_element()
+		end = op[0] == -1
+		if not end:
+			n += 1
+	current_nb_op = n
+	
 func get_operation_pattern() -> Array:
 	var pattern = []
-	for op in operations_list:
+	for i in range(current_nb_op):
+		var op = operations_list[i]
 		pattern.append(op.get_pattern_element())
 	return pattern
 
 func update_potential(p: int):
 	#potential_label.text = str(p)
 	pass
+	
 func set_operations_selectable(b = true, multiple = false):
 	operations_selectable = b
 	multiple_selection = multiple
 	for op in operations_list:
 		op.set_selectable(b)
 		
-
 func get_operation_by_index(index: int):
 	return operations_list[index]
 	
@@ -95,7 +108,9 @@ func get_current_selected_operations(L: Array):
 	return selected
 	
 func get_list():
+	
 	return operations_list
+	
 func on_operation_selected(index: int):
 	emit_signal("operation_selected", index)
 	if !multiple_selection:

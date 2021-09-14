@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=1]
+[ext_resource path="res://scenes/pause/PauseMenu.gd" type="Script" id=2]
+
+[node name="PauseMenu" type="Control"]
+pause_mode = 2
+margin_left = 8.0
+margin_top = -2.0
+margin_right = 1986.0
+margin_bottom = 1198.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 1966.0
+margin_bottom = 1194.0
+color = Color( 0, 0.0352941, 0.105882, 0.682353 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 627.902
+margin_top = 23.7841
+margin_right = 1326.9
+margin_bottom = 1095.78
+custom_constants/separation = 50
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="VBoxContainer"]
+margin_top = 412.0
+margin_right = 699.0
+margin_bottom = 461.0
+custom_fonts/font = ExtResource( 1 )
+text = "Reprendre"
+
+[node name="Button2" type="Button" parent="VBoxContainer"]
+margin_top = 511.0
+margin_right = 699.0
+margin_bottom = 560.0
+custom_fonts/font = ExtResource( 1 )
+text = "Sauvegarder et quitter"
+
+[node name="Button3" type="Button" parent="VBoxContainer"]
+margin_top = 610.0
+margin_right = 699.0
+margin_bottom = 659.0
+custom_fonts/font = ExtResource( 1 )
+text = "Options"
+
+[connection signal="button_down" from="VBoxContainer/Button" to="." method="_on_resume_button_down"]
+[connection signal="button_down" from="VBoxContainer/Button2" to="." method="_on_savequit_button_down"]

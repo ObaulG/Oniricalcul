@@ -10,10 +10,11 @@ var options_button
 var meteor_timer
 var bg_music_timer
 
-var anim_player
+var scene_transition
 func _ready():
-	anim_player = $SceneTransitionRect/AnimationPlayer
-	anim_player.play_backwards("fade")
+	get_tree().paused = false
+	scene_transition = $SceneTransitionRect
+	scene_transition.play(true)
 	fast_game_button = $VBoxContainer/buttons_container/list/fast_game_button
 	classic_game_button = $VBoxContainer/buttons_container/list/classic_game_button
 	history_game_button = $VBoxContainer/buttons_container/list/history_mode_button
@@ -24,12 +25,10 @@ func _ready():
 	bg_music_timer = $bgmusic_timer
 	global.load_game()
 	
-	
-	
 func _on_play_button_down(extra_arg_0: int):
 	global.game_mode = extra_arg_0
-	anim_player.play("fade")
-	yield(anim_player, "animation_finished")
+	scene_transition.play()
+	yield(scene_transition, "transition_finished")
 	match extra_arg_0:
 		1:
 			get_tree().change_scene("res://scenes/charselect/CharacterSelection.tscn")
