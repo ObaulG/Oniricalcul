@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
 [gd_scene load_steps=12 format=2]
-=======
-[gd_scene load_steps=9 format=2]
->>>>>>> Stashed changes
 
 [ext_resource path="res://scenes/main_field_game/maingame.gd" type="Script" id=1]
 [ext_resource path="res://scenes/domain/domain.tscn" type="PackedScene" id=2]
@@ -234,7 +230,6 @@ visible = false
 margin_right = 1400.0
 margin_bottom = 500.0
 
-<<<<<<< Updated upstream
 [node name="SceneTransitionRect" type="ColorRect" parent="."]
 modulate = Color( 0, 0, 0, 1 )
 anchor_right = 1.0
@@ -248,8 +243,6 @@ __meta__ = {
 [node name="AnimationPlayer" type="AnimationPlayer" parent="SceneTransitionRect"]
 anims/fade = SubResource( 4 )
 
-=======
->>>>>>> Stashed changes
 [connection signal="game_pause" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_pause"]
 [connection signal="game_pause" from="." to="window/game_elements/hbox/p1_field/MarginContainer/domain_p1" method="_on_GameMaster_pause"]
 [connection signal="game_resume" from="." to="window/game_elements/hbox/p2_field/domain_p2" method="_on_GameMaster_resume"]
