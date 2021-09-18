@@ -14,6 +14,7 @@ var scene_transition
 func _ready():
 	get_tree().paused = false
 	scene_transition = $SceneTransitionRect
+	scene_transition.visible = true
 	scene_transition.play(true)
 	fast_game_button = $VBoxContainer/buttons_container/list/fast_game_button
 	classic_game_button = $VBoxContainer/buttons_container/list/classic_game_button
@@ -38,7 +39,7 @@ func _on_play_button_down(extra_arg_0: int):
 		3:
 			pass
 		4:
-			pass
+			get_tree().change_scene("res://multiplayer/Onirilobby.tscn")
 
 
 func _on_options_button_down():

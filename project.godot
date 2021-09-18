@@ -285,6 +285,8 @@ default_bus_layout=""
 global="*res://singletons/global.gd"
 ClassicMode="*res://ClassicMode.gd"
 SoundPlayer="*res://singletons/SoundPlayer.tscn"
+Gamestate="*res://multiplayer/gamestate.gd"
+network="*res://multiplayer/network.gd"
 
 [debug]
 

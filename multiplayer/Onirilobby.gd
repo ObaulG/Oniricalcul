@@ -1,8 +1,13 @@
-# Typical lobby implementation; imagine this being in /root/lobby.
+#thx kehomsforge
 
 extends Node
 
-# Connect all functions
+signal server_created
+var server_info = {
+	name = "Server",      # Holds the name of the server
+	max_players = 0,      # Maximum allowed connections
+	used_port = 0         # Listening port
+}
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")
@@ -11,31 +16,53 @@ func _ready():
 	get_tree().connect("connection_failed", self, "_connected_fail")
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
 
-# Player info, associate ID to data
-var player_info = {}
-# Info we send to other players
-var my_info = { name = "Johnson Magenta", favorite_color = Color8(255, 0, 255) }
+	network.connect("server_created", self, "_on_ready_to_play")
+	network.connect("join_success", self, "_on_ready_to_play")
+	network.connect("join_fail", self, "_on_join_fail")
+func _on_ready_to_play():
+	get_tree().change_scene("res://game_world.tscn")
+	
 
-func _player_connected(id):
-	# Called on both clients and server when a peer connects. Send my info to it.
-	rpc_id(id, "register_player", my_info)
+func _on_btCreate_pressed():
+	# Gather values from the GUI and fill the network.server_info dictionary
+	if (!$PanelHost/txtServerName.text.empty()):
+		network.server_info.name = $PanelHost/txtServerName.text
+	network.server_info.max_players = int($PanelHost/txtMaxPlayers.value)
+	network.server_info.used_port = int($PanelHost/txtServerPort.text)
+	
+	# And create the server, using the function previously added into the code
+	network.create_server()
 
-func _player_disconnected(id):
-	player_info.erase(id) # Erase player from info.
+func _on_btJoin_pressed():
+	var port = int($PanelJoin/txtJoinPort.text)
+	var ip = $PanelJoin/txtJoinIP.text
+	network.join_server(ip, port)
+	
+# Everyone gets notified whenever a new client joins the server
+func _on_player_connected(id):
+	pass
 
-func _connected_ok():
-	pass # Only called on clients, not server. Will go unused; not useful here.
 
-func _server_disconnected():
-	pass # Server kicked us; show error and abort.
+# Everyone gets notified whenever someone disconnects from the server
+func _on_player_disconnected(id):
+	pass
 
-func _connected_fail():
-	pass # Could not even connect to server; abort.
 
-remote func register_player(info):
-	# Get the id of the RPC sender.
-	var id = get_tree().get_rpc_sender_id()
-	# Store the info
-	player_info[id] = info
+# Peer trying to connect to server is notified on success
+func _on_connected_to_server():
+	pass
 
-	# Call function to update lobby UI here
+
+# Peer trying to connect to server is notified on failure
+func _on_connection_failed():
+	pass
+
+
+# Peer is notified when disconnected from server
+func _on_disconnected_from_server():
+	pass
+
+func _on_join_fail():
+	print("Failed to join server")
+	
+

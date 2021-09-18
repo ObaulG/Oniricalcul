@@ -1,6 +1,226 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://multiplayer/Onirilobby.gd" type="Script" id=1]
+[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=2]
 
-[node name="Control" type="Node"]
+[node name="Canvas" type="CanvasLayer"]
 script = ExtResource( 1 )
+
+[node name="PanelHost" type="Panel" parent="."]
+margin_left = 664.0
+margin_top = 192.0
+margin_right = 1240.0
+margin_bottom = 560.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="PanelHost"]
+margin_left = 8.0
+margin_top = 128.0
+margin_right = 128.0
+margin_bottom = 171.0
+custom_fonts/font = ExtResource( 2 )
+text = "Port"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="PanelHost"]
+margin_left = 8.0
+margin_top = 64.0
+margin_right = 229.0
+margin_bottom = 107.0
+custom_fonts/font = ExtResource( 2 )
+text = "Nom"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label3" type="Label" parent="PanelHost"]
+margin_left = 192.0
+margin_right = 413.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 2 )
+text = "Créer un serveur"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label4" type="Label" parent="PanelHost"]
+margin_left = 8.0
+margin_top = 192.0
+margin_right = 229.0
+margin_bottom = 235.0
+custom_fonts/font = ExtResource( 2 )
+text = "Connexions max."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="txtservername" type="LineEdit" parent="PanelHost"]
+margin_left = 128.0
+margin_top = 56.0
+margin_right = 544.0
+margin_bottom = 109.0
+custom_fonts/font = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="txtServerPort" type="LineEdit" parent="PanelHost"]
+margin_left = 128.0
+margin_top = 120.0
+margin_right = 272.0
+margin_bottom = 173.0
+custom_fonts/font = ExtResource( 2 )
+max_length = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="btCreate" type="Button" parent="PanelHost"]
+margin_left = 480.0
+margin_top = 312.0
+margin_right = 564.0
+margin_bottom = 361.0
+custom_fonts/font = ExtResource( 2 )
+text = "Créer"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SpinBox" type="SpinBox" parent="PanelHost"]
+margin_left = 408.0
+margin_top = 200.0
+margin_right = 536.0
+margin_bottom = 240.0
+min_value = 1.0
+max_value = 6.0
+value = 2.0
+rounded = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelJoin" type="Panel" parent="."]
+margin_left = 664.0
+margin_top = 592.0
+margin_right = 1240.0
+margin_bottom = 880.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="PanelJoin"]
+margin_left = 8.0
+margin_top = 128.0
+margin_right = 128.0
+margin_bottom = 171.0
+custom_fonts/font = ExtResource( 2 )
+text = "Port"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="PanelJoin"]
+margin_left = 8.0
+margin_top = 64.0
+margin_right = 112.0
+margin_bottom = 107.0
+custom_fonts/font = ExtResource( 2 )
+text = "I.P"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label3" type="Label" parent="PanelJoin"]
+margin_left = 144.0
+margin_right = 419.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 2 )
+text = "Rejoindre un serveur"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="txtservername" type="LineEdit" parent="PanelJoin"]
+margin_left = 128.0
+margin_top = 56.0
+margin_right = 544.0
+margin_bottom = 109.0
+custom_fonts/font = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="txtServerPort" type="LineEdit" parent="PanelJoin"]
+margin_left = 128.0
+margin_top = 120.0
+margin_right = 272.0
+margin_bottom = 173.0
+custom_fonts/font = ExtResource( 2 )
+max_length = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="btJoin" type="Button" parent="PanelJoin"]
+margin_left = 424.0
+margin_top = 232.0
+margin_right = 562.0
+margin_bottom = 281.0
+custom_fonts/font = ExtResource( 2 )
+text = "Rejoindre"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelPlayer" type="Panel" parent="."]
+margin_left = 664.0
+margin_top = 72.0
+margin_right = 1240.0
+margin_bottom = 160.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="PanelPlayer"]
+margin_left = 8.0
+margin_top = 14.0
+margin_right = 132.0
+margin_bottom = 57.0
+custom_fonts/font = ExtResource( 2 )
+text = "Pseudo"
+
+[node name="txtplayername" type="LineEdit" parent="PanelPlayer"]
+margin_left = 128.0
+margin_top = 14.0
+margin_right = 544.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 2 )
+
+[node name="PanelOptions" type="Panel" parent="."]
+margin_left = 80.0
+margin_top = 86.0
+margin_right = 472.0
+margin_bottom = 150.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="btCreate2" type="Button" parent="PanelOptions"]
+margin_left = 16.0
+margin_top = 8.0
+margin_right = 375.0
+margin_bottom = 57.0
+custom_fonts/font = ExtResource( 2 )
+text = "Retourner sur l'écran titre"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="button_down" from="PanelHost/btCreate" to="." method="_on_btCreate_button_down"]
+[connection signal="pressed" from="PanelHost/btCreate" to="." method="_on_btCreate_pressed"]
+[connection signal="pressed" from="PanelJoin/btJoin" to="." method="_on_btJoin_pressed"]
