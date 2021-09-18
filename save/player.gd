@@ -85,6 +85,7 @@ func save(time_played: float):
 
 func get_continues():
 	return continues
+	
 func lose_continue():
 	continues = max(0, continues-1)
 	if continues == 0:

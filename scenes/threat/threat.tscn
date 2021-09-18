@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://scenes/threat/threat.gd" type="Script" id=1]
 [ext_resource path="res://textures/meteor.jpg" type="Texture" id=2]
@@ -49,6 +49,9 @@ scale = 0.5
 color_ramp = SubResource( 5 )
 hue_variation_random = 0.33
 
+[sub_resource type="CircleShape2D" id=7]
+radius = 50.0315
+
 [node name="Threat" type="Node2D"]
 script = ExtResource( 1 )
 
@@ -84,5 +87,12 @@ explosiveness = 0.12
 process_material = SubResource( 6 )
 texture = ExtResource( 5 )
 
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 0, 46.25 )
+shape = SubResource( 7 )
+
 [connection signal="impact" from="." to="." method="_on_Threat_impact"]
 [connection signal="tween_all_completed" from="Tween" to="." method="_on_Tween_tween_all_completed"]
+[connection signal="area_entered" from="Area2D" to="." method="_on_Area2D_area_entered"]

@@ -222,11 +222,16 @@ func _on_domain_end(id_domain):
 							emit_signal("achievement", 6)
 		var stats = domain1.get_operations_stats()
 		
-		ClassicMode.next_step(won)
-		if global.game_mode == global.GAME_MODES.CLASSIC:
-			get_tree().change_scene("res://scenes/dialog/DialogueScene.tscn")
-		else:
-			pass
+		
+		scene_transition.play(true)
+		yield(scene_transition,"transition_finished")
+		
+		match global.game_mode:
+			global.GAME_MODES.CLASSIC:
+				ClassicMode.next_step(won)
+				get_tree().change_scene("res://scenes/dialog/DialogueScene.tscn")
+			global.GAME_MODES.VERSUS:
+				get_tree().change_scene("res://scenes/charselect/CharacterSelection.tscn")
 		
 func determine_ai_time_to_answer():
 	var op = domain2.get_current_pattern_element()

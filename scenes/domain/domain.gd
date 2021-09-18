@@ -309,12 +309,17 @@ func determine_nearest_threat():
 	
 func attack_threat(incantation_completed = false):
 	determine_nearest_threat()
+	
 	if threat_presence() :
 		var damages = 0.5*defense_power.apply() / pattern.get_len()
 		if incantation_completed:
 			damages += 0.5*defense_power.apply()
 
 		var over_damage = 0
+		
+		#make a little projectile which will inflict damage to the
+		#threat targetted
+		
 		# inflicting damages to the threat
 		over_damage = first_threat.receive_damage(damages)
 		while threat_presence() and over_damage > 0:

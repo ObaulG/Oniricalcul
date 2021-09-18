@@ -6,7 +6,7 @@ const THREAT_TYPE = {
 	3: "Type C",
 }
 signal impact(threat_type, current_hp, power)
-
+signal destroyed(threat_type, power)
 class_name Threat
 
 var threat_type
@@ -25,6 +25,7 @@ var position2d
 var tween
 var frozen
 var isdead: bool
+
 func create(hp, type, power, delay, player_node, x_speed, y_speed):
 	print("Création du Threat")
 	print("Temps: " + str(delay))
@@ -71,7 +72,7 @@ func receive_damage(n):
 	hp_bar.update_healthbar(hp_current)
 	if d <= 0:
 		hp_current = 0
-		emit_signal("impact")
+		emit_signal("destroyed", threat_type, power)
 		return -d
 	else:
 		hp_current = d
@@ -122,3 +123,7 @@ func _on_Threat_impact(_threat_type, _current_hp, _power):
 
 func _on_Tween_tween_all_completed():
 	print("prout")
+
+
+func _on_Area2D_area_entered(area):
+	pass # Replace with function body.
