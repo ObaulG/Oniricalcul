@@ -7,8 +7,10 @@ const THREAT_TYPE = {
 }
 signal impact(threat_type, current_hp, power)
 signal destroyed(threat_type, power)
+
 class_name Threat
 
+var id: int
 var threat_type
 var hp_current
 var hp_max
@@ -26,10 +28,10 @@ var tween
 var frozen
 var isdead: bool
 
-func create(hp, type, power, delay, player_node, x_speed, y_speed):
+func create(id, hp, type, power, delay, player_node, x_speed, y_speed):
 	print("Création du Threat")
 	print("Temps: " + str(delay))
-
+	self.id = id
 	isdead = false
 	self.x_speed = x_speed
 	self.y_speed = y_speed
@@ -45,6 +47,7 @@ func create(hp, type, power, delay, player_node, x_speed, y_speed):
 	timer = Timer.new()
 	timer.connect("timeout", self, "delay_elapsed")
 	connect("impact", player_node, "_on_threat_impact")
+	connect("destroyed", player_node, "_on_threat_destroyed")
 	self.add_child(timer)
 	
 	timer.start(delay)
@@ -64,22 +67,29 @@ func delay_elapsed():
 	if not isdead:
 		remove_animation()
 	
+func hit(power, character, id_character, base_speed, type):
+	var over_damage = receive_damage(power)
+	if over_damage >= 0:
+		emit_signal("destroyed", threat_type, power, id_character, over_damage, self.position)
+		remove_animation(true)
+		
 func receive_damage(n):
 	"""
 	 Returns the amount of damage received above current_hp.
 	"""
 	var d = hp_current - n
-	hp_bar.update_healthbar(hp_current)
 	if d <= 0:
 		hp_current = 0
-		emit_signal("destroyed", threat_type, power)
+		hp_bar.update_healthbar(hp_current)
 		return -d
 	else:
 		hp_current = d
+		hp_bar.update_healthbar(hp_current)
 		return 0
 	
 func remove_animation(destroyed = true):
 	timer.stop()
+	set_deferred("$CollisionShape2D.disabled", true)
 	$destroy_particles.emitting = true
 	print("Météorite détruite")
 	isdead = true
@@ -98,6 +108,9 @@ func unfreeze():
 	frozen = false
 	timer.set_paused(false)
 	
+func get_id():
+	return id
+	
 func is_dead():
 	return isdead
 	
@@ -113,7 +126,6 @@ func get_remaining_time():
 func _to_string():
 	return "Threat type " + str(threat_type) + " HP: " + str(hp_current) + "/"+str(hp_max)
 
-
 func _on_Threat_impact(_threat_type, _current_hp, _power):
 	x_speed = 0.0
 	y_speed = 0.0
@@ -124,6 +136,3 @@ func _on_Threat_impact(_threat_type, _current_hp, _power):
 func _on_Tween_tween_all_completed():
 	print("prout")
 
-
-func _on_Area2D_area_entered(area):
-	pass # Replace with function body.

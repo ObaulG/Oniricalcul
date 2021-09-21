@@ -8,7 +8,7 @@ var server_info = {
 	max_players = 0,      # Maximum allowed connections
 	used_port = 0         # Listening port
 }
-
+onready var scene_transition = $SceneTransitionRect
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
@@ -19,6 +19,7 @@ func _ready():
 	network.connect("server_created", self, "_on_ready_to_play")
 	network.connect("join_success", self, "_on_ready_to_play")
 	network.connect("join_fail", self, "_on_join_fail")
+	
 func _on_ready_to_play():
 	get_tree().change_scene("res://game_world.tscn")
 	
@@ -66,3 +67,9 @@ func _on_join_fail():
 	print("Failed to join server")
 	
 
+
+
+func _on_btReturn_pressed():
+	scene_transition.play()
+	yield(scene_transition, "transition_finished")
+	get_tree().change_scene("res://scenes/titlescreen/title.tscn")

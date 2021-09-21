@@ -38,6 +38,7 @@ var text = {
 var threat_texture = load("res://textures/meteor.jpg")
 var threat = load("res://scenes/threat/threat.tscn")
 
+var projectile = load("res://scenes/magic_projectile/MagicProjectile.tscn")
 var bar_red = load("res://textures/barHorizontal_red.png")
 var bar_green = load("res://textures/barHorizontal_green.png")
 var bar_yellow = load("res://textures/barHorizontal_yellow.png")

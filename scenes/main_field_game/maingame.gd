@@ -1,6 +1,6 @@
 extends Node2D
 
-signal send_threat(dico_threat, sender_id, target_id)
+signal send_threat(sender_id, target_id, dico_threat)
 
 signal game_pause()
 signal game_resume()
@@ -75,10 +75,10 @@ func _ready():
 	domain1 = $window/game_elements/hbox/p1_field/MarginContainer/domain_p1
 	bonus_menu_p1 = $window/game_elements/CenterContainer/bonus_window/bonus_menu
 	
-	domain1.create(1, player1, null, global.character)
+	domain1.create(self, 1, player1, null, global.character)
 	player2 = Player.new()
 	domain2 = $window/game_elements/hbox/p2_field/domain_p2
-	domain2.create(2, player2, null, global.enemy_character)
+	domain2.create(self, 2, player2, null, global.enemy_character)
 	answer_time_p2 = 0.0
 	
 	pre_game_timer = $pre_game_timer
@@ -172,25 +172,25 @@ func make_pause():
 func show_calcul():
 	current_calcul_label.text = domain1.get_current_calcul().get_str_show()
 
-func _on_domain_p1_attack(character, threat_type, atk_hp, power, delay, side_effects):
-	print("Commande: envoi de la météorite au joueur 2")
-	send_threat(1, 2, character, threat_type, atk_hp, power, delay, side_effects)
 
+func _on_domain_p1_attack(data: Dictionary):
+	send_threat(1, 2, data)
 
-func _on_domain_p2_attack(character, threat_type, atk_hp, power, delay, side_effects):
-	send_threat(2, 1, character, threat_type, atk_hp, power, delay, side_effects)
+func _on_domain_p2_attack(data):
+	send_threat(2, 1, data)
 
-func send_threat(sender_id, target_id, character, threat_type, atk_hp, power, delay, side_effects):
+func send_threat(sender_id, target_id, data):
 	var dico_threat = {
-		"character": character,
-		"threat_type": threat_type,
-		"atk_hp": atk_hp,
-		"power": power,
-		"delay": delay,
-		"side_effects": side_effects,
+		"character": data.character,
+		"threat_id": data.id,
+		"threat_type": data.atk_type,
+		"atk_hp": data.threat_hp,
+		"power": data.threat_power,
+		"delay": data.threat_delay,
+		"side_effects": [],
 	}
 
-	emit_signal("send_threat", dico_threat, sender_id, target_id)
+	emit_signal("send_threat", sender_id, target_id, dico_threat)
 
 func _on_domain_end(id_domain):
 	if !game_finished:

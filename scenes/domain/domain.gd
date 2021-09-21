@@ -3,6 +3,7 @@ extends Node
 const INCANTATIONS = {ATTACK = 1, DEFENSE = 2, BONUS = 3}
 const THREAT_TYPES = {REGULAR = 1, FAST = 2, STRONG = 3}
 enum BUYING_OP_ATTEMPT_RESULT{FREE_SPACE, NO_SPACE, NO_MONEY, ERROR}
+
 var threat = global.threat
 
 signal attack(character, threat_type, atk_hp, power, delay, side_effects)
@@ -38,6 +39,7 @@ var hp_bar: HealthDisplay
 var stance: int
 var stance_label: Label
 
+var meteor_sent: int
 #attack stats
 var atk_type: int
 
@@ -106,10 +108,15 @@ var current_seed = rng.seed
 
 var black_blanco_bonus: bool
 
-func create(id, player, contract, character_id = 5):
+var base_projectile_start: Vector2
+
+var main_game_node
+func create(main_game_node,id, player, contract, character_id = 5):
+	self.main_game_node = main_game_node
 	self.id_domain = id
 	self.player = player
 
+	meteor_sent = 0
 	var char_dico = global.characters[character_id]
 	self.character = Character.new(char_dico)
 	
@@ -173,6 +180,11 @@ func create(id, player, contract, character_id = 5):
 	determine_defense_power(pattern.get_power())
 	
 	fit_coeff = 1
+	
+	var size = terrain.rect_size
+	var width = size[0]
+	var height = size[1]
+	base_projectile_start = Vector2(width/2,height)
 func _process(dt):
 	pass
 
@@ -314,37 +326,38 @@ func attack_threat(incantation_completed = false):
 		var damages = 0.5*defense_power.apply() / pattern.get_len()
 		if incantation_completed:
 			damages += 0.5*defense_power.apply()
-
-		var over_damage = 0
-		
-		#make a little projectile which will inflict damage to the
-		#threat targetted
-		
-		# inflicting damages to the threat
-		over_damage = first_threat.receive_damage(damages)
-		while threat_presence() and over_damage > 0:
-			over_damage = first_threat.receive_damage(over_damage)
-			terrain.remove_child(first_threat)
-			determine_nearest_threat()
-		if over_damage > 0:
-			attack_enemy(over_damage)
+		create_magic_homing_projectile(first_threat, 
+										base_projectile_start, 
+										damages)
 	else:
 		apply_bonus(true)
 	 
-
+func create_magic_homing_projectile(target, start_pos: Vector2, power):
+	print("Projectile créé en " + str(start_pos))
+	var new_projectile = global.projectile.instance()
+	new_projectile.create(self, power, character.get_id(), id_domain, target)
+	terrain.add_child(new_projectile)
+	new_projectile.position = start_pos
 func attack_enemy(potential: float):
 	print("ATTACK")
 	var threat_stats = determine_threat_stats(potential)
 	update_threat_stats()
-	emit_signal("attack", self.character, atk_type, threat_stats[2], threat_stats[0], threat_stats[1], threat_stats[3])
-
+	var attack_data = {
+		character = self.character,
+		atk_type = self.atk_type,
+		threat_hp = self.atk_hp,
+		threat_power = self.atk_power,
+		threat_delay = self.atk_delay_time,
+		id = meteor_sent
+	}
+	emit_signal("attack", attack_data)
+	meteor_sent += 1
 func apply_bonus(no_threat_defense = false):
 	var potential = pattern.get_power()
 	
 func time_stop():
 	for child in terrain.get_children():
 		if child is Threat:
-			print("ZA WARUDO")
 			child.freeze()
 	
 func resume():
@@ -369,6 +382,7 @@ func receive_threat(dico_threat):
 	print("Météorite reçue")
 	# Récupération des paramètres
 	var hp = dico_threat["atk_hp"]
+	var id = dico_threat["threat_id"]
 	var sender_character = dico_threat["character"]
 	var type = dico_threat["threat_type"]
 	var power = dico_threat["power"]
@@ -386,17 +400,27 @@ func receive_threat(dico_threat):
 	var meteor = threat.instance()
 	
 	terrain.add_child(meteor)
-	meteor.create(hp, type, power, delay, self, x_speed, y_speed)
+	meteor.create(id, hp, type, power, delay, self, x_speed, y_speed)
 	meteor.position = position
 	meteor.apply_scale(Vector2(scaling, scaling))
 	meteor.set_texture(global.threat_texture)
 	
+	change_magic_projectiles_target()
 func update_energy_label():
 	energy_label.text = "Energie: " + str(energy)
 
 func _on_threat_impact(threat_type, hp_current, power):
 	receive_damage(power)
 	determine_nearest_threat()
+
+func _on_threat_destroyed(threat_type, power, id_character, over_damage, position):
+	determine_nearest_threat()
+
+func change_magic_projectiles_target():
+	if threat_presence():
+		for child in terrain.get_children():
+			if child is MagicProjectile:
+				child.change_target(first_threat)
 
 func sustain_hp(n):
 	hp_current = min(hp_current + n, hp_max)
@@ -553,6 +577,8 @@ func get_erase_price():
 func get_swap_price():
 	return swap_price
 	
+func get_nearest_threat():
+	return first_threat
 func get_nb_threats() -> int:
 	var n = 0
 	for child in terrain.get_children():
@@ -670,7 +696,7 @@ func set_stance(type):
 		texte = "Bns"
 	stance_label.text = "Position: " + texte
 	
-func _on_GameMaster_send_threat(dico_threat, sender_id, target_id):
+func _on_GameMaster_send_threat(sender_id, target_id, dico_threat):
 	if target_id == id_domain:
 		receive_threat(dico_threat)
 

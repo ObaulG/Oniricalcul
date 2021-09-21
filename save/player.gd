@@ -17,6 +17,7 @@ var continues
 var game_finished
 
 var time_played: float
+
 func _init():
 	var data = loadData()
 	time_played = 0.0
@@ -46,6 +47,7 @@ func _init():
 		}
 		continues = 3
 		game_finished = false
+	print("all data loaded")
 
 
 func loadData():
@@ -82,6 +84,7 @@ func save(time_played: float):
 	var save_game = File.new()
 	save_game.open(global.PATH["SAVE_FILE"], File.WRITE)
 	save_game.store_line(to_json(save_dict))
+	
 
 func get_continues():
 	return continues

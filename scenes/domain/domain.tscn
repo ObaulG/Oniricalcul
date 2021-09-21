@@ -104,12 +104,6 @@ margin_bottom = 434.0
 rect_min_size = Vector2( 224, 434 )
 rect_clip_content = true
 
-[node name="Label" type="Label" parent="margin_c/vboxc/hbox2/Terrain"]
-margin_left = 7.0
-margin_top = 210.0
-margin_right = 217.0
-margin_bottom = 224.0
-
 [node name="vbox" type="VBoxContainer" parent="margin_c/vboxc/hbox2"]
 margin_left = 228.0
 margin_right = 394.0

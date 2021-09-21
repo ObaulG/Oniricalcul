@@ -7,8 +7,10 @@ const nbMethodeCarree3 = [25,30,40,50,60,100,1000]
 
 const dividors = {
 	1: [2, 4],
-	2: [10],
+	2: [10]
 }
+
+
 const OPERATION = global.OPERATIONS
 
 const easy_bases = [2, 10]
