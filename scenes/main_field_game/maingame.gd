@@ -123,7 +123,6 @@ func _input(event):
 			answer_p1.text = answer_p1.text.left(answer_p1.text.length()-1)
 			
 		if event.is_action("validate") && event.is_pressed() && !event.is_echo():
-			print("Réponse validée")
 			domain1.check_answer(answer_p1.text, answer_time_p1)
 			answer_time_p1 = 0
 			answer_p1.text = ""
@@ -138,9 +137,7 @@ func _input(event):
 		if event.is_action("bonus_stance") && event.is_pressed() && !event.is_echo():
 			domain1.set_stance(Domain.INCANTATIONS.ATTACK)
 			
-		if event is InputEventKey and event.pressed:
-			print("Touche du clavier: ", event.scancode, " appuyée")
-			
+		if event is InputEventKey and event.pressed:			
 			if event.scancode == keypad_numbers[0] or event.scancode == numpad_numbers[0]:
 				answer_p1.text += '0'
 			elif event.scancode == keypad_numbers[1] or event.scancode == numpad_numbers[1]:
@@ -248,7 +245,6 @@ func _on_p2_playing_timer_timeout():
 	if game_state == 1:
 		var calcul = domain2.get_current_calcul()
 		var result = calcul.get_result()
-		print("Joueur 2 répond")
 		
 		var will_answer_right = true
 		if rng.randf() > 0.98:
@@ -264,8 +260,7 @@ func _on_p2_playing_timer_timeout():
 		
 		if not domain2.is_incanting():
 			var total_hp_threats = domain2.get_total_hp_threats()
-			print("total hp " + str(total_hp_threats))
-			print("defense power " + str(domain2.get_defense_power()))
+			
 			if total_hp_threats > domain2.get_defense_power():
 				domain2.set_stance(Domain.INCANTATIONS.DEFENSE)
 			else:
@@ -345,18 +340,17 @@ func _on_round_timer_timeout():
 		
 		var best_action = actions[0]
 		var best_score = 0
-		print("a??")
+
 		for action in actions:
 			
 			var score = evaluation(action, domain2, bonus_menu_p2, inc_min_op_pow, shop_max_op_pow)
 			if score > best_score:
 				best_action = action
 				best_score = score
-		print("a?")
+
 		ai_shop_play(best_action)
 		actions = shopping_possible_actions(domain2, bonus_menu_p2)
-		print(actions)
-		
+
 func ai_shop_play(action):
 	var action_type = action[0]
 	var op = action[1]
@@ -446,13 +440,13 @@ func _on_shop_timer_timeout():
 
 
 func _on_bonus_menu_player_ask_to_buy_operation(op):
-	print("Signal transféré à la scène principale")
+
 	
 	var id = op.get_type()
 	var diff = op.get_diff()
 	var price = op.get_price()
 	var result = domain1.buying_operation_attempt(price)
-	print("Résultat du signal: " + str(result))
+
 	var index: int
 	
 	op.set_display_type(Operation_Display.DISPLAY_TYPE.BASIC)

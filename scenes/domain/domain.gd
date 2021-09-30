@@ -9,7 +9,7 @@ var threat = global.threat
 signal attack(character, threat_type, atk_hp, power, delay, side_effects)
 signal end(id_domain)
 signal new_money_value(money)
-
+signal first_threat_ref_changed()
 class_name Domain
 
 var id_domain: int
@@ -109,6 +109,7 @@ var current_seed = rng.seed
 var black_blanco_bonus: bool
 
 var base_projectile_start: Vector2
+onready var collision_zone_to_enemy = $margin_c/vboxc/hbox2/Terrain/A2D_send_meteor
 
 var main_game_node
 func create(main_game_node,id, player, contract, character_id = 5):
@@ -185,6 +186,10 @@ func create(main_game_node,id, player, contract, character_id = 5):
 	var width = size[0]
 	var height = size[1]
 	base_projectile_start = Vector2(width/2,height)
+	
+	if id_domain == 2:
+		collision_zone_to_enemy.position = Vector2(-15, -15)
+
 func _process(dt):
 	pass
 
@@ -316,8 +321,13 @@ func determine_nearest_threat():
 				if time < min_time:
 					first_threat = child
 					min_time = time
-			
 	threat_count = count
+	
+	if is_instance_valid(first_threat):
+		print("Prochaine cible déterminée: " + str(first_threat.get_id()))
+	else:
+		print("Aucune cible trouvée...")
+	emit_signal("first_threat_ref_changed")
 	
 func attack_threat(incantation_completed = false):
 	determine_nearest_threat()
@@ -338,9 +348,9 @@ func create_magic_homing_projectile(target, start_pos: Vector2, power):
 	new_projectile.create(self, power, character.get_id(), id_domain, target)
 	terrain.add_child(new_projectile)
 	new_projectile.position = start_pos
-func attack_enemy(potential: float):
+func attack_enemy(potential: float, fraction=1.0):
 	print("ATTACK")
-	var threat_stats = determine_threat_stats(potential)
+	var threat_stats = determine_threat_stats(potential) 
 	update_threat_stats()
 	var attack_data = {
 		character = self.character,
@@ -414,8 +424,13 @@ func _on_threat_impact(threat_type, hp_current, power):
 	determine_nearest_threat()
 
 func _on_threat_destroyed(threat_type, power, id_character, over_damage, position):
+	print("Une météorite a été détruite.")
 	determine_nearest_threat()
 
+func _on_projectile_target_not_found(power):
+	var power_fraction = power/defense_power.get_value()
+	attack_enemy(get_base_potential() * power_fraction)
+	
 func change_magic_projectiles_target():
 	if threat_presence():
 		for child in terrain.get_children():
@@ -539,6 +554,9 @@ func can_swap_operations() -> bool:
 	
 func is_incanting() -> bool:
 	return pattern.get_index() == 0
+	
+func get_collision_zone_to_enemy():
+	return collision_zone_to_enemy
 	
 func get_current_calcul():
 	var index = pattern.get_index()
@@ -712,4 +730,8 @@ func _on_GameMaster_shopping_time():
 func _on_GameMaster_new_round():
 	erase_price += 3
 	swap_price += 2
-	
+
+
+
+func _on_A2D_send_meteor_body_entered(body):
+	pass # Replace with function body.

@@ -86,7 +86,6 @@ func generateAddition(diff := 1, subtype := -1):
 			nb2 = rng.randi_range(500,9999)
 
 	var a = Addition.new(nb1, nb2, diff, 1, subtype)
-	print("addition générée: ", a.to_string())
 	return a
 	
 func generateSubstraction(diff := 1, subtype := -1):
@@ -111,7 +110,6 @@ func generateSubstraction(diff := 1, subtype := -1):
 			nb2 = rng.randi_range(500,9999)
 			
 	var a = Substraction.new(nb1, nb2, diff, 2, subtype)
-	print("soustraction générée: ", a.to_string())
 	return a
 	
 func generateProduct(diff := 1, subtype := -1):
@@ -139,7 +137,6 @@ func generateProduct(diff := 1, subtype := -1):
 			nb2 = rng.randi_range(27,97)
 			
 	var a = Product.new(nb1, nb2, diff, 3, subtype)
-	print("multiplication générée: ", a.to_string())
 	return a
 	
 func generateConversion(diff := 1, subtype := -1):
@@ -176,5 +173,4 @@ func generateConversion(diff := 1, subtype := -1):
 		final_base = bases[i_2]
 
 	var a = Conversion.new(start_base, start_number, final_base, 4, OPERATION.keys()[OPERATION.CONVERSION], subtype)
-	print("conversion générée: ", a.to_string())
 	return a

@@ -6,7 +6,7 @@ const THREAT_TYPE = {
 	3: "Type C",
 }
 signal impact(threat_type, current_hp, power)
-signal destroyed(threat_type, power)
+signal destroyed(id, threat_type, power)
 
 class_name Threat
 
@@ -51,8 +51,6 @@ func create(id, hp, type, power, delay, player_node, x_speed, y_speed):
 	self.add_child(timer)
 	
 	timer.start(delay)
-	print("Temps d'attente: ", str(timer.get_wait_time()))
-	print("Temps restant: ", str(timer.get_time_left()))
 	
 func _process(dt):
 	if not frozen:
@@ -63,13 +61,15 @@ func set_texture(texture):
 	
 func delay_elapsed():
 	print("La météorite s'écrase...")
-	emit_signal("impact",threat_type, hp_current, power)
+	emit_signal("impact",id, threat_type, hp_current, power)
 	if not isdead:
 		remove_animation()
 	
 func hit(power, character, id_character, base_speed, type):
 	var over_damage = receive_damage(power)
 	if over_damage >= 0:
+		# if done later, this threat will be counted alive
+		isdead = true
 		emit_signal("destroyed", threat_type, power, id_character, over_damage, self.position)
 		remove_animation(true)
 		
@@ -91,13 +91,9 @@ func remove_animation(destroyed = true):
 	timer.stop()
 	set_deferred("$CollisionShape2D.disabled", true)
 	$destroy_particles.emitting = true
-	print("Météorite détruite")
-	isdead = true
 	tween.interpolate_property(self, "modulate", Color(1, 1, 1, 1), Color(1, 1, 1, 0), 0.5, Tween.TRANS_LINEAR, Tween.EASE_IN)
 	tween.start()
-	print("Fin anim")
 	yield(tween, "tween_all_completed")
-	print("Retrait")
 	queue_free()
 
 func freeze():

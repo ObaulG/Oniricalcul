@@ -44,7 +44,7 @@ func _place():
 	
 	var angle = base_angle
 	var n = len(children)
-	var final_positions = []
+	var final_positions = [] 
 	for child in children:
 		if child is Control:
 			var final_pos = origin + Vector2(0, -radius).rotated(deg2rad(angle))
