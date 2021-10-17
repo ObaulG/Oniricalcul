@@ -222,6 +222,7 @@ visible = false
 
 [node name="SceneTransitionRect" parent="." instance=ExtResource( 9 )]
 pause_mode = 2
+visible = false
 modulate = Color( 0, 0, 0, 1 )
 margin_right = 1973.0
 margin_bottom = 1176.0

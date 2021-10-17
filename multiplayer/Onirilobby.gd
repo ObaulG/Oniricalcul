@@ -67,8 +67,6 @@ func _on_join_fail():
 	print("Failed to join server")
 	
 
-
-
 func _on_btReturn_pressed():
 	scene_transition.play()
 	yield(scene_transition, "transition_finished")

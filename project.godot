@@ -169,6 +169,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://save/player.gd"
 }, {
+"base": "Node",
+"class": "PlayerDomain",
+"language": "GDScript",
+"path": "res://multiplayer/PlayerDomain.gd"
+}, {
 "base": "Calcul",
 "class": "Product",
 "language": "GDScript",
@@ -257,6 +262,7 @@ _global_script_class_icons={
 "PauseMenu": "",
 "Pitch": "",
 "Player": "",
+"PlayerDomain": "",
 "Product": "",
 "ReliquatNumber": "",
 "RootOP": "",
@@ -285,8 +291,8 @@ default_bus_layout=""
 global="*res://singletons/global.gd"
 ClassicMode="*res://ClassicMode.gd"
 SoundPlayer="*res://singletons/SoundPlayer.tscn"
-Gamestate="*res://multiplayer/gamestate.gd"
-network="*res://multiplayer/network.gd"
+Gamestate="res://multiplayer/gamestate.gd"
+network="res://multiplayer/network.gd"
 
 [debug]
 

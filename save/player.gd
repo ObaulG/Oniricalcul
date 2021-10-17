@@ -69,8 +69,8 @@ func loadData():
 			dico["success"] = true
 	return dico
 	
-func save(time_played: float):
-	var save_dict = {
+func dico_save() -> Dictionary:
+	return {
 		"pseudo": pseudo,
 		"level": level,
 		"experience": experience,
@@ -81,6 +81,9 @@ func save(time_played: float):
 		"game_finished": game_finished,
 		"timestamp_lastplayed": OS.get_unix_time()
 	}
+	
+func save(time_played: float):
+	var save_dict = dico_save()
 	var save_game = File.new()
 	save_game.open(global.PATH["SAVE_FILE"], File.WRITE)
 	save_game.store_line(to_json(save_dict))
@@ -94,6 +97,15 @@ func lose_continue():
 	if continues == 0:
 		emit_signal("game_over")
 
+func get_multiplayer_dict() -> Dictionary:
+	var dico = {
+		"pseudo": pseudo,
+		"level": level,
+		"gametime": gametime,
+		"game_finished": game_finished,
+		"timestamp_lastplayed": timestamp_lastplayed
+	}
+	return dico
 func _to_string():
 	var s = pseudo + "\nlvl " + str(level) + "\ncontinues " + str(continues)
 	s += str(unlocked)
