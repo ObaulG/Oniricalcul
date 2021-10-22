@@ -95,7 +95,6 @@ margin_top = 324.0
 margin_right = 209.0
 margin_bottom = 373.0
 custom_fonts/font = ExtResource( 4 )
-disabled = true
 text = "Rêves distants"
 
 [node name="quit_button" type="Button" parent="VBoxContainer/buttons_container/list"]

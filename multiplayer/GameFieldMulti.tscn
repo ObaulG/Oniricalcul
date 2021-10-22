@@ -21,7 +21,11 @@ margin_right = 40.0
 margin_bottom = 14.0
 custom_fonts/font = ExtResource( 2 )
 text = "Local player name"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="boxList" type="VBoxContainer" parent="HUD/PanelPlayerList"]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_top = 49.9467
+margin_right = 333.0
+margin_bottom = 284.947

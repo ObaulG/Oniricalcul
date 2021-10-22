@@ -24,6 +24,8 @@ script = ExtResource( 1 )
 [node name="atk_timer" type="Timer" parent="."]
 one_shot = true
 
+[node name="game_timer" type="Timer" parent="."]
+
 [node name="margin_c" type="MarginContainer" parent="."]
 margin_right = 420.0
 margin_bottom = 552.0

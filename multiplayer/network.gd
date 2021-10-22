@@ -4,14 +4,14 @@ extends Node
 #data updated
 
 signal server_created
-signal join_success                            # When the peer successfully joins a server
-signal join_fail                               # Failed to join a server
+signal join_success          # When the peer successfully joins a server
+signal join_fail             # Failed to join a server
 signal player_list_changed
 signal player_removed(pinfo) 
 
 var server_info = {
 	name = "Server",      # Holds the name of the server
-	max_players = 0,      # Maximum allowed connections
+	max_players = 2,      # Maximum allowed connections
 	used_port = 0         # Listening port
 }
 
@@ -19,7 +19,11 @@ var players = {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	get_tree().connect("network_peer_connected", self, "_on_player_connected")
+	get_tree().connect("network_peer_disconnected", self, "_on_player_disconnected")
+	get_tree().connect("connected_to_server", self, "_on_connected_to_server")
+	get_tree().connect("connection_failed", self, "_on_connection_failed")
+	get_tree().connect("server_disconnected", self, "_on_disconnected_from_server")
 
 
 func create_server():
@@ -33,7 +37,9 @@ func create_server():
 	
 	# Assign it into the tree
 	get_tree().set_network_peer(net)
-	
+	register_player(Gamestate.player_info)
+	print("Serveur créé")
+
 	# Tell the server has been created successfully
 	emit_signal("server_created")
 
@@ -87,3 +93,18 @@ remote func unregister_player(id):
 func _on_connection_failed():
 	emit_signal("join_fail")
 	get_tree().set_network_peer(null)
+
+	
+# Everyone gets notified whenever a new client joins the server
+func _on_player_connected(id):
+	pass
+
+
+# Everyone gets notified whenever someone disconnects from the server
+func _on_player_disconnected(id):
+	pass
+
+
+# Peer is notified when disconnected from server
+func _on_disconnected_from_server():
+	pass

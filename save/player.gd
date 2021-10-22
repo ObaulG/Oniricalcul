@@ -19,18 +19,38 @@ var game_finished
 var time_played: float
 
 func _init():
-	var data = loadData()
+	pass
+
+
+func loadData(path):
 	time_played = 0.0
-	if data != null and data["success"]:
-		pseudo = data["pseudo"]
-		level = data["level"]
-		experience = data["experience"]
-		inventory = data["inventory"]
-		unlocked = data["unlocked"]
-		gametime = data["gametime"]
-		timestamp_lastplayed = data["timestamp_lastplayed"]
-		continues = data["continues"]
-		game_finished = data["game_finished"]
+	var file = File.new()
+	file.open(path, file.READ)
+	var textdata = file.get_as_text()
+	file.close()
+	var result_JSON = JSON.parse(textdata)
+	var dico = result_JSON.get_result()
+	
+	if dico != null:
+		if result_JSON.error != OK:
+			print("[load_json_file] Error loading JSON file '" + path + "'.")
+			print("\tError: ", result_JSON.error)
+			print("\tError Line: ", result_JSON.error_line)
+			print("\tError String: ", result_JSON.error_string)
+			dico["success"] = false
+		else:
+			dico["success"] = true
+			
+	if dico != null and dico["success"]:
+		pseudo = dico["pseudo"]
+		level = dico["level"]
+		experience = dico["experience"]
+		inventory = dico["inventory"]
+		unlocked = dico["unlocked"]
+		gametime = dico["gametime"]
+		timestamp_lastplayed = dico["timestamp_lastplayed"]
+		continues = dico["continues"]
+		game_finished = dico["game_finished"]
 	else:
 		pseudo = "???"
 		level = 1
@@ -48,26 +68,6 @@ func _init():
 		continues = 3
 		game_finished = false
 	print("all data loaded")
-
-
-func loadData():
-	var file = File.new()
-	var path = global.get_file_path("SAVE_FILE")
-	file.open(path, file.READ)
-	var textdata = file.get_as_text()
-	file.close()
-	var result_JSON = JSON.parse(textdata)
-	var dico = result_JSON.get_result()
-	if dico != null:
-		if result_JSON.error != OK:
-			print("[load_json_file] Error loading JSON file '" + path + "'.")
-			print("\tError: ", result_JSON.error)
-			print("\tError Line: ", result_JSON.error_line)
-			print("\tError String: ", result_JSON.error_string)
-			dico["success"] = false
-		else:
-			dico["success"] = true
-	return dico
 	
 func dico_save() -> Dictionary:
 	return {
@@ -106,6 +106,7 @@ func get_multiplayer_dict() -> Dictionary:
 		"timestamp_lastplayed": timestamp_lastplayed
 	}
 	return dico
+	
 func _to_string():
 	var s = pseudo + "\nlvl " + str(level) + "\ncontinues " + str(continues)
 	s += str(unlocked)

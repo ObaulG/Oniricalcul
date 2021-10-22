@@ -426,6 +426,7 @@ func _init():
 	dialog_data = result_JSON.get_result()
 	current_dialog = "null"
 	
+	load_game()
 func _process(delta):
 	time_played += delta
 	
@@ -438,6 +439,7 @@ func get_resized_ImageTexture(t: Texture, w: int, h: int) -> Texture:
 	
 func load_game():
 	player = Player.new()
+	player.loadData(PATH["SAVE_FILE"])
 	print(player)
 	
 func save_game():

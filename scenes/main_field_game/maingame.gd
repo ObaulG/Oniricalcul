@@ -115,53 +115,7 @@ func _process(delta):
 		time_left = shop_timer.get_time_left()
 		bonus_menu_p1.set_time(time_left)
 	
-#Entrée du joueur
-func _input(event):
-	
-	if game_state == 1:
-		if event.is_action("delete_char") && event.is_pressed() && !event.is_echo():
-			answer_p1.text = answer_p1.text.left(answer_p1.text.length()-1)
-			
-		if event.is_action("validate") && event.is_pressed() && !event.is_echo():
-			domain1.check_answer(answer_p1.text, answer_time_p1)
-			answer_time_p1 = 0
-			answer_p1.text = ""
-			show_calcul()
-			
-		if event.is_action("attack_stance") && event.is_pressed() && !event.is_echo():
-			domain1.set_stance(Domain.INCANTATIONS.ATTACK)
-			
-		if event.is_action("defense_stance") && event.is_pressed() && !event.is_echo():
-			domain1.set_stance(Domain.INCANTATIONS.DEFENSE)
-			
-		if event.is_action("bonus_stance") && event.is_pressed() && !event.is_echo():
-			domain1.set_stance(Domain.INCANTATIONS.ATTACK)
-			
-		if event is InputEventKey and event.pressed:			
-			if event.scancode == keypad_numbers[0] or event.scancode == numpad_numbers[0]:
-				answer_p1.text += '0'
-			elif event.scancode == keypad_numbers[1] or event.scancode == numpad_numbers[1]:
-				answer_p1.text += '1'
-			elif event.scancode == keypad_numbers[2] or event.scancode == numpad_numbers[2]:
-				answer_p1.text += '2'
-			elif event.scancode == keypad_numbers[3] or event.scancode == numpad_numbers[3]:
-				answer_p1.text += '3'
-			elif event.scancode == keypad_numbers[4] or event.scancode == numpad_numbers[4]:
-				answer_p1.text += '4'
-			elif event.scancode == keypad_numbers[5] or event.scancode == numpad_numbers[5]:
-				answer_p1.text += '5'
-			elif event.scancode == keypad_numbers[6] or event.scancode == numpad_numbers[6]:
-				answer_p1.text += '6'
-			elif event.scancode == keypad_numbers[7] or event.scancode == numpad_numbers[7]:
-				answer_p1.text += '7'
-			elif event.scancode == keypad_numbers[8] or event.scancode == numpad_numbers[8]:
-				answer_p1.text += '8'
-			elif event.scancode == keypad_numbers[9] or event.scancode == numpad_numbers[9]:
-				answer_p1.text += '9'
-		
-		if event.is_action("pause") && event.is_pressed() && !event.is_echo():
-			make_pause()
-			
+
 func make_pause():
 	get_tree().paused = true
 	pause_menu.visible = true

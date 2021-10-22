@@ -24,7 +24,6 @@ func _ready():
 
 	meteor_timer = $meteor_timer
 	bg_music_timer = $bgmusic_timer
-	global.load_game()
 	
 func _on_play_button_down(extra_arg_0: int):
 	global.game_mode = extra_arg_0
