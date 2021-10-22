@@ -22,6 +22,7 @@ onready var scene_transition = $SceneTransitionRect
 
 onready var add_op_button := $vbox_info/VBoxContainer/HBoxContainer/add_op_button
 onready var remove_op_button := $vbox_info/VBoxContainer/HBoxContainer/remove_op_button
+onready var panel_chat = $HUD/PanelOnlineChat
 
 func _ready():
 	scene_transition.play(true)
@@ -106,16 +107,21 @@ func _ready():
 	
 	initialize_op_data(1)
 	initialize_op_data(2)
-
 	
 	# Update the lblLocalPlayer label widget to display the local player name
 	$HUD/PanelPlayerList/lblLocalPlayer.text = Gamestate.player_info["pseudo"]
 	$HUD/PanelPlayerList/lblLocalPlayer.set("custom_colors/font_color",waiting_confirmation_color)
 
 	network.connect("player_list_changed", self, "_on_player_list_changed")
+	get_tree().connect("network_peer_connected", self, "_on_player_connected")
+	get_tree().connect("network_peer_disconnected", self, "_on_player_disconnected")
+	get_tree().connect("connected_to_server", self, "_on_connected_to_server")
+	get_tree().connect("connection_failed", self, "_on_connection_failed")
+	get_tree().connect("server_disconnected", self, "_on_disconnected_from_server")
 	# If we are in the server, connect to the event that will deal with player despawning
 	if (get_tree().is_network_server()):
 		network.connect("player_removed", self, "_on_player_removed")
+		
 func initialize_op_data(player_id: int):
 	var op_p_display_base
 	if player_id == 1:
@@ -142,7 +148,6 @@ func initialize_op_data(player_id: int):
 	base_display_element.visible = false
 
 func change_screen_data(char_selected_id: int, player: int):
-	
 	var character = global.char_data[char_selected_id]
 
 	#the client/server is considered as the player 1 (on the left)
@@ -294,8 +299,13 @@ remotesync func character_selection(id_character,net_id):
 	change_screen_data(id_character, net_id)
 	
 remotesync func clear_selection(net_id):
+	
 	print("Client id " + str(get_tree().get_rpc_sender_id())+" : Char selection cancel for player " + str(net_id))
 	
+	if get_tree().is_network_server():
+		network.players[net_id]["id_character_selected"] = -1
+		network.players[net_id]["character_selected"] = false
+
 	Gamestate.player_info["character_validated"] = false
 	Gamestate.player_info["id_character_selected"] = -1
 	
@@ -326,15 +336,13 @@ remotesync func clear_selection(net_id):
 		$HUD/PanelPlayerList/boxList.get_node("client"+str(net_id)).set("custom_colors/font_color",waiting_confirmation_color)
 		
 remotesync func validate_choice(net_id):
-	var who = get_tree().get_rpc_sender_id()
-	Gamestate.player_info["character_validated"] = true
-	
 	if get_tree().is_network_server():
-		network.players[who]["character_validated"] = true
+		network.players[net_id]["character_validated"] = true
+		print("Player " + str(net_id) + " is now ready!")
 		
 		#if the two players are ready, then the game may start.
 		if is_everyone_ready() and len(network.players) > 1:
-			leave_scene("res://multiplayer/GameFieldMulti.tscn")
+			rpc("start_game")
 	
 	# Visual interaction to show player is ready?
 	# if the func is called by this client, then 
@@ -343,12 +351,18 @@ remotesync func validate_choice(net_id):
 		$HUD/PanelPlayerList/lblLocalPlayer.set("custom_colors/font_color",confirmed_color)
 	else:
 		$HUD/PanelPlayerList/boxList.get_node("client"+str(net_id)).set("custom_colors/font_color",confirmed_color)
-		pass
+		
+remotesync func start_game():
+	leave_scene("res://multiplayer/GameFieldMulti.tscn")
+	
 func is_everyone_ready():
+	var nb_ready = 0
 	for id in network.players:
-		if not network.players[id]["id_character_selected"]:
-			return false
-	return true
+		print(network.players)
+		if network.players[id]["character_validated"]:
+			nb_ready += 1
+			print("Player " + str(id) + "is ready...")
+	return nb_ready == len(network.players)
 	
 func _on_return_button_down():
 	global.game_mode = 0
@@ -362,12 +376,15 @@ func _on_characters_item_selected(index):
 	#if you validate your choice, you can't change the character.
 	if not Gamestate.player_info["character_validated"]:
 		var char_selected_id = association[index]
+		Gamestate.player_info["character_validated"] = true
 		rpc("character_selection", char_selected_id, Gamestate.player_info["net_id"])
 
 func _on_play_button_down():
-	print("Validation id client " + str(Gamestate.player_info["net_id"]))
-	rpc("validate_choice", Gamestate.player_info["net_id"])
-
+	if Gamestate.player_info["id_character_selected"] != -1:
+		print("Validation id client " + str(Gamestate.player_info["net_id"]))
+		rpc("validate_choice", Gamestate.player_info["net_id"])
+	else:
+		panel_chat.write_message("Validation impossible: aucun personnage sélectionné.")
 
 func _on_cancel_choice_button_down():
 	var who = get_tree().get_rpc_sender_id()
@@ -410,4 +427,19 @@ func _on_player_list_changed():
 			nlabel.set("custom_colors/font_color",waiting_confirmation_color)
 			$HUD/PanelPlayerList/boxList.add_child(nlabel)
 			
-			
+func _on_player_connected(id):
+	pass
+	
+func _on_player_disconnected(id):
+	pass
+	
+func _on_connected_to_server():
+	pass
+	
+func _on_connection_failed():
+	pass
+	
+func _on_disconnected_from_server():
+	pass
+	
+

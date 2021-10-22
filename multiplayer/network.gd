@@ -34,7 +34,9 @@ func create_server():
 	if (net.create_server(server_info.used_port, server_info.max_players) != OK):
 		print("Failed to create server")
 		return
-	
+		
+	#Zlib compression, to use less bandwidth
+	net.set_compression_mode(3)
 	# Assign it into the tree
 	get_tree().set_network_peer(net)
 	register_player(Gamestate.player_info)
@@ -49,11 +51,13 @@ func join_server(ip, port):
 	if (net.create_client(ip, port) != OK):
 		print("Failed to create client")
 		emit_signal("join_fail")
-		return
+		return false
 		
 	get_tree().set_network_peer(net)
-
+	return true
+	
 remote func register_player(pinfo):
+	print("data player: " + str(pinfo))
 	if (get_tree().is_network_server()):
 		# We are on the server, so distribute the player list information throughout the connected players
 		for id in players:
@@ -66,6 +70,7 @@ remote func register_player(pinfo):
 	# Now to code that will be executed regardless of being on client or server
 	print("Registering player ", pinfo["pseudo"], " (", pinfo["net_id"], ") to internal player table")
 	players[pinfo["net_id"]] = pinfo          # Create the player entry in the dictionary
+	print(players)
 	emit_signal("player_list_changed")     # And notify that the player list has been changed
 	
 # Peer trying to connect to server is notified on success
@@ -79,11 +84,11 @@ func _on_connected_to_server():
 	register_player(Gamestate.player_info)
 
 remote func unregister_player(id):
-	print("Removing player ", players[id].name, " from internal table")
+	print("Removing player ", network.players[id]["pseudo"], " from internal table")
 	# Cache the player info because it's still necessary for some upkeeping
-	var pinfo = players[id]
+	var pinfo = network.players[id]
 	# Remove the player from the list
-	players.erase(id)
+	network.players.erase(id)
 	# And notify the list has been changed
 	emit_signal("player_list_changed")
 	# Emit the signal that is meant to be intercepted only by the server
@@ -101,9 +106,21 @@ func _on_player_connected(id):
 
 
 # Everyone gets notified whenever someone disconnects from the server
-func _on_player_disconnected(id):
-	pass
-
+func _on_player_disconnected(id_player):
+	#We remove the player from the network, with his data
+	print("id player disconnected: " + str(id_player))
+	
+	if (get_tree().is_network_server()):
+		# updata server player list
+		for id in players:
+			# we don't call the function on the player who has disconnected
+			if (id != 1) and (id != id_player):
+				rpc_id(id, "unregister_player", id_player)
+	
+	# Now to code that will be executed regardless of being on client or server
+	print("Unregistering player ", id_player, ") to internal player table")
+	unregister_player(id_player)
+	emit_signal("player_list_changed")     # And notify that the player list has been changed
 
 # Peer is notified when disconnected from server
 func _on_disconnected_from_server():

@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=1]
 [ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=5]
 [ext_resource path="res://scenes/scene_transition/SceneTransitionRect.tscn" type="PackedScene" id=6]
 [ext_resource path="res://multiplayer/MultiplayerCharSelection.gd" type="Script" id=7]
+[ext_resource path="res://multiplayer/OnlineChat.gd" type="Script" id=8]
 [ext_resource path="res://fonts/LMROMAN10-BOLD.OTF" type="DynamicFontData" id=9]
 [ext_resource path="res://UI/StatDisplay.tscn" type="PackedScene" id=11]
 
@@ -141,6 +142,13 @@ shader_param/reverse = null
 [sub_resource type="DynamicFont" id=20]
 size = 45
 font_data = ExtResource( 9 )
+
+[sub_resource type="DynamicFontData" id=21]
+font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
+
+[sub_resource type="DynamicFont" id=22]
+size = 20
+font_data = SubResource( 21 )
 
 [node name="CharacterSelection" type="Control"]
 rect_min_size = Vector2( 1920, 1080 )
@@ -768,25 +776,25 @@ disabled = true
 text = "-1 OP"
 
 [node name="SceneTransitionRect" parent="." instance=ExtResource( 6 )]
-visible = false
 modulate = Color( 0, 0, 0, 1 )
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="PanelPlayerList" type="Panel" parent="HUD"]
 self_modulate = Color( 1, 1, 1, 0 )
-margin_left = 773.0
-margin_top = 174.0
-margin_right = 1144.0
-margin_bottom = 426.0
+margin_left = 775.0
+margin_top = 65.0
+margin_right = 1146.0
+margin_bottom = 317.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="lblLocalPlayer" type="Label" parent="HUD/PanelPlayerList"]
-margin_left = 2.0
-margin_right = 362.0
-margin_bottom = 43.0
+margin_left = -2.0
+margin_top = 23.0
+margin_right = 358.0
+margin_bottom = 66.0
 custom_fonts/font = ExtResource( 1 )
 custom_colors/font_color = Color( 1, 0, 0, 1 )
 text = "Local player name"
@@ -796,9 +804,46 @@ __meta__ = {
 }
 
 [node name="boxList" type="VBoxContainer" parent="HUD/PanelPlayerList"]
-margin_top = 50.0
-margin_right = 354.0
-margin_bottom = 238.0
+margin_left = 9.0
+margin_top = 63.0
+margin_right = 363.0
+margin_bottom = 251.0
+
+[node name="PanelOnlineChat" type="Panel" parent="HUD"]
+self_modulate = Color( 1, 1, 1, 0 )
+margin_left = 773.0
+margin_top = 432.0
+margin_right = 1144.0
+margin_bottom = 744.0
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="HUD/PanelOnlineChat"]
+margin_right = 371.0
+margin_bottom = 312.0
+color = Color( 0.176471, 0.176471, 0.176471, 0.819608 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LineEdit" type="LineEdit" parent="HUD/PanelOnlineChat"]
+margin_top = 264.0
+margin_right = 371.0
+margin_bottom = 307.0
+custom_fonts/font = ExtResource( 1 )
+text = "edfdfefaz"
+
+[node name="TextEdit" type="TextEdit" parent="HUD/PanelOnlineChat"]
+margin_left = 3.0
+margin_top = 8.0
+margin_right = 371.0
+margin_bottom = 256.0
+custom_fonts/font = SubResource( 22 )
+readonly = true
+show_line_numbers = true
+wrap_enabled = true
 
 [connection signal="item_selected" from="vbox_info/VBoxContainer/CenterContainer/characters" to="." method="_on_characters_item_selected"]
 [connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/play_button" to="." method="_on_play_button_down"]

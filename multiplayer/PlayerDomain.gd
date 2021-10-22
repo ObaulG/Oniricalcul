@@ -197,13 +197,13 @@ func _input(event):
 			check_answer(operation_answer)
 
 		if event.is_action("attack_stance") && event.is_pressed() && !event.is_echo():
-			update_stance(PlayerDomain.STANCES.ATTACK)
+			update_stance(STANCES.ATTACK)
 			
 		if event.is_action("defense_stance") && event.is_pressed() && !event.is_echo():
-			update_stance(PlayerDomain.STANCES.DEFENSE)
+			update_stance(STANCES.DEFENSE)
 			
 		if event.is_action("bonus_stance") && event.is_pressed() && !event.is_echo():
-			update_stance(PlayerDomain.STANCES.ATTACK)
+			update_stance(STANCES.ATTACK)
 			
 		if event is InputEventKey and event.pressed:			
 			if event.scancode == keypad_numbers[0] or event.scancode == numpad_numbers[0]:

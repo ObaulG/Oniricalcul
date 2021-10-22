@@ -25,8 +25,8 @@ func _ready():
 	bgmusic_playing = false
 
 func play_bg_music(name: String) -> void:
+	return
 	if name in musics.keys():
-		print("OMG the CD")
 		var new_music_stream = musics[name]
 		if new_music_stream != bgmusic_player.stream:
 			bgmusic_player.stream = musics[name]
