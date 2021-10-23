@@ -21,4 +21,8 @@ func play(reverse = false):
 func _on_AnimationPlayer_animation_finished(anim_name):
 	emit_signal("transition_finished")
 	
+func change_scene(dest: String):
+	play()
+	yield(self, "transition_finished")
+	get_tree().change_scene(dest)
 

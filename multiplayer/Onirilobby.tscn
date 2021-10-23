@@ -86,7 +86,7 @@ margin_top = 120.0
 margin_right = 272.0
 margin_bottom = 173.0
 custom_fonts/font = ExtResource( 2 )
-text = "4549"
+text = "3892"
 max_length = 8
 __meta__ = {
 "_edit_use_anchors_": false
@@ -164,7 +164,7 @@ margin_top = 56.0
 margin_right = 544.0
 margin_bottom = 109.0
 custom_fonts/font = ExtResource( 2 )
-text = "192.168.1.20"
+text = "172.20.10.8"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -175,7 +175,7 @@ margin_top = 120.0
 margin_right = 272.0
 margin_bottom = 173.0
 custom_fonts/font = ExtResource( 2 )
-text = "4549"
+text = "3892"
 max_length = 8
 __meta__ = {
 "_edit_use_anchors_": false
@@ -262,6 +262,7 @@ __meta__ = {
 }
 
 [node name="SceneTransitionRect" parent="." instance=ExtResource( 3 )]
+visible = false
 modulate = Color( 0, 0, 0, 1 )
 
 [connection signal="pressed" from="PanelHost/btCreate" to="." method="_on_btCreate_pressed"]

@@ -2,7 +2,7 @@
 
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=1]
 [ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=2]
-[ext_resource path="res://characters/01/icon.PNG" type="Texture" id=3]
+[ext_resource path="res://characters/01/icon.png" type="Texture" id=3]
 [ext_resource path="res://incantation/Incantation.tscn" type="PackedScene" id=4]
 [ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=5]
 [ext_resource path="res://scenes/scene_transition/SceneTransitionRect.tscn" type="PackedScene" id=6]
@@ -775,9 +775,6 @@ custom_fonts/font = ExtResource( 1 )
 disabled = true
 text = "-1 OP"
 
-[node name="SceneTransitionRect" parent="." instance=ExtResource( 6 )]
-modulate = Color( 0, 0, 0, 1 )
-
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="PanelPlayerList" type="Panel" parent="HUD"]
@@ -808,6 +805,9 @@ margin_left = 9.0
 margin_top = 63.0
 margin_right = 363.0
 margin_bottom = 251.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="PanelOnlineChat" type="Panel" parent="HUD"]
 self_modulate = Color( 1, 1, 1, 0 )
@@ -844,6 +844,10 @@ custom_fonts/font = SubResource( 22 )
 readonly = true
 show_line_numbers = true
 wrap_enabled = true
+
+[node name="SceneTransitionRect" parent="." instance=ExtResource( 6 )]
+visible = false
+modulate = Color( 0, 0, 0, 1 )
 
 [connection signal="item_selected" from="vbox_info/VBoxContainer/CenterContainer/characters" to="." method="_on_characters_item_selected"]
 [connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/play_button" to="." method="_on_play_button_down"]

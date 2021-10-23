@@ -1,5 +1,11 @@
 extends Node
 
+class_name Network
+
+enum ERRORS{NO_ERROR=0,
+			CONNECTION_ERROR=1,
+			NAME_ALREADY_EXISTS=2,
+			NAME_INCORRECT = 3}
 #Contains all players data and handlers to keep
 #data updated
 
@@ -34,30 +40,31 @@ func create_server():
 	if (net.create_server(server_info.used_port, server_info.max_players) != OK):
 		print("Failed to create server")
 		return
-		
 	#Zlib compression, to use less bandwidth
 	net.set_compression_mode(3)
 	# Assign it into the tree
 	get_tree().set_network_peer(net)
-	register_player(Gamestate.player_info)
-	print("Serveur créé")
-
 	# Tell the server has been created successfully
 	emit_signal("server_created")
-
-func join_server(ip, port):
+	register_player(Gamestate.player_info)
+	
+func join_server(ip, port, pinfo):
 	var net = NetworkedMultiplayerENet.new()
 	
-	if (net.create_client(ip, port) != OK):
+	if (net.create_client(ip, port) != OK) :
 		print("Failed to create client")
 		emit_signal("join_fail")
-		return false
+		return ERRORS.CONNECTION_ERROR
 		
+	#we can connect only if the nickname is not already taken
+	if pseudo_in_list(pinfo["pseudo"]):
+		print("Name already exists!")
+		emit_signal("join_fail")
+		return ERRORS.NAME_ALREADY_EXISTS
 	get_tree().set_network_peer(net)
-	return true
+	return ERRORS.NO_ERROR
 	
 remote func register_player(pinfo):
-	print("data player: " + str(pinfo))
 	if (get_tree().is_network_server()):
 		# We are on the server, so distribute the player list information throughout the connected players
 		for id in players:
@@ -66,20 +73,28 @@ remote func register_player(pinfo):
 			# Send new player info to currently iterated player, skipping the server (which will get the info shortly)
 			if (id != 1):
 				rpc_id(id, "register_player", pinfo)
-	
+				
 	# Now to code that will be executed regardless of being on client or server
 	print("Registering player ", pinfo["pseudo"], " (", pinfo["net_id"], ") to internal player table")
 	players[pinfo["net_id"]] = pinfo          # Create the player entry in the dictionary
 	print(players)
 	emit_signal("player_list_changed")     # And notify that the player list has been changed
+
+func end_connection():
+	get_tree().get_network_peer().close_connection()
+	get_tree().set_network_peer(null)
+	players = {}
 	
 # Peer trying to connect to server is notified on success
 func _on_connected_to_server():
 	emit_signal("join_success")
+	
 	# Update the player_info dictionary with the obtained unique network ID
 	Gamestate.player_info["net_id"] = get_tree().get_network_unique_id()
+	
 	# Request the server to register this new player across all connected players
 	rpc_id(1, "register_player", Gamestate.player_info)
+	
 	# And register itself on the local list
 	register_player(Gamestate.player_info)
 
@@ -94,6 +109,13 @@ remote func unregister_player(id):
 	# Emit the signal that is meant to be intercepted only by the server
 	emit_signal("player_removed", pinfo)
 	
+func pseudo_in_list(nick: String) -> bool:
+	print("Checking nick " + nick)
+	for id in players:
+		print(nick + " =? "+players[id]["pseudo"])
+		if nick == players[id]["pseudo"]:
+			return true
+	return false
 # Peer trying to connect to server is notified on failure
 func _on_connection_failed():
 	emit_signal("join_fail")
@@ -102,8 +124,7 @@ func _on_connection_failed():
 	
 # Everyone gets notified whenever a new client joins the server
 func _on_player_connected(id):
-	pass
-
+	print("Client " + str(Gamestate.player_info["net_id"]) + ": player " + str(id) + " has connected !")
 
 # Everyone gets notified whenever someone disconnects from the server
 func _on_player_disconnected(id_player):

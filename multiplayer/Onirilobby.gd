@@ -41,16 +41,21 @@ func _on_btJoin_pressed():
 	var ip = $PanelJoin/txtServerIP.text
 	
 	#if the connexion succeded, then we connect into character select
-	if network.join_server(ip, port):
-		scene_transition.play()
-		yield(scene_transition, "transition_finished")
-		get_tree().change_scene("res://multiplayer/MultiplayerCharSelection.tscn")
+	match(network.join_server(ip, port, Gamestate.player_info)):
+		Network.ERRORS.NO_ERROR:
+			scene_transition.change_scene("res://multiplayer/MultiplayerCharSelection.tscn")
+		Network.ERRORS.CONNECTION_ERROR:
+			pass
+		Network.ERRORS.NAME_ALREADY_EXISTS:
+			pass
 	print("Erreur de connexion...")
 	
 func _on_join_fail():
 	print("Failed to join server")
 	
 func _on_btReturn_pressed():
+	print("End of connection")
+	network.end_connection()
 	scene_transition.play()
 	yield(scene_transition, "transition_finished")
 	get_tree().change_scene("res://scenes/titlescreen/title.tscn")

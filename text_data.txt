@@ -37,5 +37,5 @@ id;fr;en
 35;Echanger;Swap
 36;Effacer;Clear
 37;Annuler;Cancel
-38;L'incantation ne peut pas être complexifiée davantage! Supprimez un des ses éléments avant.;
-38;Vous n'avez pas assez d'argent!;
+38;L'incantation ne peut pas être complexifiée davantage! Supprimez un des ses éléments avant.;You can't complexify the incantation anymore ! Delete at least one element before.
+38;Vous n'avez pas assez d'argent!;Not enough money!

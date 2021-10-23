@@ -102,7 +102,7 @@ func next_step(b = false):
 	elif current_state == STATES.LOSING_DIALOGUE:
 		losing_game()
 	else:
-		current_state == STATES.GAME_END
+		current_state = STATES.GAME_END
 
 func get_state():
 	return current_state

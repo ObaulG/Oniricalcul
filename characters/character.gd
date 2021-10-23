@@ -31,7 +31,7 @@ func _init(char_dico: Dictionary):
 	var string_id = str(id)
 	if len(string_id) < 2:
 		string_id = "0" + string_id
-	icon_texture = load("res://characters/"+string_id+"/icon.PNG")
+	icon_texture = load("res://characters/"+string_id+"/icon.png")
 
 func get_id():
 	return id
