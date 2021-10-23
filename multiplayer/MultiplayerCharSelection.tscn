@@ -1,8 +1,7 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=32 format=2]
 
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=1]
 [ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=2]
-[ext_resource path="res://characters/01/icon.png" type="Texture" id=3]
 [ext_resource path="res://incantation/Incantation.tscn" type="PackedScene" id=4]
 [ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=5]
 [ext_resource path="res://scenes/scene_transition/SceneTransitionRect.tscn" type="PackedScene" id=6]
@@ -184,7 +183,6 @@ margin_left = 512.0
 margin_top = 64.0
 margin_right = 768.0
 margin_bottom = 320.0
-texture = ExtResource( 3 )
 stretch_mode = 1
 __meta__ = {
 "_edit_use_anchors_": false
@@ -442,7 +440,6 @@ margin_left = 188.0
 margin_top = 64.0
 margin_right = 444.0
 margin_bottom = 320.0
-texture = ExtResource( 3 )
 stretch_mode = 1
 __meta__ = {
 "_edit_use_anchors_": false

@@ -15,6 +15,8 @@ signal join_fail             # Failed to join a server
 signal player_list_changed
 signal player_removed(pinfo) 
 
+signal name_available(available)
+
 var server_info = {
 	name = "Server",      # Holds the name of the server
 	max_players = 2,      # Maximum allowed connections
@@ -54,14 +56,33 @@ func join_server(ip, port, pinfo):
 	if (net.create_client(ip, port) != OK) :
 		print("Failed to create client")
 		emit_signal("join_fail")
+		end_connection()
 		return ERRORS.CONNECTION_ERROR
 		
-	#we can connect only if the nickname is not already taken
-	if pseudo_in_list(pinfo["pseudo"]):
+	print("No connection error")
+	
+	get_tree().set_network_peer(net)
+	print("My id: " + str(Gamestate.player_info["net_id"]))
+	
+	#waiting for the connection to be established
+	yield(self, "join_success")
+	
+	#we can go to the char select room only if the nickname is not already taken
+	#check on server list
+	print("Server is  checking names...")
+	
+	rpc_id(1,"is_name_available", pinfo)
+	
+	var name_available = yield(self, "name_available")
+	
+	print("Name available: " + str(name_available))
+	
+	if not name_available:
 		print("Name already exists!")
 		emit_signal("join_fail")
+		end_connection()
 		return ERRORS.NAME_ALREADY_EXISTS
-	get_tree().set_network_peer(net)
+	
 	return ERRORS.NO_ERROR
 	
 remote func register_player(pinfo):
@@ -81,14 +102,16 @@ remote func register_player(pinfo):
 	emit_signal("player_list_changed")     # And notify that the player list has been changed
 
 func end_connection():
+	print("Ending connection to server")
 	get_tree().get_network_peer().close_connection()
 	get_tree().set_network_peer(null)
 	players = {}
 	
 # Peer trying to connect to server is notified on success
 func _on_connected_to_server():
-	emit_signal("join_success")
 	
+	
+	print("Connection success !")
 	# Update the player_info dictionary with the obtained unique network ID
 	Gamestate.player_info["net_id"] = get_tree().get_network_unique_id()
 	
@@ -97,29 +120,55 @@ func _on_connected_to_server():
 	
 	# And register itself on the local list
 	register_player(Gamestate.player_info)
-
+	
+	emit_signal("join_success")
+	
+remote func is_name_available(pinfo):
+	var id = pinfo["net_id"]
+	var pseudo = pinfo["pseudo"]
+	print(pseudo + " ("+str(id) + ") wants to connect.")
+	if (get_tree().is_network_server()):
+		var available = not pseudo_in_list(pseudo)
+		rpc_id(id, "answer_name_available", available)
+		if not available:
+			print("Name not available!")
+			unregister_player(id)
+			
+remote func answer_name_available(available):
+	emit_signal("name_available", available)
+	
 remote func unregister_player(id):
-	print("Removing player ", network.players[id]["pseudo"], " from internal table")
-	# Cache the player info because it's still necessary for some upkeeping
-	var pinfo = network.players[id]
-	# Remove the player from the list
-	network.players.erase(id)
-	# And notify the list has been changed
-	emit_signal("player_list_changed")
-	# Emit the signal that is meant to be intercepted only by the server
-	emit_signal("player_removed", pinfo)
+	print("Removing player ", str(id), " from internal table")
+	
+	print("table: " + str(players))
+	if id in players:
+		# Cache the player info because it's still necessary for some upkeeping
+		var pinfo = network.players[id]
+		# Remove the player from the list
+		network.players.erase(id)
+		# And notify the list has been changed
+		emit_signal("player_list_changed")
+		
+		# Emit the signal that is meant to be intercepted only by the server
+		emit_signal("player_removed", pinfo)
+	else:
+		print("Player is already removed... ?")
+	
 	
 func pseudo_in_list(nick: String) -> bool:
 	print("Checking nick " + nick)
 	for id in players:
 		print(nick + " =? "+players[id]["pseudo"])
 		if nick == players[id]["pseudo"]:
+			print("nick already in table!")
 			return true
 	return false
+	
+	
 # Peer trying to connect to server is notified on failure
 func _on_connection_failed():
 	emit_signal("join_fail")
-	get_tree().set_network_peer(null)
+	end_connection()
 
 	
 # Everyone gets notified whenever a new client joins the server
@@ -141,7 +190,6 @@ func _on_player_disconnected(id_player):
 	# Now to code that will be executed regardless of being on client or server
 	print("Unregistering player ", id_player, ") to internal player table")
 	unregister_player(id_player)
-	emit_signal("player_list_changed")     # And notify that the player list has been changed
 
 # Peer is notified when disconnected from server
 func _on_disconnected_from_server():

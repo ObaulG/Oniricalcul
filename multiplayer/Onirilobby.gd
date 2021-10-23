@@ -40,15 +40,17 @@ func _on_btJoin_pressed():
 	var port = int($PanelJoin/txtServerPort.text)
 	var ip = $PanelJoin/txtServerIP.text
 	
+	var connection_result = network.join_server(ip, port, Gamestate.player_info)
 	#if the connexion succeded, then we connect into character select
-	match(network.join_server(ip, port, Gamestate.player_info)):
+	match(connection_result):
 		Network.ERRORS.NO_ERROR:
+			print("Connection accepted !")
 			scene_transition.change_scene("res://multiplayer/MultiplayerCharSelection.tscn")
 		Network.ERRORS.CONNECTION_ERROR:
-			pass
+			print("Connection denied...")
 		Network.ERRORS.NAME_ALREADY_EXISTS:
-			pass
-	print("Erreur de connexion...")
+			print("Connection denied...")
+	
 	
 func _on_join_fail():
 	print("Failed to join server")

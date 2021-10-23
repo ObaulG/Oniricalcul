@@ -62,5 +62,8 @@ sync func receive_message(id, msg):
 	var nick = network.players[id]["pseudo"]
 	write_message(nick + ": " + msg)
 	
-func server_disconnected():
+func enter_room():
+	write_message("Connexion au serveur " + network.server_info["name"] + " réussie.")
+
+func _server_disconnected():
 	write_message("Déconnecté du serveur.")
