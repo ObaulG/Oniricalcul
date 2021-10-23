@@ -289,7 +289,6 @@ remotesync func character_selection(id_character,net_id):
 				rpc_id(id, "character_selection", id_character, net_id)
 		#we update this information in the network
 		network.players[net_id]["id_character_selected"] = id_character
-		
 	# Now to code that will be executed regardless of being on client or server
 	print("Character " + str(id_character) + " selected by client id " + str(net_id))
 	#we update the gamestate id char information
@@ -299,7 +298,6 @@ remotesync func character_selection(id_character,net_id):
 	change_screen_data(id_character, net_id)
 	
 remotesync func clear_selection(net_id):
-	
 	print("Client id " + str(get_tree().get_rpc_sender_id())+" : Char selection cancel for player " + str(net_id))
 	
 	if get_tree().is_network_server():
@@ -380,7 +378,7 @@ func _on_characters_item_selected(index):
 		rpc("character_selection", char_selected_id, Gamestate.player_info["net_id"])
 
 func _on_play_button_down():
-	if Gamestate.player_info["id_character_selected"] != -1:
+	if Gamestate.player_info["character_validated"]:
 		print("Validation id client " + str(Gamestate.player_info["net_id"]))
 		rpc("validate_choice", Gamestate.player_info["net_id"])
 	else:
@@ -389,10 +387,6 @@ func _on_play_button_down():
 func _on_cancel_choice_button_down():
 	var who = get_tree().get_rpc_sender_id()
 	print("Annulation choix par id client " + str(Gamestate.player_info["net_id"]))
-	if get_tree().is_network_server():
-		network.players[1]["character_validated"] = false
-		network.players[1]["id_character_selected"] = -1
-	
 	rpc("clear_selection", Gamestate.player_info["net_id"])
 	
 func leave_scene(dest: String):
