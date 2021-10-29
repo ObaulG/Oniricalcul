@@ -6,6 +6,12 @@ enum ERRORS{NO_ERROR=0,
 			CONNECTION_ERROR=1,
 			NAME_ALREADY_EXISTS=2,
 			NAME_INCORRECT = 3}
+			
+enum INFO {
+	NAME,
+	CHARACTER,
+	SOMETHING_ELSE
+}
 #Contains all players data and handlers to keep
 #data updated
 
@@ -14,8 +20,8 @@ signal join_success          # When the peer successfully joins a server
 signal join_fail             # Failed to join a server
 signal player_list_changed
 signal player_removed(pinfo) 
-
-signal name_available(available)
+signal disconnected()
+signal authorized_to_connect(approved)
 
 var server_info = {
 	name = "Server",      # Holds the name of the server
@@ -25,7 +31,6 @@ var server_info = {
 
 var players = {}
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_on_player_connected")
 	get_tree().connect("network_peer_disconnected", self, "_on_player_disconnected")
@@ -33,7 +38,8 @@ func _ready():
 	get_tree().connect("connection_failed", self, "_on_connection_failed")
 	get_tree().connect("server_disconnected", self, "_on_disconnected_from_server")
 
-
+	connect("join_success", self, "_on_join_success")
+	
 func create_server():
 	# Initialize the networking system
 	var net = NetworkedMultiplayerENet.new()
@@ -50,41 +56,33 @@ func create_server():
 	emit_signal("server_created")
 	register_player(Gamestate.player_info)
 	
-func join_server(ip, port, pinfo):
+func join_server(ip, port):
 	var net = NetworkedMultiplayerENet.new()
-	
 	if (net.create_client(ip, port) != OK) :
 		print("Failed to create client")
 		emit_signal("join_fail")
 		end_connection()
-		return ERRORS.CONNECTION_ERROR
-		
-	print("No connection error")
-	
 	get_tree().set_network_peer(net)
-	print("My id: " + str(Gamestate.player_info["net_id"]))
+
+remote func server_response_to_auth(approved: bool):
+	emit_signal("authorized_to_connect", approved)
 	
-	#waiting for the connection to be established
-	yield(self, "join_success")
+#sends data to server to check if it is correct
+remote func _on_join_success():
+	Gamestate.player_info["net_id"] = get_tree().get_network_unique_id()
+	rpc_id(1,"authentication",Gamestate.player_info)
 	
-	#we can go to the char select room only if the nickname is not already taken
-	#check on server list
-	print("Server is  checking names...")
-	
-	rpc_id(1,"is_name_available", pinfo)
-	
-	var name_available = yield(self, "name_available")
-	
-	print("Name available: " + str(name_available))
-	
-	if not name_available:
-		print("Name already exists!")
-		emit_signal("join_fail")
-		end_connection()
-		return ERRORS.NAME_ALREADY_EXISTS
-	
-	return ERRORS.NO_ERROR
-	
+remote func authentication(pinfo: Dictionary):
+	var sender = get_tree().get_rpc_sender_id()
+	var pseudo = pinfo["pseudo"]
+	print("Player " + str(sender) + " authentication...")
+	var approved = verify_info(INFO.NAME, pseudo)
+	if approved:
+		#register the new player into the table
+		print("Auth. approved! Registering the player on the table.")
+		register_player(pinfo)
+	rpc_id(sender, "server_response_to_auth", approved)
+
 remote func register_player(pinfo):
 	if (get_tree().is_network_server()):
 		# We are on the server, so distribute the player list information throughout the connected players
@@ -98,44 +96,41 @@ remote func register_player(pinfo):
 	# Now to code that will be executed regardless of being on client or server
 	print("Registering player ", pinfo["pseudo"], " (", pinfo["net_id"], ") to internal player table")
 	players[pinfo["net_id"]] = pinfo          # Create the player entry in the dictionary
-	print(players)
+	print_net_players_table()
 	emit_signal("player_list_changed")     # And notify that the player list has been changed
 
 func end_connection():
 	print("Ending connection to server")
 	get_tree().get_network_peer().close_connection()
 	get_tree().set_network_peer(null)
+	Gamestate.player_info["id_character_selected"] = -1
+	Gamestate.player_info["character_validated"] = false
 	players = {}
 	
+func print_net_players_table():
+	print(str(Gamestate.player_info["net_id"]) + " players registered in ")
+	for id in players:
+		var nick = players[id]["pseudo"]
+		print(nick + " - " + str(id))
+		
 # Peer trying to connect to server is notified on success
 func _on_connected_to_server():
-	
-	
-	print("Connection success !")
-	# Update the player_info dictionary with the obtained unique network ID
-	Gamestate.player_info["net_id"] = get_tree().get_network_unique_id()
-	
-	# Request the server to register this new player across all connected players
-	rpc_id(1, "register_player", Gamestate.player_info)
-	
-	# And register itself on the local list
-	register_player(Gamestate.player_info)
-	
+	print("Connection success ! Now asking to check name...")
+	#the signals makes the client send his data (see join_success)
 	emit_signal("join_success")
-	
-remote func is_name_available(pinfo):
-	var id = pinfo["net_id"]
-	var pseudo = pinfo["pseudo"]
-	print(pseudo + " ("+str(id) + ") wants to connect.")
+
+#Used by server to check 1 info from client
+func verify_info(info_type: int, info) -> bool:
+	var sender = get_tree().get_rpc_sender_id()
+	var approved : bool = false
 	if (get_tree().is_network_server()):
-		var available = not pseudo_in_list(pseudo)
-		rpc_id(id, "answer_name_available", available)
-		if not available:
-			print("Name not available!")
-			unregister_player(id)
-			
-remote func answer_name_available(available):
-	emit_signal("name_available", available)
+		match info_type:
+			INFO.NAME: 
+				approved = not pseudo_in_list(info)
+			INFO.CHARACTER: pass
+				#some other verification
+			INFO.SOMETHING_ELSE: pass
+	return approved
 	
 remote func unregister_player(id):
 	print("Removing player ", str(id), " from internal table")
@@ -193,4 +188,14 @@ func _on_player_disconnected(id_player):
 
 # Peer is notified when disconnected from server
 func _on_disconnected_from_server():
-	pass
+	print("Disconnected from server")
+	# Stop processing any node in the world, so the client remains responsive
+	get_tree().paused = true
+	# Clear the network object
+	get_tree().set_network_peer(null)
+	# Allow outside code to know about the disconnection
+	emit_signal("disconnected")
+	# Clear the internal player list
+	players.clear()
+	# Reset the player info network ID
+	Gamestate.player_info["net_id"] = 1

@@ -105,8 +105,6 @@ func _ready():
 	character_list.icon_mode = ItemList.ICON_MODE_TOP
 	character_list.select_mode = ItemList.SELECT_SINGLE
 	character_list.same_column_width = true
-
-	
 	var k = 0
 	# adding char sprite in item list
 	for charkey in global.char_data.keys():

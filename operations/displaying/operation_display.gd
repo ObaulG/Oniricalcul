@@ -73,19 +73,19 @@ func change_operation(t: int, d: int, st = -1):
 	subtype = st
 	diff_label.text = str(diff)
 	
-	var index = 0
-	match type:
-		1:
-			index = 0
-		2:
-			index = 3
-		3:
-			index = 2
-		4:
-			index = 1
-		_:
-			index = 4
-	sprite_node.texture.set_region(Rect2(index*64, 0, 64, 64))
+#	var index = 0
+#	match type:
+#		1:
+#			index = 0
+#		2:
+#			index = 3
+#		3:
+#			index = 2
+#		4:
+#			index = 1
+#		_:
+#			index = 4
+	sprite_node.texture.set_region(Rect2((t-1)*64, 0, 64, 64))
 	if t != -1:
 		visible = true
 

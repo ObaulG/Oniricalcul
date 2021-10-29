@@ -18,8 +18,11 @@ colors = PoolColorArray( 0.780392, 0.756863, 0.133333, 1, 0.811765, 0.0901961, 0
 [sub_resource type="CircleShape2D" id=3]
 radius = 38.4191
 
-[node name="PlayerDomain" type="Node"]
+[node name="PlayerDomain" type="Control"]
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="atk_timer" type="Timer" parent="."]
 one_shot = true

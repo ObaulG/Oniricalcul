@@ -1,0 +1,360 @@
+[gd_scene load_steps=19 format=2]
+
+[ext_resource path="res://characters/01/icon.png" type="Texture" id=1]
+[ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=2]
+[ext_resource path="res://UI/StatDisplay.tscn" type="PackedScene" id=3]
+[ext_resource path="res://incantation/Incantation.tscn" type="PackedScene" id=4]
+[ext_resource path="res://incantation/Incantation.gd" type="Script" id=5]
+[ext_resource path="res://UI/StatDisplay.gd" type="Script" id=6]
+[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=7]
+[ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=8]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.5
+shader_param/reverse = null
+
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+shader_param/reverse = null
+
+[sub_resource type="DynamicFontData" id=5]
+font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
+
+[sub_resource type="DynamicFont" id=6]
+size = 30
+font_data = SubResource( 5 )
+
+[sub_resource type="DynamicFont" id=7]
+size = 20
+font_data = SubResource( 5 )
+
+[sub_resource type="ShaderMaterial" id=8]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = null
+shader_param/reverse = null
+
+[sub_resource type="ShaderMaterial" id=9]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = 0.0
+shader_param/reverse = null
+
+[sub_resource type="StreamTexture" id=11]
+flags = 4
+load_path = "res://.import/spritesheet.png-a4004e263790264e14d9e203658dc48a.stex"
+
+[sub_resource type="AtlasTexture" id=12]
+flags = 4
+atlas = SubResource( 11 )
+region = Rect2( 256, 0, 64, 64 )
+
+[sub_resource type="ShaderMaterial" id=13]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = null
+shader_param/reverse = null
+
+[node name="char2" type="Control"]
+margin_left = 942.0
+margin_top = -8.0
+margin_right = 1902.0
+margin_bottom = 1072.0
+rect_min_size = Vector2( 960, 1080 )
+rect_clip_content = true
+mouse_filter = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="char_icon" type="TextureRect" parent="."]
+margin_left = 188.0
+margin_top = 64.0
+margin_right = 444.0
+margin_bottom = 320.0
+texture = ExtResource( 1 )
+stretch_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="name" type="Label" parent="."]
+margin_left = 188.0
+margin_top = 321.0
+margin_right = 444.0
+margin_bottom = 364.0
+custom_fonts/font = ExtResource( 7 )
+text = "???"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="info" type="Control" parent="."]
+anchor_left = 0.467
+anchor_top = 0.044
+anchor_right = 0.467
+anchor_bottom = 0.044
+margin_left = 59.68
+margin_top = 8.48
+margin_right = 483.68
+margin_bottom = 944.48
+rect_min_size = Vector2( 424, 936 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="info"]
+margin_right = 424.0
+margin_bottom = 944.0
+color = Color( 1, 1, 1, 0.258824 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Incantation" type="Control" parent="info" instance=ExtResource( 4 )]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -256.0
+margin_top = 315.0
+margin_right = -544.0
+margin_bottom = -237.0
+rect_min_size = Vector2( 136, 384 )
+mouse_filter = 2
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="info"]
+margin_left = 10.0
+margin_right = 424.0
+margin_bottom = 660.0
+rect_clip_content = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="info/VBoxContainer"]
+margin_right = 424.0
+margin_bottom = 90.0
+custom_constants/separation = 33
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="info/VBoxContainer/HBoxContainer"]
+margin_right = 171.0
+margin_bottom = 90.0
+alignment = 1
+
+[node name="hp_label" type="Label" parent="info/VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_right = 171.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 7 )
+text = "Points de vie"
+
+[node name="hardness_label" type="Label" parent="info/VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_top = 47.0
+margin_right = 171.0
+margin_bottom = 90.0
+custom_fonts/font = ExtResource( 7 )
+text = "Difficulté"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="info/VBoxContainer/HBoxContainer"]
+margin_left = 204.0
+margin_right = 404.0
+margin_bottom = 90.0
+rect_pivot_offset = Vector2( -928, -24 )
+custom_constants/separation = 20
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="hp_display" type="Control" parent="info/VBoxContainer/HBoxContainer/VBoxContainer2" instance=ExtResource( 3 )]
+material = SubResource( 1 )
+margin_top = 9.0
+margin_right = 200.0
+margin_bottom = 35.0
+rect_min_size = Vector2( 200, 26 )
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+reverse_gradient = true
+current_value = 14.0
+
+[node name="hardness_display" type="Control" parent="info/VBoxContainer/HBoxContainer/VBoxContainer2" instance=ExtResource( 3 )]
+material = SubResource( 3 )
+margin_top = 55.0
+margin_right = 200.0
+margin_bottom = 81.0
+rect_min_size = Vector2( 200, 26 )
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+current_value = 14.0
+
+[node name="char_descr" type="RichTextLabel" parent="info/VBoxContainer"]
+margin_top = 94.0
+margin_right = 424.0
+margin_bottom = 214.0
+rect_min_size = Vector2( 0, 120 )
+custom_fonts/mono_font = SubResource( 6 )
+custom_fonts/normal_font = SubResource( 7 )
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="info/VBoxContainer"]
+margin_top = 218.0
+margin_right = 424.0
+margin_bottom = 261.0
+custom_constants/separation = 51
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="info/VBoxContainer/HBoxContainer2"]
+margin_right = 153.0
+margin_bottom = 43.0
+
+[node name="backlash_label" type="Label" parent="info/VBoxContainer/HBoxContainer2/VBoxContainer"]
+margin_right = 153.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 7 )
+text = "Contrecoup"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="info/VBoxContainer/HBoxContainer2"]
+material = SubResource( 8 )
+margin_left = 204.0
+margin_right = 404.0
+margin_bottom = 43.0
+rect_pivot_offset = Vector2( -928, -24 )
+custom_constants/separation = 20
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="backlash_display" type="Control" parent="info/VBoxContainer/HBoxContainer2/VBoxContainer2" instance=ExtResource( 3 )]
+material = SubResource( 9 )
+margin_top = 8.0
+margin_right = 200.0
+margin_bottom = 34.0
+rect_min_size = Vector2( 200, 26 )
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+current_value = 14.0
+
+[node name="backlash_descr" type="RichTextLabel" parent="info/VBoxContainer"]
+margin_top = 265.0
+margin_right = 424.0
+margin_bottom = 385.0
+rect_min_size = Vector2( 0, 120 )
+custom_fonts/mono_font = ExtResource( 7 )
+custom_fonts/normal_font = ExtResource( 7 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="info/VBoxContainer"]
+margin_top = 389.0
+margin_right = 424.0
+margin_bottom = 739.0
+
+[node name="Label2" type="Label" parent="info/VBoxContainer/VBoxContainer"]
+margin_right = 424.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 7 )
+text = "Univers"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="info/VBoxContainer/VBoxContainer"]
+margin_top = 47.0
+margin_right = 424.0
+margin_bottom = 90.0
+custom_constants/separation = 31
+
+[node name="Label2" type="Label" parent="info/VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_right = 132.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 7 )
+text = "Opération"
+
+[node name="VSeparator" type="VSeparator" parent="info/VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 163.0
+margin_right = 167.0
+margin_bottom = 43.0
+
+[node name="Label3" type="Label" parent="info/VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 198.0
+margin_right = 332.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 7 )
+text = "Fréquence"
+
+[node name="GridContainer" type="ScrollContainer" parent="info/VBoxContainer/VBoxContainer"]
+margin_top = 94.0
+margin_right = 424.0
+margin_bottom = 350.0
+rect_min_size = Vector2( 424, 256 )
+
+[node name="element" type="VBoxContainer" parent="info/VBoxContainer/VBoxContainer/GridContainer"]
+margin_right = 355.0
+margin_bottom = 64.0
+
+[node name="hbox" type="HBoxContainer" parent="info/VBoxContainer/VBoxContainer/GridContainer/element"]
+margin_right = 355.0
+margin_bottom = 64.0
+rect_pivot_offset = Vector2( -1040, -27 )
+custom_constants/separation = 91
+
+[node name="op" type="TextureRect" parent="info/VBoxContainer/VBoxContainer/GridContainer/element/hbox"]
+margin_right = 64.0
+margin_bottom = 64.0
+texture = SubResource( 12 )
+
+[node name="centering" type="CenterContainer" parent="info/VBoxContainer/VBoxContainer/GridContainer/element/hbox"]
+margin_left = 155.0
+margin_right = 355.0
+margin_bottom = 64.0
+
+[node name="probability_display" type="Control" parent="info/VBoxContainer/VBoxContainer/GridContainer/element/hbox/centering" instance=ExtResource( 3 )]
+material = SubResource( 13 )
+margin_top = 19.0
+margin_right = 200.0
+margin_bottom = 45.0
+rect_min_size = Vector2( 200, 26 )
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+percent = true
+
+[node name="Label" type="Label" parent="."]
+margin_left = 472.0
+margin_top = 656.0
+margin_right = 862.0
+margin_bottom = 757.0
+custom_fonts/font = ExtResource( 8 )
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}

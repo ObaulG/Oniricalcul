@@ -6,20 +6,21 @@ onready var scene_transition = $SceneTransitionRect
 
 func _ready():
 	network.connect("server_created", self, "_on_ready_to_play")
-	network.connect("join_success", self, "_on_ready_to_play")
+	network.connect("join_success", self, "_on_join_success")
 	network.connect("join_fail", self, "_on_join_fail")
-	
+	network.connect("authorized_to_connect", self, "_on_authorized_to_connect")
 	$PanelIP/txtLocalIp.text = str(IP.get_local_addresses())
 	
 func set_player_info():
 	if (!$PanelPlayer/txtPlayerName.text.empty()):
 		Gamestate.player_info["pseudo"] = $PanelPlayer/txtPlayerName.text
 
-	
 func _on_ready_to_play():
-	get_tree().change_scene("res://multiplayer/MultiplayerCharSelection.tscn")
+	scene_transition.change_scene("res://multiplayer/MultiplayerCharSelection.tscn")
 	
-
+func _on_join_success():
+	print("Onirilobby: Connected to the server !")
+	
 func _on_btCreate_pressed():
 	# Properly set the local player information
 	set_player_info()
@@ -36,22 +37,16 @@ func _on_btCreate_pressed():
 func _on_btJoin_pressed():
 	# Properly set the local player information
 	set_player_info()
-	
-	var port = int($PanelJoin/txtServerPort.text)
 	var ip = $PanelJoin/txtServerIP.text
+	var port = int($PanelJoin/txtServerPort.text)
+	network.join_server(ip, port)
 	
-	var connection_result = network.join_server(ip, port, Gamestate.player_info)
-	#if the connexion succeded, then we connect into character select
-	match(connection_result):
-		Network.ERRORS.NO_ERROR:
-			print("Connection accepted !")
-			scene_transition.change_scene("res://multiplayer/MultiplayerCharSelection.tscn")
-		Network.ERRORS.CONNECTION_ERROR:
-			print("Connection denied...")
-		Network.ERRORS.NAME_ALREADY_EXISTS:
-			print("Connection denied...")
-	
-	
+func _on_authorized_to_connect(approved: bool):
+	if approved:
+		scene_transition.change_scene("res://multiplayer/MultiplayerCharSelection.tscn")
+	else:
+		print("Connection denied!")
+
 func _on_join_fail():
 	print("Failed to join server")
 	
@@ -60,4 +55,4 @@ func _on_btReturn_pressed():
 	network.end_connection()
 	scene_transition.play()
 	yield(scene_transition, "transition_finished")
-	get_tree().change_scene("res://scenes/titlescreen/title.tscn")
+	scene_transition.change_scene("res://scenes/titlescreen/title.tscn")

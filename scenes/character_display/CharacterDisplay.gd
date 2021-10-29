@@ -1,0 +1,96 @@
+extends Control
+
+class_name CharacterDisplay
+
+signal ui_updated()
+const confirmed_color = Color(0.11,0.92,0.08)
+const unconfirmed_color = Color(0.78,0.75,0.76)
+const no_player_color = Color(0.24,0.28,0.27)
+export(bool) var horizontal_reverse: bool = false
+export(int) var id_character_selected
+export(bool) var validated = false
+
+var id_player: int
+onready var cr_info_bg = $cr_bg
+
+onready var hbox_node = $hbox
+# One part inside the hbox
+onready var char_icon = $hbox/vbox/char_icon
+onready var player_name = $hbox/vbox/name
+
+#The other part
+onready var color_rect = $hbox/ColorRect
+
+
+func _ready():
+	id_character_selected = -1
+	id_player = -1
+	validated = false
+	cancel_validation()
+	cr_info_bg.color = no_player_color
+	
+func remove_player():
+	set_player_name("???")
+	cancel_validation()
+	id_player = -1
+	cr_info_bg.color = no_player_color
+	
+func add_player(name: String, id: int):
+	set_player_name(name)
+	id_player = id
+	cr_info_bg.color = unconfirmed_color
+	
+func change_screen_data(id: int):
+	var character = global.char_data[id]
+	char_icon.set_texture(character.get_icon_texture())
+	char_icon.visible = true
+	emit_signal("ui_updated")
+
+func validate_ui():
+	#when validated, we change the color of the rect
+	cr_info_bg.color = confirmed_color
+	
+func cancel_ui():
+	cr_info_bg.color = unconfirmed_color
+	
+func clear_selection():
+	char_icon.texture = global.get_resized_ImageTexture(global.unknown, 128, 128)
+	emit_signal("ui_updated")
+
+func select_character(id: int):
+	id_character_selected = id
+	change_screen_data(id)
+	
+func validate_choice():
+	validated = true
+	validate_ui()
+	
+func cancel_validation():
+	id_character_selected = -1
+	validated = false
+	clear_selection()
+	cancel_ui()
+	
+func reverse_ui_elements():
+	var first_element = hbox_node.get_child(0)
+	hbox_node.remove_child(first_element)
+	hbox_node.add_child(first_element)
+	
+func has_player() -> bool:
+	return player_name != "???"
+	
+func get_character_selected():
+	return id_character_selected
+
+func get_validated():
+	return validated
+	
+func get_player_id() -> int:
+	return id_player
+	
+func get_player_name() -> String:
+	return player_name.text
+	
+func set_player_name(s: String):
+	player_name.text = s
+	

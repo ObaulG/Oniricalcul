@@ -13,5 +13,4 @@ void fragment(){
 	else{
 		COLOR.rgb = curr_color.rgb * (starting_color + (ending_color - starting_color) *progression);
 	}
-    	
 }

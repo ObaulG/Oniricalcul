@@ -1,0 +1,42 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/character_display/MultipleCharacterDisplay.gd" type="Script" id=1]
+[ext_resource path="res://scenes/character_display/CharacterDisplay.tscn" type="PackedScene" id=2]
+
+[node name="MultipleCharacterDisplay" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -1488.0
+margin_bottom = -304.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="scroller" type="ScrollContainer" parent="."]
+margin_right = 416.0
+margin_bottom = 776.0
+scroll_horizontal_enabled = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="vbox_characters" type="VBoxContainer" parent="scroller"]
+margin_right = 400.0
+margin_bottom = 755.0
+custom_constants/separation = 17
+alignment = 1
+
+[node name="CharacterDisplay" parent="scroller/vbox_characters" instance=ExtResource( 2 )]
+
+[node name="CharacterDisplay2" parent="scroller/vbox_characters" instance=ExtResource( 2 )]
+margin_top = 193.0
+margin_bottom = 369.0
+
+[node name="CharacterDisplay3" parent="scroller/vbox_characters" instance=ExtResource( 2 )]
+margin_top = 386.0
+margin_bottom = 562.0
+
+[node name="CharacterDisplay4" parent="scroller/vbox_characters" instance=ExtResource( 2 )]
+margin_top = 579.0
+margin_bottom = 755.0

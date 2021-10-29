@@ -3,7 +3,8 @@ extends Node
 # Contains a player's data.
 
 var player_info: Dictionary
-
+var update_rate = 30  # How many game updates per second
+var update_delta = 1.0 / update_rate
 # Called when the node enters the scene tree for the first time.
 func _init():
 	player_info = global.player.get_multiplayer_dict().duplicate()
@@ -21,3 +22,12 @@ func _init():
 func get_data() -> Dictionary:
 	return player_info
 
+func set_update_rate(r):
+	update_rate = r
+	update_delta = 1.0 / update_rate
+
+func get_update_delta():
+	return update_delta
+
+func no_set(r):
+	pass
