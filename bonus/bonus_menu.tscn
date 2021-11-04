@@ -64,15 +64,15 @@ mouse_filter = 2
 
 [node name="titlecontainer" type="CenterContainer" parent="MarginContainer/vbox/HBoxContainer"]
 margin_left = 536.0
-margin_right = 545.0
+margin_right = 656.0
 margin_bottom = 66.0
 mouse_filter = 2
 
 [node name="title" type="Label" parent="MarginContainer/vbox/HBoxContainer/titlecontainer"]
 modulate = Color( 0, 0, 0, 1 )
-margin_top = 32.0
-margin_right = 9.0
-margin_bottom = 34.0
+margin_top = 11.0
+margin_right = 120.0
+margin_bottom = 54.0
 custom_fonts/font = SubResource( 1 )
 text = "Interlude"
 __meta__ = {
@@ -81,9 +81,9 @@ __meta__ = {
 
 [node name="points" type="Label" parent="MarginContainer/vbox/HBoxContainer"]
 modulate = Color( 0, 0, 0, 1 )
-margin_left = 881.0
+margin_left = 992.0
 margin_top = 11.0
-margin_right = 991.0
+margin_right = 1102.0
 margin_bottom = 54.0
 custom_fonts/font = SubResource( 3 )
 text = "Argent: "

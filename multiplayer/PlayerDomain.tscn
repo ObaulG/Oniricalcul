@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://multiplayer/PlayerDomain.gd" type="Script" id=1]
 [ext_resource path="res://scenes/domain/meteor_sender.gd" type="Script" id=2]
@@ -7,7 +7,6 @@
 [ext_resource path="res://textures/atk_texture_over.png" type="Texture" id=5]
 [ext_resource path="res://textures/atk_texture_under.png" type="Texture" id=6]
 [ext_resource path="res://textures/atk_texture_progress.png" type="Texture" id=7]
-[ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=8]
 
 [sub_resource type="ShaderMaterial" id=1]
 
@@ -19,6 +18,7 @@ colors = PoolColorArray( 0.780392, 0.756863, 0.133333, 1, 0.811765, 0.0901961, 0
 radius = 38.4191
 
 [node name="PlayerDomain" type="Control"]
+rect_min_size = Vector2( 420, 633 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -32,7 +32,6 @@ one_shot = true
 [node name="margin_c" type="MarginContainer" parent="."]
 margin_right = 420.0
 margin_bottom = 552.0
-rect_scale = Vector2( 1.3, 1.3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -179,54 +178,3 @@ margin_right = 166.0
 margin_bottom = 325.0
 custom_fonts/font = ExtResource( 3 )
 text = "Position: "
-
-[node name="vbox" type="VBoxContainer" parent="."]
-margin_left = 618.0
-margin_top = 8.0
-margin_right = 1118.0
-margin_bottom = 500.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="operation_zone" type="MarginContainer" parent="vbox"]
-margin_right = 500.0
-margin_bottom = 300.0
-
-[node name="ColorRect" type="ColorRect" parent="vbox/operation_zone"]
-margin_right = 500.0
-margin_bottom = 300.0
-rect_min_size = Vector2( 500, 300 )
-color = Color( 0.203922, 1, 0.533333, 0.121569 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="VBoxContainer" type="VBoxContainer" parent="vbox/operation_zone"]
-margin_right = 500.0
-margin_bottom = 300.0
-custom_constants/separation = 69
-
-[node name="operation_display" type="Label" parent="vbox/operation_zone/VBoxContainer"]
-margin_right = 500.0
-margin_bottom = 101.0
-custom_fonts/font = ExtResource( 8 )
-text = "op_str"
-align = 1
-valign = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="operation_answer" type="Label" parent="vbox/operation_zone/VBoxContainer"]
-margin_top = 170.0
-margin_right = 500.0
-margin_bottom = 271.0
-custom_fonts/font = ExtResource( 8 )
-text = "op_ans"
-align = 1
-valign = 1
-autowrap = true
-__meta__ = {
-"_edit_use_anchors_": false
-}

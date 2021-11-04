@@ -1,0 +1,54 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=1]
+
+[node name="OperationDisplayBasic" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 3.0
+margin_top = 3.0
+margin_right = -1417.0
+margin_bottom = -777.0
+rect_min_size = Vector2( 500, 300 )
+rect_pivot_offset = Vector2( 263.732, -791.347 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="operation_display" type="Label" parent="."]
+margin_left = -3.36353
+margin_top = -5.45435
+margin_right = 496.636
+margin_bottom = 95.5457
+custom_fonts/font = ExtResource( 1 )
+text = "op_str"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="operation_answer" type="Label" parent="."]
+margin_left = -3.36353
+margin_top = 164.546
+margin_right = 496.636
+margin_bottom = 265.546
+custom_fonts/font = ExtResource( 1 )
+text = "op_ans"
+align = 1
+valign = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_left = -3.36353
+margin_top = -5.45435
+margin_right = 496.636
+margin_bottom = 294.546
+rect_min_size = Vector2( 500, 300 )
+color = Color( 0.203922, 1, 0.533333, 0.121569 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

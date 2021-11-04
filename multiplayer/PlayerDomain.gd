@@ -27,9 +27,7 @@ signal first_threat_ref_changed()
 #Enums
 enum BUYING_OP_ATTEMPT_RESULT{FREE_SPACE, NO_SPACE, NO_MONEY, ERROR}
 
-#Consts
-const STANCES = {ATTACK = 1, DEFENSE = 2, BONUS = 3}
-const THREAT_TYPES = {REGULAR = 1, FAST = 2, STRONG = 3}
+
 
 #Exported vars
 
