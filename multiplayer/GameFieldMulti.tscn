@@ -11,8 +11,9 @@
 script = ExtResource( 1 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
-margin_right = 1752.0
-margin_bottom = 1016.0
+margin_right = 1920.0
+margin_bottom = 1080.0
+rect_min_size = Vector2( 1920, 1080 )
 color = Color( 0, 0, 0, 0.729412 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -22,16 +23,16 @@ __meta__ = {
 script = ExtResource( 4 )
 
 [node name="main_player_domain" parent="." instance=ExtResource( 3 )]
-margin_left = 50.4537
-margin_top = 169.861
-margin_right = 470.454
-margin_bottom = 802.861
+margin_left = 32.0
+margin_top = 43.0
+margin_right = 452.0
+margin_bottom = 676.0
 
 [node name="OperationDisplayBasic" parent="." instance=ExtResource( 5 )]
-margin_left = 592.0
-margin_top = 284.947
-margin_right = 1092.0
-margin_bottom = 584.947
+margin_left = 680.0
+margin_top = 48.0
+margin_right = 1180.0
+margin_bottom = 348.0
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
@@ -62,10 +63,13 @@ __meta__ = {
 }
 
 [node name="enemy" type="GridContainer" parent="."]
-margin_left = 1116.0
-margin_top = 24.0
-margin_right = 1716.0
-margin_bottom = 1000.0
+margin_left = 1256.0
+margin_top = 122.546
+margin_right = 1856.0
+margin_bottom = 962.546
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="BaseDomainDisplay" parent="enemy" instance=ExtResource( 6 )]
 anchor_right = 0.0

@@ -2,6 +2,7 @@ extends Node
 
 class_name Spellbook
 
+signal attack()
 #Consts
 const STANCES = {ATTACK = 1, DEFENSE = 2, BONUS = 3}
 const THREAT_TYPES = {REGULAR = 1, FAST = 2, STRONG = 3}
@@ -52,10 +53,10 @@ var good_answers: int
 var chain: int
 var nb_pattern_loops: int
 
-onready var threats = get_parent().get_node("Threats")
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+onready var domain_field = get_parent().get_node("domain_field")
+
+func _ready():
+	connect("changing_stance_command", self, "_on_changing_stance_command")
 
 func initialise(char_dico):
 	rng = get_parent().rng
@@ -157,35 +158,9 @@ func determine_effective_power() -> int:
 
 	return power
 
-func attack_threat(incantation_completed = false):
-	threats.determine_nearest_threat()
-	
-	if threats.threat_presence() :
-		var damages = 0.5*defense_power.apply() / pattern.get_len()
-		if incantation_completed:
-			damages += 0.5*defense_power.apply()
-		create_magic_homing_projectile(threats.get_first_threat(), 
-										base_projectile_start, 
-										damages)
-	else:
-		apply_bonus(true)
-	 
-sync func create_magic_homing_projectile(target, start_pos: Vector2, power):
-	var new_projectile = global.projectile.instance()
-	new_projectile.create(self, power, id_character, id_domain, target)
-	terrain.add_child(new_projectile)
-	new_projectile.position = start_pos
-	
-func attack_enemy(potential: float, fraction=1.0):
-	var threat_stats = determine_threat_stats(potential) 
-	update_threat_stats()
-	var attack_data = {
-		character = self.character,
-		atk_type = self.atk_type,
-		threat_hp = self.atk_hp,
-		threat_power = self.atk_power,
-		threat_delay = self.atk_delay_time,
-		id = meteor_sent
-	}
-	main_field_node.meteor_send(id_domain, attack_data)
-	meteor_sent += 1
+
+func get_current_operation():
+	return pattern.get_current_op()
+
+func on_change_stance_command(new_stance):
+	stance = new_stance

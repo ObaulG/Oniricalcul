@@ -5,8 +5,6 @@ extends Node2D
 #so we don't always update the screen.
 
 
-
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# Connect event handler to the player_list_changed signal
@@ -68,20 +66,52 @@ remote func spawn_players(pinfo, spawn_index):
 	# Finally add the actor into the world
 	add_child(nactor)
 
-remote func meteor_send(id_domain, attack_data):
-	
+
+#note: meteor and projectile casts are only visual: if it is display
+#on a basedomaindisplay, then it's not the main character so they should
+#not send data from other players.
+
+#attack from pid
+remote func meteor_cast(pid: int, attack_data: Dictionary):
+	pass
 	#Determine the target
-	var id_target = 1
-	if id_domain == 2:
-		id_target = 2
 
 	#server code
-	if get_tree().is_network_server():
-		for id in network.players:
-			if id != id_domain:
-				pass
+#	if get_tree().is_network_server():
+#		for id in network.players:
+#			if id != id_domain:
+#				pass
 
 	
 	#everyone code
+
+remote func magic_projectile_cast(id_domain: int, target, char_id, start_pos: Vector2, power):
+	if get_tree().is_network_server():
+		pass
+		
+#calls result_answer
+remote func check_answer(op, ans, id_domain):
+	#only the server is habilitated to give the answer
+	if get_tree().is_network_server():
+		pass
+
+#called on every client. 
+remotesync func result_answer(id_domain, good_answer: bool):
+	if get_tree().is_network_server():
+		pass
+
+remote func damage_taken(id_domain: int, n: int):
+	if get_tree().is_network_server():
+		pass
+
+remote func threat_damage_taken(id_domain, id_meteor, n):
+	pass
 	
-	
+remote func damage_healed(id_domain: int, n: int):
+	if get_tree().is_network_server():
+		pass
+		
+remote func update_incantation(id_domain: int, n: int):
+	if get_tree().is_network_server():
+		pass
+		

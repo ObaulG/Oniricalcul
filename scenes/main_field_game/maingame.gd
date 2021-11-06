@@ -16,6 +16,7 @@ const BASE_NEW_OPERATIONS = 4
 
 const AI_BASE_ANSWER_TIME_BY_DIFF = [4.0, 3.2, 2.4, 1.6, 1.2, 0.6]
 const AI_BASE_ANSWER_TIME_BY_OP_DIFF = [0.05, 0.2, 1.2, 2.3, 4]
+
 class_name GameMaster
 
 var pre_round_duration: float
@@ -122,7 +123,6 @@ func make_pause():
 	
 func show_calcul():
 	current_calcul_label.text = domain1.get_current_calcul().get_str_show()
-
 
 func _on_domain_p1_attack(data: Dictionary):
 	send_threat(1, 2, data)

@@ -2,7 +2,7 @@ extends Node2D
 
 class_name MagicProjectile
 
-const BASE_SPEED = 200 #px/s
+const BASE_SPEED = 500 #px/s
 
 signal target_hit(damage)
 signal target_destroyed()

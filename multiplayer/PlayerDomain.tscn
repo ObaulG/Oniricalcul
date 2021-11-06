@@ -30,26 +30,22 @@ one_shot = true
 [node name="game_timer" type="Timer" parent="."]
 
 [node name="margin_c" type="MarginContainer" parent="."]
-margin_right = 420.0
-margin_bottom = 552.0
+margin_right = 578.0
+margin_bottom = 803.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="bg_color" type="ColorRect" parent="margin_c"]
-margin_right = 420.0
-margin_bottom = 633.0
-color = Color( 0.466667, 0.552941, 0.733333, 0.223529 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="bg_color" type="Panel" parent="margin_c"]
+margin_right = 578.0
+margin_bottom = 999.0
 
 [node name="vboxc" type="VBoxContainer" parent="margin_c"]
-margin_right = 420.0
-margin_bottom = 633.0
+margin_right = 578.0
+margin_bottom = 999.0
 
 [node name="main_data" type="HBoxContainer" parent="margin_c/vboxc"]
-margin_right = 420.0
+margin_right = 578.0
 margin_bottom = 195.0
 rect_min_size = Vector2( 420, 64 )
 custom_constants/separation = 49
@@ -61,7 +57,7 @@ rect_min_size = Vector2( 128, 128 )
 
 [node name="char_icon" type="TextureRect" parent="margin_c/vboxc/main_data/char"]
 margin_right = 128.0
-margin_bottom = 195.0
+margin_bottom = 128.0
 rect_min_size = Vector2( 128, 128 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -108,14 +104,14 @@ gradient = SubResource( 2 )
 
 [node name="hbox2" type="HBoxContainer" parent="margin_c/vboxc"]
 margin_top = 199.0
-margin_right = 420.0
-margin_bottom = 633.0
+margin_right = 578.0
+margin_bottom = 999.0
 rect_min_size = Vector2( 420, 420 )
 
 [node name="Terrain" type="PanelContainer" parent="margin_c/vboxc/hbox2"]
-margin_right = 224.0
-margin_bottom = 434.0
-rect_min_size = Vector2( 224, 434 )
+margin_right = 350.0
+margin_bottom = 800.0
+rect_min_size = Vector2( 350, 800 )
 rect_clip_content = true
 
 [node name="A2D_send_meteor" type="Area2D" parent="margin_c/vboxc/hbox2/Terrain"]
@@ -123,13 +119,13 @@ position = Vector2( 239, -20.5385 )
 script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="margin_c/vboxc/hbox2/Terrain/A2D_send_meteor"]
-position = Vector2( -3.05176e-05, 0 )
+position = Vector2( 111.118, 9.52441 )
 shape = SubResource( 3 )
 
 [node name="vbox" type="VBoxContainer" parent="margin_c/vboxc/hbox2"]
-margin_left = 228.0
-margin_right = 394.0
-margin_bottom = 434.0
+margin_left = 354.0
+margin_right = 520.0
+margin_bottom = 800.0
 
 [node name="points" type="Label" parent="margin_c/vboxc/hbox2/vbox"]
 margin_right = 166.0

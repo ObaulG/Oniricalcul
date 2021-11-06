@@ -19,7 +19,6 @@ signal damaged(n)
 signal healed(n)
 signal points_earned(n)
 
-
 #Enums
 enum BUYING_OP_ATTEMPT_RESULT{FREE_SPACE, NO_SPACE, NO_MONEY, ERROR}
 
@@ -57,8 +56,10 @@ func process(delta):
 		answer_time += delta
 
 func _ready():
-	id_character = Gamestate.player_info["id_character_selected"]
-	var char_dico = global.characters[id_character]
+	id_character = -1
+	
+func initialise(pid: int):
+	var char_dico = global.characters[pid]
 	hp_max = char_dico["hp"]
 	hp_current = hp_max
 
@@ -74,3 +75,45 @@ func _ready():
 	spellbook.initialize(char_dico)
 	#input_handler.initialize()
 	op_stats.initialize(char_dico)
+
+
+func get_damage(n):
+	hp_current -= n
+	emit_signal("damaged", n)
+	emit_signal("hp_value_changed", hp_current)
+	
+func heal(n):
+	hp_current = clamp(hp_current  + n, 0, hp_max)
+	emit_signal("healed", n)
+	emit_signal("hp_value_changed", hp_current)
+
+# getters
+func get_id_domain():
+	return id_domain
+
+func get_id_character():
+	return id_character
+
+func get_hp():
+	return hp_current
+	
+func get_hp_max():
+	return hp_max
+	
+func get_points():
+	return points
+
+func get_nb_calculs():
+	return nb_calculs
+
+func get_good_answers():
+	return good_answers
+	
+func get_chain():
+	return chain
+	
+func get_nb_pattern_loops():
+	return nb_pattern_loops
+	
+# setters
+

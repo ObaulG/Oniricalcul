@@ -14,7 +14,8 @@ extends Node
 # the ui should be abstract too
 # because some operations need a different display
 # (fractions for instance)
-
+const STANCES = {ATTACK = 1, DEFENSE = 2, BONUS = 3}
+const THREAT_TYPES = {REGULAR = 1, FAST = 2, STRONG = 3}
 const keypad_numbers = [48,49,50,51,52,53,54,55,56,57]
 const numpad_numbers = [KEY_KP_0,KEY_KP_1,KEY_KP_2,KEY_KP_3,KEY_KP_4,KEY_KP_5,KEY_KP_6,KEY_KP_7,KEY_KP_8,KEY_KP_9]
 
@@ -653,7 +654,6 @@ func get_pattern():
 func get_base_potential():
 	return pattern.get_power(0, true)
 
-	
 func get_nb_new_operations():
 	return nb_new_operations
 	
