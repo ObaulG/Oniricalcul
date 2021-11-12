@@ -258,3 +258,9 @@ func _on_disconnected_from_server():
 	
 func _on_disconnected():
 	pass
+
+func _on_add_bot_button_down():
+	pass # Replace with function body.
+
+func _on_remove_bot_button_down():
+	pass # Replace with function body.

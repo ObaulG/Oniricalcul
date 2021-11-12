@@ -9,7 +9,8 @@ const no_player_color = Color(0.24,0.28,0.27)
 export(bool) var horizontal_reverse: bool = false
 export(int) var id_character_selected
 export(bool) var validated = false
-
+export(bool) var bot = false
+export(int) var bot_hardness = -1
 var id_player: int
 onready var cr_info_bg = $cr_bg
 
@@ -25,7 +26,9 @@ onready var color_rect = $hbox/ColorRect
 func _ready():
 	id_character_selected = -1
 	id_player = -1
+	bot_hardness = -1
 	validated = false
+	bot = false
 	cancel_validation()
 	cr_info_bg.color = no_player_color
 	
@@ -79,6 +82,9 @@ func reverse_ui_elements():
 func has_player() -> bool:
 	return player_name != "???"
 	
+func is_bot() -> bool:
+	return bot
+	
 func get_character_selected():
 	return id_character_selected
 
@@ -90,6 +96,9 @@ func get_player_id() -> int:
 	
 func get_player_name() -> String:
 	return player_name.text
+	
+func get_bot_hardness() -> int:
+	return bot_hardness
 	
 func set_player_name(s: String):
 	player_name.text = s

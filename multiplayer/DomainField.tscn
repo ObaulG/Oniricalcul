@@ -12,6 +12,9 @@ margin_bottom = 800.0
 rect_min_size = Vector2( 350, 800 )
 rect_clip_content = true
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="threats" type="PanelContainer" parent="."]
 margin_right = 350.0

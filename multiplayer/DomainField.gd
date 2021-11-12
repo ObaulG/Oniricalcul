@@ -10,7 +10,12 @@ var first_threat
 var id_domain: int
 var id_character: int
 var rng
+var gp_node
+
 func _ready():
+	#Link to GameFieldMulti node
+	gp_node = get_parent().get_parent()
+	
 	threat_count = 0
 	first_threat = null
 	
@@ -45,7 +50,7 @@ func create_magic_homing_projectile(target, char_id, start_pos: Vector2, power):
 	threats_container.add_child(new_projectile)
 	new_projectile.position = start_pos
 
-func receive_threat(dico_threat):
+func receive_threat(dico_threat, signals_connection = true):
 	print("Météorite reçue")
 	# Récupération des paramètres
 	var hp = dico_threat["atk_hp"]
@@ -65,15 +70,22 @@ func receive_threat(dico_threat):
 	var y_speed = 900 / delay 
 	
 	var meteor = global.threat.instance()
-	
+	meteor.set_name(str(id))
 	threats_container.add_child(meteor)
-	meteor.create(id, hp, type, power, delay, self, x_speed, y_speed)
+	meteor.create(id, hp, type, power, delay, [gp_node,self], x_speed, y_speed, signals_connection)
 	meteor.position = position
 	meteor.apply_scale(Vector2(scaling, scaling))
 	meteor.set_texture(global.threat_texture)
 	
 	change_magic_projectiles_target()
 	
+func remove_threat(meteor_id):
+	var meteor_node = threats_container.get_node(str(meteor_id))
+	#the meteor might have exploded already so we check if the node is still here
+	if meteor_node:
+		if not meteor_node.is_dead():
+			meteor_node.remove_animation()
+			
 func change_magic_projectiles_target():
 	if threat_presence():
 		for child in threats_container.get_children():
@@ -82,3 +94,12 @@ func change_magic_projectiles_target():
 
 func threat_presence():
 	return threat_count > 0
+
+func inflict_damage_to_threat(id_threat, n):
+	pass
+	
+func _on_threat_impact():
+	determine_nearest_threat()
+	
+func _on_threat_destroyed():
+	determine_nearest_threat()

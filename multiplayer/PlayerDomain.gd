@@ -754,3 +754,11 @@ func _on_threat_destroyed(threat_type, power, id_character, over_damage, positio
 func _on_projectile_target_not_found(power):
 	var power_fraction = power/defense_power.get_value()
 	attack_enemy(get_base_potential() * power_fraction)
+
+
+func _on_GameFieldMulti_domain_answer_response(id, good_answer):
+	if id == id_domain:
+		if good_answer:
+			pass
+		else:
+			pass

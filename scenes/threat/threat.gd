@@ -5,7 +5,7 @@ const THREAT_TYPE = {
 	2: "Type B",
 	3: "Type C",
 }
-signal impact(threat_type, current_hp, power)
+signal impact(id, threat_type, current_hp, power)
 signal destroyed(id, threat_type, power)
 
 class_name Threat
@@ -28,7 +28,7 @@ var tween
 var frozen
 var isdead: bool
 
-func create(id, hp, type, power, delay, player_node, x_speed, y_speed):
+func create(id, hp, type, power, delay, player_nodes: Array, x_speed, y_speed, signals_connection = true):
 	print("Création du Threat")
 	print("Temps: " + str(delay))
 	self.id = id
@@ -46,8 +46,11 @@ func create(id, hp, type, power, delay, player_node, x_speed, y_speed):
 	hp_bar.set_display_mode(HealthDisplay.DISPLAY_MODES.NONE)
 	timer = Timer.new()
 	timer.connect("timeout", self, "delay_elapsed")
-	connect("impact", player_node, "_on_threat_impact")
-	connect("destroyed", player_node, "_on_threat_destroyed")
+	
+	if signals_connection:
+		for player_node in player_nodes:
+			connect("impact", player_node, "_on_threat_impact")
+			connect("destroyed", player_node, "_on_threat_destroyed")
 	self.add_child(timer)
 	
 	timer.start(delay)
@@ -87,7 +90,8 @@ func receive_damage(n):
 		hp_bar.update_healthbar(hp_current)
 		return 0
 	
-func remove_animation(destroyed = true):
+func remove_animation(_destroyed_by_player = true):
+	isdead = true
 	timer.stop()
 	set_deferred("$CollisionShape2D.disabled", true)
 	$destroy_particles.emitting = true

@@ -91,41 +91,41 @@ custom_constants/separation = 28
 alignment = 1
 
 [node name="play_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
-margin_left = 81.0
-margin_right = 165.0
+margin_left = 11.0
+margin_right = 95.0
 margin_bottom = 49.0
 custom_fonts/font = ExtResource( 1 )
 text = "Jouer"
 
 [node name="cancel_choice_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
-margin_left = 193.0
-margin_right = 422.0
+margin_left = 123.0
+margin_right = 352.0
 margin_bottom = 49.0
 custom_fonts/font = ExtResource( 1 )
 text = "Annuler le choix"
 
 [node name="return_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
-margin_left = 450.0
-margin_right = 751.0
+margin_left = 380.0
+margin_right = 681.0
 margin_bottom = 49.0
 custom_fonts/font = ExtResource( 1 )
 text = "Revenir à l'écran titre"
 
-[node name="add_op_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
-margin_left = 779.0
-margin_right = 882.0
+[node name="add_bot" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
+margin_left = 709.0
+margin_right = 880.0
 margin_bottom = 49.0
 custom_fonts/font = ExtResource( 1 )
 disabled = true
-text = "+1 OP"
+text = "Ajouter Bot"
 
-[node name="remove_op_button" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
-margin_left = 910.0
-margin_right = 1000.0
+[node name="remove_bot" type="Button" parent="vbox_info/VBoxContainer/HBoxContainer"]
+margin_left = 908.0
+margin_right = 1070.0
 margin_bottom = 49.0
 custom_fonts/font = ExtResource( 1 )
 disabled = true
-text = "-1 OP"
+text = "Retirer Bot"
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
@@ -145,8 +145,8 @@ margin_left = -2.0
 margin_top = 23.0
 margin_right = 358.0
 margin_bottom = 66.0
-custom_fonts/font = ExtResource( 1 )
 custom_colors/font_color = Color( 1, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
 text = "Local player name"
 align = 1
 __meta__ = {
@@ -209,5 +209,5 @@ modulate = Color( 0, 0, 0, 1 )
 [connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/play_button" to="." method="_on_play_button_down"]
 [connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/cancel_choice_button" to="." method="_on_cancel_choice_button_down"]
 [connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/return_button" to="." method="_on_return_button_down"]
-[connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/add_op_button" to="." method="_on_add_op_button_down"]
-[connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/remove_op_button" to="." method="_on_remove_op_button_down"]
+[connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/add_bot" to="." method="_on_add_bot_button_down"]
+[connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/remove_bot" to="." method="_on_remove_bot_button_down"]

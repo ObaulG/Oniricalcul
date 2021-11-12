@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://multiplayer/PlayerDomain.gd" type="Script" id=1]
 [ext_resource path="res://scenes/domain/meteor_sender.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://textures/atk_texture_over.png" type="Texture" id=5]
 [ext_resource path="res://textures/atk_texture_under.png" type="Texture" id=6]
 [ext_resource path="res://textures/atk_texture_progress.png" type="Texture" id=7]
+[ext_resource path="res://multiplayer/BaseDomainData.tscn" type="PackedScene" id=8]
 
 [sub_resource type="ShaderMaterial" id=1]
 
@@ -18,11 +19,15 @@ colors = PoolColorArray( 0.780392, 0.756863, 0.133333, 1, 0.811765, 0.0901961, 0
 radius = 38.4191
 
 [node name="PlayerDomain" type="Control"]
+margin_right = 579.0
+margin_bottom = 1003.0
 rect_min_size = Vector2( 420, 633 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="BaseDomainData" parent="." instance=ExtResource( 8 )]
 
 [node name="atk_timer" type="Timer" parent="."]
 one_shot = true
@@ -57,7 +62,7 @@ rect_min_size = Vector2( 128, 128 )
 
 [node name="char_icon" type="TextureRect" parent="margin_c/vboxc/main_data/char"]
 margin_right = 128.0
-margin_bottom = 128.0
+margin_bottom = 195.0
 rect_min_size = Vector2( 128, 128 )
 __meta__ = {
 "_edit_use_anchors_": false

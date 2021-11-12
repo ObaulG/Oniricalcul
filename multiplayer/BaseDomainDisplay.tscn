@@ -113,7 +113,7 @@ __meta__ = {
 
 [node name="vbox" type="VBoxContainer" parent="Panel/threat_data_display"]
 margin_right = 190.0
-margin_bottom = 171.0
+margin_bottom = 196.0
 
 [node name="ThreatLineDisplay" parent="Panel/threat_data_display/vbox" instance=ExtResource( 7 )]
 anchor_right = 0.0
@@ -162,6 +162,17 @@ anchor_bottom = 0.0
 margin_top = 150.0
 margin_right = 190.0
 margin_bottom = 171.0
+
+[node name="ThreatLineDisplay8" parent="Panel/threat_data_display/vbox" instance=ExtResource( 7 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 175.0
+margin_right = 190.0
+margin_bottom = 196.0
+
+[connection signal="mouse_entered" from="." to="." method="_on_BaseDomainDisplay_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_BaseDomainDisplay_mouse_exited"]
+[connection signal="incantation_progress_changed" from="BaseDomainData/Spellbook" to="Panel/IncantationProgress" method="_on_Spellbook_incantation_progress_changed"]
 
 [editable path="BaseDomainData"]
 [editable path="Panel/hp_display"]

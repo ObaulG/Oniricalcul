@@ -3,6 +3,7 @@ extends Node
 class_name Spellbook
 
 signal attack()
+signal incantation_progress_changed(new_value)
 #Consts
 const STANCES = {ATTACK = 1, DEFENSE = 2, BONUS = 3}
 const THREAT_TYPES = {REGULAR = 1, FAST = 2, STRONG = 3}
@@ -97,7 +98,6 @@ func determine_threat_power(potential: int) -> int:
 		power = 1 + 0.008 * potential
 	elif atk_type == THREAT_TYPES.STRONG:
 		power = 7.46 + 0.18 * potential
-	
 	power = random_int_rounding(power)
 	return power
 
@@ -110,7 +110,6 @@ func determine_threat_delay_time(potential: int) -> float:
 		time = 3.024 - 0.008 * potential
 	elif atk_type == THREAT_TYPES.STRONG:
 		time = 32.24 - 0.08 * potential
-		
 	return time
 	
 func determine_threat_hp(potential: int) -> int:
@@ -158,9 +157,34 @@ func determine_effective_power() -> int:
 
 	return power
 
-
 func get_current_operation():
 	return pattern.get_current_op()
 
 func on_change_stance_command(new_stance):
 	stance = new_stance
+	
+func _on_domain_answer_response(id_domain, good_answer):
+	if id_domain == get_parent().id_domain:
+		if good_answer:
+			good_answer()
+		else:
+			wrong_answer()
+			
+func good_answer():
+	var is_incantation_completed = pattern.next()
+	if is_incantation_completed:
+		pass
+	emit_signal("incantation_progress_changed", pattern.get_index())
+func wrong_answer():
+	var progression_removal = 0
+	match(malus_level):
+		1:
+			progression_removal = 0
+		2:
+			progression_removal = 1
+		3:
+			progression_removal = 1
+		4:
+			progression_removal = 10
+	pattern.reverse_gear(progression_removal)
+	emit_signal("incantation_progress_changed", pattern.get_index())

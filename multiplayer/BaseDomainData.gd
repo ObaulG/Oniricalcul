@@ -83,7 +83,7 @@ func get_damage(n):
 	emit_signal("hp_value_changed", hp_current)
 	
 func heal(n):
-	hp_current = clamp(hp_current  + n, 0, hp_max)
+	hp_current = clamp(hp_current + n, 0, hp_max)
 	emit_signal("healed", n)
 	emit_signal("hp_value_changed", hp_current)
 
@@ -115,5 +115,8 @@ func get_chain():
 func get_nb_pattern_loops():
 	return nb_pattern_loops
 	
+func get_answer_time():
+	return answer_time
+
 # setters
 
