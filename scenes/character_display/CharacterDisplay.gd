@@ -3,6 +3,7 @@ extends Control
 class_name CharacterDisplay
 
 signal ui_updated()
+signal bot_diff_changed(id, new_value)
 const confirmed_color = Color(0.11,0.92,0.08)
 const unconfirmed_color = Color(0.78,0.75,0.76)
 const no_player_color = Color(0.24,0.28,0.27)
@@ -10,11 +11,13 @@ export(bool) var horizontal_reverse: bool = false
 export(int) var id_character_selected
 export(bool) var validated = false
 export(bool) var bot = false
-export(int) var bot_hardness = -1
+
 var id_player: int
 onready var cr_info_bg = $cr_bg
 
 onready var hbox_node = $hbox
+onready var bot_diff_slider = $bot_diff_label
+
 # One part inside the hbox
 onready var char_icon = $hbox/vbox/char_icon
 onready var player_name = $hbox/vbox/name
@@ -26,12 +29,13 @@ onready var color_rect = $hbox/ColorRect
 func _ready():
 	id_character_selected = -1
 	id_player = -1
-	bot_hardness = -1
+
 	validated = false
 	bot = false
 	cancel_validation()
 	cr_info_bg.color = no_player_color
 	
+
 func remove_player():
 	set_player_name("???")
 	cancel_validation()
@@ -98,8 +102,17 @@ func get_player_name() -> String:
 	return player_name.text
 	
 func get_bot_hardness() -> int:
-	return bot_hardness
+	return bot_diff_slider.get_value()
 	
 func set_player_name(s: String):
 	player_name.text = s
 	
+func set_bot(b: bool):
+	bot = b
+	if bot:
+		bot_diff_slider.modulate.a = 255
+	else:
+		bot_diff_slider.modulate.a = 30
+	
+func _on_bot_diff_label_value_changed(value):
+	emit_signal("bot_diff_changed", id_player, value)

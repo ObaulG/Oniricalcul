@@ -5,7 +5,8 @@ class_name Network
 enum ERRORS{NO_ERROR=0,
 			CONNECTION_ERROR=1,
 			NAME_ALREADY_EXISTS=2,
-			NAME_INCORRECT = 3}
+			NAME_INCORRECT = 3,
+			SERVER_FULL = 4}
 			
 enum INFO {
 	NAME,
@@ -23,6 +24,8 @@ signal player_removed(pinfo)
 signal disconnected()
 signal authorized_to_connect(approved)
 
+signal bot_list_changed
+
 var server_info = {
 	name = "Server",      # Holds the name of the server
 	max_players = 2,      # Maximum allowed connections
@@ -30,6 +33,8 @@ var server_info = {
 }
 
 var players = {}
+
+var bots = {}
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_on_player_connected")
@@ -76,12 +81,15 @@ remote func authentication(pinfo: Dictionary):
 	var sender = get_tree().get_rpc_sender_id()
 	var pseudo = pinfo["pseudo"]
 	print("Player " + str(sender) + " authentication...")
-	var approved = verify_info(INFO.NAME, pseudo)
-	if approved:
+	var room_in_server = get_nb_players() < server_info.max_players
+	var name_approved = verify_info(INFO.NAME, pseudo)
+	
+	var connection_approved = name_approved and room_in_server
+	if connection_approved:
 		#register the new player into the table
 		print("Auth. approved! Registering the player on the table.")
 		register_player(pinfo)
-	rpc_id(sender, "server_response_to_auth", approved)
+	rpc_id(sender, "server_response_to_auth", connection_approved)
 
 remote func register_player(pinfo):
 	if (get_tree().is_network_server()):
@@ -99,6 +107,23 @@ remote func register_player(pinfo):
 	print_net_players_table()
 	emit_signal("player_list_changed")     # And notify that the player list has been changed
 
+remote func register_bot(pinfo):
+	if get_total_players_entities() < server_info.max_players:
+		if (get_tree().is_network_server()):
+			# We are on the server, so distribute the player list information throughout the connected players
+			for id in players:
+				# Send currently iterated player info to the new player
+				rpc_id(pinfo["net_id"], "register_bot", players[id])
+				# Send new player info to currently iterated player, skipping the server (which will get the info shortly)
+				if (id != 1):
+					rpc_id(id, "register_bot", pinfo)
+					
+		# Now to code that will be executed regardless of being on client or server
+		print("Registering bot ", pinfo["pseudo"], " (", pinfo["net_id"], ") to internal bot table")
+		bots[pinfo["net_id"]] = pinfo          # Create the player entry in the dictionary
+		print_net_players_table()
+		emit_signal("bot_list_changed")     # And notify that the player list has been changed
+	
 func end_connection():
 	print("Ending connection to server")
 	get_tree().get_network_peer().close_connection()
@@ -108,11 +133,15 @@ func end_connection():
 	players = {}
 	
 func print_net_players_table():
-	print(str(Gamestate.player_info["net_id"]) + " players registered in ")
+	print(str(Gamestate.player_info["net_id"]) + " - " + str(len(network.players)) + " players registered in :")
 	for id in players:
 		var nick = players[id]["pseudo"]
 		print(nick + " - " + str(id))
 		
+	print(str(len(network.bots)) + " bots registered in :")
+	for id in players:
+		var nick = bots[id]["pseudo"]
+		print(nick + " - " + str(id))
 # Peer trying to connect to server is notified on success
 func _on_connected_to_server():
 	print("Connection success ! Now asking to check name...")
@@ -149,7 +178,23 @@ remote func unregister_player(id):
 	else:
 		print("Player is already removed... ?")
 	
+remote func unregister_bot(id):
+	print("Removing bot ", str(id), " from internal table")
 	
+	print("table: " + str(players))
+	if id in bots:
+		# Cache the player info because it's still necessary for some upkeeping
+		var pinfo = network.bots[id]
+		# Remove the player from the list
+		network.bots.erase(id)
+		# And notify the list has been changed
+		emit_signal("bot_list_changed")
+		
+		# Emit the signal that is meant to be intercepted only by the server
+		emit_signal("bot_removed", pinfo)
+	else:
+		print("Player is already removed... ?")
+		
 func pseudo_in_list(nick: String) -> bool:
 	print("Checking nick " + nick)
 	for id in players:
@@ -199,3 +244,12 @@ func _on_disconnected_from_server():
 	players.clear()
 	# Reset the player info network ID
 	Gamestate.player_info["net_id"] = 1
+
+func get_nb_players():
+	return len(players)
+
+func get_nb_bots():
+	return len(bots)
+	
+func get_total_players_entities():
+	return get_nb_bots() + get_nb_players()

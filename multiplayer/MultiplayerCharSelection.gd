@@ -18,7 +18,14 @@ onready var player_list = $MultipleCharacterDisplay
 onready var scene_transition = $SceneTransitionRect 
 onready var panel_chat = $HUD/PanelOnlineChat
 
+onready var add_bot_bt = $vbox_info/VBoxContainer/HBoxContainer/add_bot
+onready var remove_bot_bt = $vbox_info/VBoxContainer/HBoxContainer/remove_bot
+
 func _ready():
+	if get_tree().is_network_server():
+		add_bot_bt.disabled = false
+		remove_bot_bt.disabled = false
+		
 	scene_transition.play(true)
 	SoundPlayer.play_bg_music("titlescreen")
 	
@@ -35,6 +42,7 @@ func _ready():
 		k = k+1
 		
 	network.connect("player_list_changed", self, "_on_player_list_changed")
+	network.connect("bot_list_changed", self, "_on_bot_list_changed")
 	# Must act if disconnected from the server
 	network.connect("disconnected", self, "_on_disconnected")
 	get_tree().connect("network_peer_connected", self, "_on_player_connected")
@@ -161,6 +169,24 @@ remote func ui_player_list():
 	print("Client nodes:")
 	print_other_player_label_node()
 	
+remote func ui_bot_list():
+	print("ui_bot_list Player " + str(Gamestate.player_info["net_id"]))
+	
+	# Then we do the same to the MultipleCharDisplay
+	for bot in player_list.get_bot_display_nodes():
+		player_list.remove_player_by_id(bot.get_player_id())
+		
+	# Now iterate through the player list creating a new entry into the boxList
+	# and in MultipleCharDisplay
+	for p in network.players:
+		#our ID is not supposed to be inside the box
+		if (p != Gamestate.player_info["net_id"]):
+			print("Player " + str(p) + " added in player list!")
+			player_list.add_player(network.players[p]["pseudo"], p, network.players[p]["id_character_selected"], network.players[p]["character_validated"])
+
+	print("Client nodes:")
+	print_other_player_label_node()
+	
 remotesync func write_message(sender, msg, server = false): 
 	panel_chat.write_message(msg)
 	
@@ -233,9 +259,12 @@ func leave_scene(dest: String):
 
 
 func _on_player_list_changed():
-	print("Players list has changed.")
+	print("Player list has changed.")
 	ui_player_list()
 	
+func _on_bot_list_changed():
+	print("Bot list has changed.")
+	ui_bot_list()
 	
 func _on_player_connected(id):
 	print("Player " + str(id) + " now connected")
@@ -260,7 +289,9 @@ func _on_disconnected():
 	pass
 
 func _on_add_bot_button_down():
-	pass # Replace with function body.
+	if get_tree().is_network_server():
+		pass
 
 func _on_remove_bot_button_down():
-	pass # Replace with function body.
+	if get_tree().is_network_server():
+		pass

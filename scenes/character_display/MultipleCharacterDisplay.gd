@@ -1,5 +1,7 @@
 extends Control
 
+signal bot_diff_changed(id, value)
+
 const MIN_PLAYERS_DISPLAY: int = 4
 onready var player_list = $scroller/vbox_characters
 
@@ -16,6 +18,7 @@ func add_player(name_player: String, id_player: int, id_character = -1, validate
 	else:
 		player_node = player_list.get_child(players_count)
 	
+	player_node.connect("bot_diff_changed", self, "_on_bot_diff_changed")
 	player_node.set_name(str(id_player))
 	player_node.add_player(name_player, id_player)
 	
@@ -52,7 +55,18 @@ func remove_player_by_name(name: String):
 	pass
 	
 func get_players_display_nodes():
-	return player_list.get_children()
+	var players = []
+	for p in player_list.get_children():
+		if not p.is_bot():
+			players.append(p)
+	return players
+	
+func get_bot_display_nodes():
+	var bots = []
+	for b in player_list.get_children():
+		if b.is_bot():
+			bots.append(b)
+	return bots
 	
 func get_player_by_id(id: int):
 	for player in player_list.get_children():
@@ -61,6 +75,13 @@ func get_player_by_id(id: int):
 			return player
 	return null
 
+func get_bot_by_id(id: int):
+	for bot in player_list.get_children():
+		print(str(bot.get_player_id()))
+		if bot.get_player_id() == id:
+			return bot
+	return null
+	
 func get_player_by_index(index):
 	pass
 	
@@ -69,3 +90,6 @@ func get_player_by_name(name):
 	
 func set_player_name_by_index(name: String, index: int):
 	pass
+
+func _on_bot_diff_changed(id, value):
+	emit_signal("bot_diff_changed", id, value)
