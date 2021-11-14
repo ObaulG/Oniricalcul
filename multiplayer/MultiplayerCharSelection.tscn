@@ -205,6 +205,7 @@ modulate = Color( 0, 0, 0, 1 )
 
 [node name="Node" type="Node" parent="."]
 
+[connection signal="bot_diff_changed" from="MultipleCharacterDisplay" to="." method="_on_MultipleCharacterDisplay_bot_diff_changed"]
 [connection signal="item_selected" from="vbox_info/VBoxContainer/CenterContainer/characters" to="." method="_on_characters_item_selected"]
 [connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/play_button" to="." method="_on_play_button_down"]
 [connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/cancel_choice_button" to="." method="_on_cancel_choice_button_down"]

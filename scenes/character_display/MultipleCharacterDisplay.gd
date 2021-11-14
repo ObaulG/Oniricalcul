@@ -10,7 +10,7 @@ var players_count: int
 func _ready():
 	players_count = 0 
 
-func add_player(name_player: String, id_player: int, id_character = -1, validated = false):
+func add_player(name_player: String, id_player: int, id_character = -1, validated = false, is_bot = false):
 	var player_node
 	if players_count > MIN_PLAYERS_DISPLAY:
 		player_node = CharacterDisplay.new()
@@ -27,6 +27,8 @@ func add_player(name_player: String, id_player: int, id_character = -1, validate
 	if validated:
 		player_node.validate_choice()
 
+	if is_bot:
+		player_node.set_bot(true)
 	print("Player added to multiplechardisplay: " + name_player)
 	players_count += 1
 	

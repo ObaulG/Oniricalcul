@@ -25,7 +25,7 @@ signal disconnected()
 signal authorized_to_connect(approved)
 
 signal bot_list_changed
-
+signal bot_removed(id)
 var server_info = {
 	name = "Server",      # Holds the name of the server
 	max_players = 2,      # Maximum allowed connections
@@ -112,9 +112,6 @@ remote func register_bot(pinfo):
 		if (get_tree().is_network_server()):
 			# We are on the server, so distribute the player list information throughout the connected players
 			for id in players:
-				# Send currently iterated player info to the new player
-				rpc_id(pinfo["net_id"], "register_bot", players[id])
-				# Send new player info to currently iterated player, skipping the server (which will get the info shortly)
 				if (id != 1):
 					rpc_id(id, "register_bot", pinfo)
 					
@@ -139,9 +136,11 @@ func print_net_players_table():
 		print(nick + " - " + str(id))
 		
 	print(str(len(network.bots)) + " bots registered in :")
-	for id in players:
+	for id in bots:
 		var nick = bots[id]["pseudo"]
 		print(nick + " - " + str(id))
+
+
 # Peer trying to connect to server is notified on success
 func _on_connected_to_server():
 	print("Connection success ! Now asking to check name...")
