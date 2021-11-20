@@ -46,6 +46,7 @@ var bar_yellow = load("res://textures/barHorizontal_yellow.png")
 
 var bonus = load("res://bonus/bonus.tscn")
 var operation_display = load("res://operations/displaying/operation_display.tscn")
+var character_display = load("res://scenes/character_display/CharacterDisplay.tscn")
 # Bonus
 var BONUS = [
 	{"id": 0,
@@ -161,7 +162,7 @@ const PATH = {
 	"ACHIEVEMENTS": "res://save/achievements.json",
 	"DIALOG": "res://scenes/dialog/Dialog.json",
 }
-# Informations sur les personnages. A convertir en JSON
+# Informations sur les personnages. A convertir en JSON un jour
 const characters = {
   1: {
 	"id": 1,
@@ -215,9 +216,9 @@ const characters = {
 	"difficulty": 2,
 	"base_pattern": [[1, 3], [3, 2], [3, 2]],
 	"operations_preference": {
-		1: 30,
-		2: 35,
-		3: 35,
+		1: 10,
+		2: 25,
+		3: 65,
 		4: 0,
 	},
 	"difficulty_preference": {

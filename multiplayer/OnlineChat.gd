@@ -6,10 +6,6 @@ const PLAYERS_DATA_COMMAND = "\\players_data"
 
 onready var chat_display = $TextEdit
 onready var chat_input = $LineEdit
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

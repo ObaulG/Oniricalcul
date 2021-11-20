@@ -1,3 +1,11 @@
-[gd_scene format=2]
+[gd_scene load_steps=2 format=2]
 
-[node name="Node" type="Node"]
+[ext_resource path="res://multiplayer/OniricAI.gd" type="Script" id=1]
+
+[node name="OniricAI" type="Node"]
+script = ExtResource( 1 )
+
+[node name="answer_timer" type="Timer" parent="."]
+wait_time = 1.555
+
+[connection signal="timeout" from="answer_timer" to="." method="_on_answer_timer_timeout"]

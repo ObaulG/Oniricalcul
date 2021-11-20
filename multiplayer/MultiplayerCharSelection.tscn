@@ -75,11 +75,11 @@ margin_right = 1081.0
 margin_bottom = 156.0
 
 [node name="characters" type="ItemList" parent="vbox_info/VBoxContainer/CenterContainer"]
-margin_left = 160.0
-margin_right = 920.0
+margin_left = 200.0
+margin_right = 880.0
 margin_bottom = 156.0
-rect_min_size = Vector2( 760, 156 )
-max_columns = 6
+rect_min_size = Vector2( 680, 156 )
+max_columns = 5
 same_column_width = true
 fixed_icon_size = Vector2( 128, 128 )
 
@@ -198,6 +198,9 @@ custom_fonts/font = SubResource( 3 )
 readonly = true
 show_line_numbers = true
 wrap_enabled = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="SceneTransitionRect" parent="." instance=ExtResource( 6 )]
 visible = false
@@ -205,7 +208,7 @@ modulate = Color( 0, 0, 0, 1 )
 
 [node name="Node" type="Node" parent="."]
 
-[connection signal="bot_diff_changed" from="MultipleCharacterDisplay" to="." method="_on_MultipleCharacterDisplay_bot_diff_changed"]
+[connection signal="bot_diff_changed_bis" from="MultipleCharacterDisplay" to="." method="_on_MultipleCharacterDisplay_bot_diff_changed_bis"]
 [connection signal="item_selected" from="vbox_info/VBoxContainer/CenterContainer/characters" to="." method="_on_characters_item_selected"]
 [connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/play_button" to="." method="_on_play_button_down"]
 [connection signal="button_down" from="vbox_info/VBoxContainer/HBoxContainer/cancel_choice_button" to="." method="_on_cancel_choice_button_down"]

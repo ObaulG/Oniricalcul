@@ -68,7 +68,10 @@ rect_min_size = Vector2( 160, 176 )
 color = Color( 1, 1, 1, 0.180392 )
 
 [node name="bot_diff_label" parent="." instance=ExtResource( 3 )]
-modulate = Color( 1, 1, 1, 0.301961 )
+margin_left = 176.0
+margin_top = 16.0
+margin_right = 192.0
+margin_bottom = 160.0
 max_value = 5.0
 
 [node name="value_label" parent="bot_diff_label/Panel/VBoxContainer/CenterContainer2" index="0"]

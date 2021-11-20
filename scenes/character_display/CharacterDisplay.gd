@@ -32,9 +32,6 @@ func _ready():
 
 	validated = false
 	bot = false
-	cancel_validation()
-	cr_info_bg.color = no_player_color
-	
 
 func remove_player():
 	set_player_name("???")
@@ -95,7 +92,7 @@ func get_character_selected():
 func get_validated():
 	return validated
 	
-func get_player_id() -> int:
+func get_id_player() -> int:
 	return id_player
 	
 func get_player_name() -> String:
@@ -109,10 +106,13 @@ func set_player_name(s: String):
 	
 func set_bot(b: bool):
 	bot = b
-	if bot:
-		bot_diff_slider.modulate.a = 255
-	else:
-		bot_diff_slider.modulate.a = 30
+	if get_tree().is_network_server():
+		if bot:
+			bot_diff_slider.modulate.a = 255
+			bot_diff_slider.editable = true
+		else:
+			bot_diff_slider.modulate.a = 0
+			bot_diff_slider.editable = false
 	
 func set_bot_diff(new_value):
 	bot_diff_slider.value = new_value

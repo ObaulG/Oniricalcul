@@ -20,7 +20,7 @@ func _ready():
 	displayed_max_value = bar.max_value
 	displayed_min_value = bar.min_value
 	set_new_value(0)
-	
+
 func _process(_delta):
 	#updating label
 	bar.value = displayed_value
@@ -30,10 +30,10 @@ func _process(_delta):
 	update_label(round(displayed_value))
 	#maybe the pos?
 	
-	var progress = displayed_value / max(0.1,(bar.max_value - bar.min_value))
+	var progress = (bar.max_value - displayed_value) / max(0.01,(bar.max_value - bar.min_value))
 	#then the color
-	get_material().set_shader_param("reverse", reverse_gradient)
-	get_material().set_shader_param("progression", progress)
+	bar.get_material().set_shader_param("reverse", reverse_gradient)
+	bar.get_material().set_shader_param("progression", progress)
 
 func set_min_value(value):
 	bar.min_value = value

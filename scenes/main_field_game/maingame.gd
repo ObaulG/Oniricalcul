@@ -320,6 +320,7 @@ func ai_shop_play(action):
 			print(str(action) + " DONE")
 			return true
 	return false
+	
 func evaluation(action, domain, bonus_menu, inc_min_op_pow, shop_max_op_pow):
 	var action_type = action[0]
 	#ayaaaaaaaaa (flemme)

@@ -41,8 +41,9 @@ func _on_btJoin_pressed():
 	var port = int($PanelJoin/txtServerPort.text)
 	network.join_server(ip, port)
 	
-func _on_authorized_to_connect(approved: bool):
+func _on_authorized_to_connect(approved: bool, server_data: Dictionary):
 	if approved:
+		network.server_info = server_data
 		scene_transition.change_scene("res://multiplayer/MultiplayerCharSelection.tscn")
 	else:
 		print("Connection denied!")

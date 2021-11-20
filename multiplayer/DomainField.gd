@@ -1,4 +1,4 @@
-extends PanelContainer
+extends Control
 
 
 onready var sending_meteor_area = $A2D_send_meteor

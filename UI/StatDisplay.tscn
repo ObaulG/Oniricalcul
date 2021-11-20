@@ -4,18 +4,34 @@
 [ext_resource path="res://textures/barHorizontal_green.png" type="Texture" id=2]
 [ext_resource path="res://textures/barHorizontal_darkgrey.png" type="Texture" id=3]
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=4]
-[ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=5]
 
-[sub_resource type="ShaderMaterial" id=1]
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item;
+
+uniform vec3 starting_color = vec3(0.14, 0.99, 0.21);
+uniform vec3 ending_color = vec3(0.99, 0.11, 0.10);
+
+uniform float progression;
+uniform bool reverse;
+void fragment(){
+	vec4 curr_color = texture(TEXTURE,UV);
+	if (reverse){
+		COLOR.rgb = curr_color.rgb * (starting_color + (ending_color - starting_color) *(1.0-progression));
+	}
+	else{
+		COLOR.rgb = curr_color.rgb * (starting_color + (ending_color - starting_color) *progression);
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id=4]
 resource_local_to_scene = true
-shader = ExtResource( 5 )
+shader = SubResource( 3 )
 shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
-shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
-shader_param/progression = null
-shader_param/reverse = null
+shader_param/ending_color = Vector3( 0.99, 0.01, 0.1 )
+shader_param/progression = 0.0
+shader_param/reverse = true
 
 [node name="StatDisplay" type="Control"]
-material = SubResource( 1 )
 rect_min_size = Vector2( 200, 26 )
 script = ExtResource( 1 )
 __meta__ = {
@@ -24,10 +40,11 @@ __meta__ = {
 current_value = 14.0
 
 [node name="bar" type="TextureProgress" parent="."]
+material = SubResource( 4 )
 margin_right = 200.0
 margin_bottom = 26.0
 step = 0.1
-value = 80.0
+value = 10.0
 texture_under = ExtResource( 3 )
 texture_progress = ExtResource( 2 )
 __meta__ = {
@@ -35,10 +52,10 @@ __meta__ = {
 }
 
 [node name="value" type="Label" parent="."]
-margin_left = 73.8776
-margin_top = -10.8775
-margin_right = 124.878
-margin_bottom = 24.1225
+margin_left = 74.0
+margin_top = -11.0
+margin_right = 125.0
+margin_bottom = 24.0
 custom_fonts/font = ExtResource( 4 )
 text = "val"
 align = 1

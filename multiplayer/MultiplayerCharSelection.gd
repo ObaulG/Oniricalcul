@@ -1,5 +1,11 @@
 extends CanvasLayer
 
+enum STATE{
+	SELECTING=1,
+	START_COUNTDOWN,
+	LAUCHING
+}
+
 const confirmed_color = Color(0.11,0.92,0.08)
 const waiting_confirmation_color = Color(0.98,0.11,0.13)
 
@@ -12,6 +18,7 @@ var diff_slider
 
 var selection_state
 
+var state
 onready var character_list = $vbox_info/VBoxContainer/CenterContainer/characters
 onready var char_info_node = $self_char_info
 onready var player_list = $MultipleCharacterDisplay
@@ -22,10 +29,14 @@ onready var add_bot_bt = $vbox_info/VBoxContainer/HBoxContainer/add_bot
 onready var remove_bot_bt = $vbox_info/VBoxContainer/HBoxContainer/remove_bot
 
 func _ready():
+	state = STATE.SELECTING
 	if get_tree().is_network_server():
 		add_bot_bt.disabled = false
 		remove_bot_bt.disabled = false
 		
+	print("Arrivée dans le lobby")
+	print("Server data:")
+	print(str(network.server_info))
 	scene_transition.play(true)
 	SoundPlayer.play_bg_music("titlescreen")
 	
@@ -43,24 +54,30 @@ func _ready():
 		
 	network.connect("player_list_changed", self, "_on_player_list_changed")
 	network.connect("bot_list_changed", self, "_on_bot_list_changed")
+	
+	network.connect("player_added", self, "_on_player_added")
+	network.connect("player_removed", self, "_on_player_disconnected")
+	network.connect("bot_added", self, "_on_bot_added")
+	network.connect("bot_removed", self, "_on_bot_removed")
 	# Must act if disconnected from the server
 	network.connect("disconnected", self, "_on_disconnected")
 	get_tree().connect("network_peer_connected", self, "_on_player_connected")
-	get_tree().connect("network_peer_disconnected", self, "_on_player_disconnected")
+	#get_tree().connect("network_peer_disconnected", self, "_on_player_disconnected")
 	get_tree().connect("connected_to_server", self, "_on_connected_to_server")
 	get_tree().connect("connection_failed", self, "_on_connection_failed")
 	get_tree().connect("server_disconnected", self, "_on_disconnected_from_server")
 		
 	# If we connect while the other player has already selected 
 	# a character, it must appear on the screen
-	update_character_select()
 	ui_player_list()
+	ui_bot_list()
+	update_character_select()
 	char_info_node.add_player(Gamestate.player_info["pseudo"], Gamestate.player_info["net_id"])
 
 remote func change_screen_data(char_selected_id: int, player: int):
 	var character = global.char_data[char_selected_id]
 	print("Player " + str(player) + " has selected character " + str(char_selected_id))
-	if char_info_node.get_player_id() == player :
+	if char_info_node.get_id_player() == player :
 		char_info_node.select_character(char_selected_id)
 	else:
 		print("prout")
@@ -70,7 +87,7 @@ remote func change_screen_data(char_selected_id: int, player: int):
 			player_node.select_character(char_selected_id)
 		else:
 			print("change_screen_data: player not found ??")
-			player_node.add_player(network.players[player]["pseudo"], player, char_selected_id)
+			player_list.add_player(network.players[player]["pseudo"], player, char_selected_id)
 
 func update_character_select():
 	if get_tree().is_network_server():
@@ -112,7 +129,7 @@ remotesync func character_selection(id_character,net_id):
 remotesync func clear_selection(net_id):
 	print("Client id " + str(Gamestate.player_info["net_id"])+" : Char selection cancel for player " + str(net_id))
 	
-	if char_info_node.get_player_id() == net_id :
+	if char_info_node.get_id_player() == net_id :
 		char_info_node.cancel_validation()
 	else:
 		var player_node = player_list.get_player_by_id(net_id)
@@ -135,7 +152,7 @@ remotesync func clear_selection(net_id):
 #		$HUD/PanelPlayerList/boxList.get_node("client"+str(net_id)).set("custom_colors/font_color",waiting_confirmation_color)
 
 remote func ui_validate_choice(net_id):
-	if char_info_node.get_player_id() == net_id :
+	if char_info_node.get_id_player() == net_id :
 		char_info_node.validate_choice()
 	else:
 		var player_node = player_list.get_player_by_id(net_id)
@@ -151,12 +168,17 @@ remote func ui_validate_choice(net_id):
 #		var node_to_change = $HUD/PanelPlayerList/boxList.get_node("client"+str(net_id))
 #		node_to_change.set("custom_colors/font_color",confirmed_color)
 
+remotesync func ui_validate_all_bots():
+	for id in network.bots:
+		var bot_node = player_list.get_bot_by_id(id)
+		bot_node.validate_choice()
+
 remote func ui_player_list():
 	print("ui_player_list Player " + str(Gamestate.player_info["net_id"]))
 	
 	# Then we do the same to the MultipleCharDisplay
 	for player in player_list.get_players_display_nodes():
-		player_list.remove_player_by_id(player.get_player_id())
+		player_list.remove_player_by_id(player.get_id_player())
 		
 	# Now iterate through the player list creating a new entry into the boxList
 	# and in MultipleCharDisplay
@@ -172,19 +194,16 @@ remote func ui_player_list():
 remote func ui_bot_list():
 	print("ui_bot_list Player " + str(Gamestate.player_info["net_id"]))
 	
-	# Then we do the same to the MultipleCharDisplay
 	for bot in player_list.get_bot_display_nodes():
-		player_list.remove_player_by_id(bot.get_player_id())
+		player_list.remove_bot_by_id(bot.get_id_player())
 		
 	# Now iterate through the player list creating a new entry into the boxList
 	# and in MultipleCharDisplay
-	for p in network.players:
-		#our ID is not supposed to be inside the box
-		if (p != Gamestate.player_info["net_id"]):
-			print("Player " + str(p) + " added in player list!")
-			player_list.add_player(network.players[p]["pseudo"], p, network.players[p]["id_character_selected"], network.players[p]["character_validated"])
+	for p in network.bots:
+		print("Bot " + str(p) + " added in player list!")
+		player_list.add_player(network.bots[p]["pseudo"], p, network.bots[p]["id_character_selected"], network.bots[p]["character_validated"], true)
 
-	print("Client nodes:")
+	print("Bot nodes:")
 	print_other_player_label_node()
 	
 remote func change_bot_diff(bot_id, new_diff):
@@ -206,8 +225,11 @@ remotesync func validate_choice(net_id):
 		network.players[net_id]["character_validated"] = true
 		print("Player " + str(net_id) + " is now ready!")
 		
-		#if the two players are ready, then the game may start.
+		# if at least two players are ready (or there is 1 player and bots), 
+		# then the game may start.
 		if is_everyone_ready() and len(network.players) > 1:
+			#we validate bot character display
+			rpc("ui_validate_all_bots")
 			rpc("write_message", 1, "Tous les joueurs sont prêts!")
 			rpc("start_game")
 			
@@ -215,12 +237,26 @@ remotesync func validate_choice(net_id):
 	ui_validate_choice(net_id)
 	
 remotesync func start_game():
+	state = STATE.START_COUNTDOWN
 	#Starting after 5 seconds
 	for i in range(5,-1,-1):
 		#Each second, we write the countdown in player chat
 		yield(get_tree().create_timer(1),"timeout")
-		panel_chat.write_message(str(i) + "...")
-	leave_scene("res://multiplayer/GameFieldMulti.tscn")
+		if state == STATE.START_COUNTDOWN:
+			panel_chat.write_message(str(i) + "...")
+		else:
+			break
+
+	if state == STATE.START_COUNTDOWN:
+		state = STATE.LAUCHING
+		leave_scene("res://multiplayer/GameFieldMulti.tscn")
+	else:
+		state = STATE.SELECTING
+# called if a player disconnects while the game is starting.
+remotesync func cancel_start():
+	state = STATE.LAUCHING
+	panel_chat.write_message("Lancement annulé...")
+	
 	
 func print_other_player_label_node():
 	print("In client id " + str(Gamestate.player_info["net_id"]))
@@ -269,6 +305,7 @@ func leave_scene(dest: String):
 	get_tree().change_scene(dest)
 
 
+
 func _on_player_list_changed():
 	print("Player list has changed.")
 	ui_player_list()
@@ -278,11 +315,22 @@ func _on_bot_list_changed():
 	ui_bot_list()
 	
 func _on_player_connected(id):
-	print("Player " + str(id) + " now connected")
+	print("Player " + str(id) + " has connected to the server...")
 	
+func _on_player_added(id):
+	var player_data = network.players[id]
+	player_list.add_player(player_data["pseudo"], player_data["net_id"], player_data["id_character_selected"], player_data["character_validated"])
 	
-func _on_player_disconnected(id):
-	pass
+func _on_bot_added(id):
+	print("Ajout du bot dans l'interface")
+	var player_data = network.bots[id]
+	player_list.add_player(player_data["pseudo"], player_data["net_id"], player_data["id_character_selected"], player_data["character_validated"], true)
+	
+func _on_player_disconnected(pinfo):
+	player_list.remove_player_by_id(pinfo["net_id"])
+	
+func _on_bot_removed(binfo):
+	player_list.remove_bot_by_id(binfo["net_id"])
 	
 func _on_connected_to_server():
 	print("Connected to the server.")
@@ -313,11 +361,16 @@ func _on_add_bot_button_down():
 		bot_info["id_character_playing"] = -1
 		
 		network.register_bot(bot_info)
-		player_list.add_player(bot_info["pseudo"], bot_info["net_id"], bot_info["id_character_selected"], bot_info["character_validated"], true)
+
 func _on_remove_bot_button_down():
 	if get_tree().is_network_server():
-		network.unregister_bot(network.get_nb_bots())
-
-
-func _on_MultipleCharacterDisplay_bot_diff_changed(id, value):
-	pass # Replace with function body.
+		var index = network.get_nb_bots()
+		var node_to_remove = player_list.get_bot_by_index(index)
+		if node_to_remove:
+			var id_bot_to_remove = node_to_remove.get_id_player()
+			network.unregister_bot(id_bot_to_remove)
+		else:
+			print("Incorrect index")
+			
+func _on_MultipleCharacterDisplay_bot_diff_changed_bis(id, value):
+	change_bot_diff(id, value)

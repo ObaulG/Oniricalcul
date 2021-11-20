@@ -90,8 +90,6 @@ func change_screen_data(id_char: int):
 	#Et son icÃ´ne í ½í¸³í ½í¸³í ½í¸³í ½í¸³í ½
 	char_icon.set_texture(character.get_icon_texture())
 	char_icon.visible = true
-	#Et afficher la description
-	#p1_data["character_lore"].set_text(character.get_descr())
 	
 	#Et les informations de jeu du personnage
 	char_descr.set_text(character.get_info())
@@ -101,11 +99,11 @@ func change_screen_data(id_char: int):
 	hp_bar.set_new_value(character.get_base_hp())
 	backlash_bar.set_new_value(character.get_malus_level())
 
+	#et les probabilitÃ©s d'apparition
 	probability_display_grid.visible = true
 	
 	var probabilities: Dictionary = character.get_operation_preference()
 
-	var max_prob_value = 0
 	var key_list = probabilities.keys()
 	var sum_probs = 0
 
@@ -116,10 +114,18 @@ func change_screen_data(id_char: int):
 		var new_value = probabilities[key]
 		var bar = probability_display_list.get_node("operation"+str(key))\
 										  .get_node("centering/probability_display")
-										
+
 		sum_probs += new_value
 		bar.set_new_value(new_value)
-	#then order them by decrescent order
+		
+	#we set the max value for all the bars
+	for i in range(len(probabilities)):
+		var key = key_list[i]
+		var bar = probability_display_list.get_node("operation"+str(key))\
+										  .get_node("centering/probability_display")
+		bar.set_max_value(sum_probs)
+		
+	#then order them by descending order
 	for i in range(len(probabilities)-2,-1,-1):
 		
 		var key = key_list[i]
@@ -158,6 +164,7 @@ func clear_selection():
 	emit_signal("ui_updated")
 
 func select_character(id: int):
+	clear_selection()
 	id_character_selected = id
 	change_screen_data(id)
 	
@@ -179,7 +186,7 @@ func reverse_ui_elements():
 func set_player_name(s: String):
 	player_name.text = s
 	
-func get_player_id() -> int:
+func get_id_player() -> int:
 	return id_player
 	
 func get_character_selected():

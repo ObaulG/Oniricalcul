@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://multiplayer/BaseDomainDisplay.gd" type="Script" id=1]
 [ext_resource path="res://multiplayer/BaseDomainData.tscn" type="PackedScene" id=2]
@@ -17,10 +17,36 @@ shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
 shader_param/progression = null
 shader_param/reverse = null
 
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item;
+
+uniform vec3 starting_color = vec3(0.14, 0.99, 0.21);
+uniform vec3 ending_color = vec3(0.99, 0.11, 0.10);
+
+uniform float progression;
+uniform bool reverse;
+void fragment(){
+	vec4 curr_color = texture(TEXTURE,UV);
+	if (reverse){
+		COLOR.rgb = curr_color.rgb * (starting_color + (ending_color - starting_color) *(1.0-progression));
+	}
+	else{
+		COLOR.rgb = curr_color.rgb * (starting_color + (ending_color - starting_color) *progression);
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id=4]
+resource_local_to_scene = true
+shader = SubResource( 3 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.01, 0.1 )
+shader_param/progression = 0.0
+shader_param/reverse = true
+
 [sub_resource type="DynamicFontData" id=2]
 font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
 
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="DynamicFont" id=5]
 size = 21
 font_data = SubResource( 2 )
 
@@ -53,6 +79,9 @@ margin_right = 208.0
 margin_bottom = 226.0
 rect_rotation = -90.0
 
+[node name="bar" parent="Panel/hp_display" index="0"]
+material = SubResource( 4 )
+
 [node name="value" parent="Panel/hp_display" index="1"]
 margin_left = 80.0
 margin_top = -13.0
@@ -77,7 +106,7 @@ margin_left = 40.0
 margin_top = 160.0
 margin_right = 184.0
 margin_bottom = 191.0
-custom_fonts/font = SubResource( 3 )
+custom_fonts/font = SubResource( 5 )
 text = "name"
 align = 1
 valign = 1

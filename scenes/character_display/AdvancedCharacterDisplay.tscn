@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://characters/01/icon.png" type="Texture" id=1]
 [ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=2]
@@ -15,6 +15,32 @@ shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
 shader_param/progression = 0.0
 shader_param/reverse = null
 
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item;
+
+uniform vec3 starting_color = vec3(0.14, 0.99, 0.21);
+uniform vec3 ending_color = vec3(0.99, 0.11, 0.10);
+
+uniform float progression;
+uniform bool reverse;
+void fragment(){
+	vec4 curr_color = texture(TEXTURE,UV);
+	if (reverse){
+		COLOR.rgb = curr_color.rgb * (starting_color + (ending_color - starting_color) *(1.0-progression));
+	}
+	else{
+		COLOR.rgb = curr_color.rgb * (starting_color + (ending_color - starting_color) *progression);
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id=9]
+resource_local_to_scene = true
+shader = SubResource( 3 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.01, 0.1 )
+shader_param/progression = 0.0
+shader_param/reverse = true
+
 [sub_resource type="ShaderMaterial" id=2]
 resource_local_to_scene = true
 shader = ExtResource( 2 )
@@ -23,12 +49,20 @@ shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
 shader_param/progression = 0.0
 shader_param/reverse = null
 
-[sub_resource type="DynamicFontData" id=3]
+[sub_resource type="ShaderMaterial" id=10]
+resource_local_to_scene = true
+shader = SubResource( 3 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.01, 0.1 )
+shader_param/progression = 0.0
+shader_param/reverse = true
+
+[sub_resource type="DynamicFontData" id=11]
 font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
 
 [sub_resource type="DynamicFont" id=4]
 size = 20
-font_data = SubResource( 3 )
+font_data = SubResource( 11 )
 
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
@@ -37,6 +71,14 @@ shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
 shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
 shader_param/progression = 0.0
 shader_param/reverse = null
+
+[sub_resource type="ShaderMaterial" id=12]
+resource_local_to_scene = true
+shader = SubResource( 3 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.01, 0.1 )
+shader_param/progression = 0.0
+shader_param/reverse = true
 
 [sub_resource type="StreamTexture" id=6]
 flags = 4
@@ -60,7 +102,7 @@ margin_right = 760.0
 margin_bottom = 808.0
 rect_min_size = Vector2( 760, 800 )
 rect_clip_content = true
-mouse_filter = 1
+mouse_filter = 2
 script = ExtResource( 6 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -147,9 +189,9 @@ material = SubResource( 1 )
 margin_top = 9.0
 margin_right = 200.0
 margin_bottom = 35.0
-reverse_gradient = true
 
 [node name="bar" parent="hbox/info/vbox/hbox/vbox2/hp_display" index="0"]
+material = SubResource( 9 )
 max_value = 50.0
 value = 50.0
 
@@ -161,6 +203,7 @@ margin_bottom = 81.0
 reverse_gradient = true
 
 [node name="bar" parent="hbox/info/vbox/hbox/vbox2/hardness_display" index="0"]
+material = SubResource( 10 )
 max_value = 4.0
 step = 0.02
 value = 4.0
@@ -205,6 +248,7 @@ margin_bottom = 34.0
 reverse_gradient = true
 
 [node name="bar" parent="hbox/info/vbox/hbox2/vbox2/backlash_display" index="0"]
+material = SubResource( 12 )
 max_value = 4.0
 step = 0.02
 value = 4.0
