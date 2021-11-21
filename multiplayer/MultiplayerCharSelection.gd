@@ -249,6 +249,8 @@ remotesync func start_game():
 
 	if state == STATE.START_COUNTDOWN:
 		state = STATE.LAUCHING
+		for id in network.players
+		network.players[id]["id_character_playing"] = network.server_info["character_selected"]
 		leave_scene("res://multiplayer/GameFieldMulti.tscn")
 	else:
 		state = STATE.SELECTING

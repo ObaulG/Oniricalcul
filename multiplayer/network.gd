@@ -216,7 +216,11 @@ remote func unregister_bot(id):
 		emit_signal("bot_removed", pinfo)
 	else:
 		print("Player is already removed... ?")
-		
+
+remote func set_game_state(value):
+	if get_tree().is_network_server():
+		rpc("set_game_state", value)
+	server_info.game_state = value
 func pseudo_in_list(nick: String) -> bool:
 	print("Checking nick " + nick)
 	for id in players:
