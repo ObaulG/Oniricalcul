@@ -1,166 +1,294 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://multiplayer/PlayerDomain.gd" type="Script" id=1]
 [ext_resource path="res://multiplayer/DomainField.tscn" type="PackedScene" id=2]
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=3]
-[ext_resource path="res://UI/HealthDisplay.tscn" type="PackedScene" id=4]
-[ext_resource path="res://textures/atk_texture_over.png" type="Texture" id=5]
-[ext_resource path="res://textures/atk_texture_under.png" type="Texture" id=6]
-[ext_resource path="res://textures/atk_texture_progress.png" type="Texture" id=7]
+[ext_resource path="res://characters/01/icon_128.png" type="Texture" id=4]
 [ext_resource path="res://multiplayer/BaseDomainData.tscn" type="PackedScene" id=8]
+[ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=10]
+[ext_resource path="res://multiplayer/ThreatLineDisplay.tscn" type="PackedScene" id=11]
+[ext_resource path="res://multiplayer/IncantationProgress.tscn" type="PackedScene" id=12]
+[ext_resource path="res://UI/StatDisplay.tscn" type="PackedScene" id=13]
+[ext_resource path="res://incantation/Incantation.tscn" type="PackedScene" id=14]
 
-[sub_resource type="ShaderMaterial" id=1]
+[sub_resource type="ShaderMaterial" id=4]
+resource_local_to_scene = true
+shader = ExtResource( 10 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
+shader_param/progression = null
+shader_param/reverse = null
 
-[sub_resource type="Gradient" id=2]
-offsets = PoolRealArray( 0, 0, 0.429508, 0.832787 )
-colors = PoolColorArray( 0.780392, 0.756863, 0.133333, 1, 0.811765, 0.0901961, 0.0901961, 1, 0.618938, 0.395921, 0.092058, 1, 0.39315, 0.753906, 0.0942383, 1 )
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item;
 
-[node name="PlayerDomain" type="Control"]
-margin_right = 579.0
-margin_bottom = 1003.0
-rect_min_size = Vector2( 420, 633 )
+uniform vec3 starting_color = vec3(0.14, 0.99, 0.21);
+uniform vec3 ending_color = vec3(0.99, 0.11, 0.10);
+
+uniform float progression;
+uniform bool reverse;
+void fragment(){
+	vec4 curr_color = texture(TEXTURE,UV);
+	if (reverse){
+		COLOR.rgb = curr_color.rgb * (starting_color + (ending_color - starting_color) *(1.0-progression));
+	}
+	else{
+		COLOR.rgb = curr_color.rgb * (starting_color + (ending_color - starting_color) *progression);
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id=5]
+resource_local_to_scene = true
+shader = SubResource( 3 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.01, 0.1 )
+shader_param/progression = 0.0
+shader_param/reverse = true
+
+[sub_resource type="DynamicFontData" id=2]
+font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
+
+[sub_resource type="DynamicFont" id=6]
+size = 29
+font_data = SubResource( 2 )
+
+[node name="PlayerDomain" type="CanvasLayer"]
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="BaseDomainData" parent="." instance=ExtResource( 8 )]
 
-[node name="atk_timer" type="Timer" parent="."]
-one_shot = true
-
-[node name="game_timer" type="Timer" parent="."]
-
-[node name="margin_c" type="MarginContainer" parent="."]
-margin_right = 578.0
-margin_bottom = 803.0
+[node name="Panel" type="Panel" parent="."]
+margin_right = 632.0
+margin_bottom = 1037.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="bg_color" type="Panel" parent="margin_c"]
-margin_right = 578.0
-margin_bottom = 999.0
+[node name="Incantation" parent="Panel" instance=ExtResource( 14 )]
+margin_left = 416.0
+margin_top = 632.0
+margin_right = -27.0
+margin_bottom = 13.0
 
-[node name="vboxc" type="VBoxContainer" parent="margin_c"]
-margin_right = 578.0
-margin_bottom = 999.0
+[node name="hp_display" parent="Panel" instance=ExtResource( 13 )]
+material = SubResource( 4 )
+margin_left = 432.0
+margin_top = 209.972
+margin_right = 632.0
+margin_bottom = 235.972
+rect_rotation = -90.0
 
-[node name="main_data" type="HBoxContainer" parent="margin_c/vboxc"]
-margin_right = 578.0
-margin_bottom = 195.0
-rect_min_size = Vector2( 420, 64 )
-custom_constants/separation = 49
+[node name="bar" parent="Panel/hp_display" index="0"]
+material = SubResource( 5 )
 
-[node name="char" type="MarginContainer" parent="margin_c/vboxc/main_data"]
-margin_right = 128.0
-margin_bottom = 195.0
-rect_min_size = Vector2( 128, 128 )
+[node name="value" parent="Panel/hp_display" index="1"]
+margin_left = 80.0
+margin_top = -13.0
+margin_right = 133.0
+margin_bottom = 30.0
+rect_rotation = 90.0
 
-[node name="char_icon" type="TextureRect" parent="margin_c/vboxc/main_data/char"]
-margin_right = 128.0
-margin_bottom = 195.0
-rect_min_size = Vector2( 128, 128 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ColorRect" type="ColorRect" parent="margin_c/vboxc/main_data/char"]
-margin_right = 128.0
-margin_bottom = 195.0
-color = Color( 0.0745098, 0.0862745, 0.286275, 0.141176 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="VBoxContainer" type="VBoxContainer" parent="margin_c/vboxc/main_data"]
-margin_left = 177.0
-margin_right = 377.0
-margin_bottom = 195.0
-
-[node name="CenterContainer" type="CenterContainer" parent="margin_c/vboxc/main_data/VBoxContainer"]
-margin_right = 200.0
+[node name="char_icon" type="TextureRect" parent="Panel"]
+margin_left = 374.118
+margin_right = 502.118
 margin_bottom = 128.0
-
-[node name="incantation_progress" type="TextureProgress" parent="margin_c/vboxc/main_data/VBoxContainer/CenterContainer"]
-margin_left = 36.0
-margin_right = 164.0
-margin_bottom = 128.0
-texture_under = ExtResource( 6 )
-texture_over = ExtResource( 5 )
-texture_progress = ExtResource( 7 )
-fill_mode = 4
-tint_under = Color( 0.764706, 0.176471, 0.176471, 1 )
-tint_over = Color( 0.52549, 0.882353, 0.345098, 1 )
-tint_progress = Color( 0.341176, 0.92549, 0.34902, 1 )
+rect_min_size = Vector2( 128, 128 )
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="hp_bar" parent="margin_c/vboxc/main_data/VBoxContainer" instance=ExtResource( 4 )]
-material = SubResource( 1 )
-margin_top = 132.0
-margin_right = 200.0
-margin_bottom = 195.0
-gradient = SubResource( 2 )
+[node name="player_name" type="Label" parent="Panel"]
+margin_left = 376.0
+margin_top = 256.0
+margin_right = 630.0
+margin_bottom = 298.0
+custom_fonts/font = SubResource( 6 )
+text = "name"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="hbox2" type="HBoxContainer" parent="margin_c/vboxc"]
-margin_top = 199.0
-margin_right = 578.0
-margin_bottom = 999.0
-rect_min_size = Vector2( 420, 420 )
+[node name="IncantationProgress" parent="Panel" instance=ExtResource( 12 )]
+margin_left = 400.0
+margin_top = 584.0
+margin_right = 536.8
+margin_bottom = 579.308
 
-[node name="Terrain" parent="margin_c/vboxc/hbox2" instance=ExtResource( 2 )]
+[node name="domain_field" parent="Panel" instance=ExtResource( 2 )]
+margin_left = 16.0
+margin_top = 216.0
+margin_right = 366.0
+margin_bottom = 1016.0
 
-[node name="vbox" type="VBoxContainer" parent="margin_c/vboxc/hbox2"]
-margin_left = 354.0
-margin_right = 520.0
-margin_bottom = 800.0
+[node name="threat_data_display" type="ScrollContainer" parent="Panel"]
+margin_left = 16.0
+margin_top = 8.0
+margin_right = 206.0
+margin_bottom = 184.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="points" type="Label" parent="margin_c/vboxc/hbox2/vbox"]
-margin_right = 166.0
+[node name="vbox" type="VBoxContainer" parent="Panel/threat_data_display"]
+margin_right = 190.0
+margin_bottom = 196.0
+
+[node name="ThreatLineDisplay" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 190.0
+margin_bottom = 21.0
+
+[node name="ThreatLineDisplay2" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 25.0
+margin_right = 190.0
+margin_bottom = 46.0
+
+[node name="ThreatLineDisplay3" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 50.0
+margin_right = 190.0
+margin_bottom = 71.0
+
+[node name="ThreatLineDisplay4" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 75.0
+margin_right = 190.0
+margin_bottom = 96.0
+
+[node name="ThreatLineDisplay5" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 100.0
+margin_right = 190.0
+margin_bottom = 121.0
+
+[node name="ThreatLineDisplay6" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 125.0
+margin_right = 190.0
+margin_bottom = 146.0
+
+[node name="ThreatLineDisplay7" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 150.0
+margin_right = 190.0
+margin_bottom = 171.0
+
+[node name="ThreatLineDisplay8" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 175.0
+margin_right = 190.0
+margin_bottom = 196.0
+
+[node name="stats_display" type="VBoxContainer" parent="Panel"]
+margin_left = 400.0
+margin_top = 298.0
+margin_right = 608.0
+margin_bottom = 576.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/stats_display"]
+margin_right = 208.0
+margin_bottom = 43.0
+
+[node name="TextureRect" type="TextureRect" parent="Panel/stats_display/HBoxContainer"]
+margin_bottom = 43.0
+
+[node name="lb" type="Label" parent="Panel/stats_display/HBoxContainer"]
+margin_left = 4.0
+margin_right = 88.0
 margin_bottom = 43.0
 custom_fonts/font = ExtResource( 3 )
 text = "Points"
 
-[node name="chain" type="Label" parent="margin_c/vboxc/hbox2/vbox"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Panel/stats_display"]
 margin_top = 47.0
-margin_right = 166.0
+margin_right = 208.0
 margin_bottom = 90.0
-custom_fonts/font = ExtResource( 3 )
-text = "Chaîne: "
 
-[node name="power" type="Label" parent="margin_c/vboxc/hbox2/vbox"]
+[node name="TextureRect" type="TextureRect" parent="Panel/stats_display/HBoxContainer2"]
+margin_bottom = 43.0
+
+[node name="chain" type="Label" parent="Panel/stats_display/HBoxContainer2"]
+margin_left = 4.0
+margin_right = 96.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 3 )
+text = "Chaîne"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Panel/stats_display"]
 margin_top = 94.0
-margin_right = 166.0
+margin_right = 208.0
 margin_bottom = 137.0
-custom_fonts/font = ExtResource( 3 )
-text = "Puissance: "
 
-[node name="right_answers" type="Label" parent="margin_c/vboxc/hbox2/vbox"]
+[node name="TextureRect" type="TextureRect" parent="Panel/stats_display/HBoxContainer3"]
+margin_bottom = 43.0
+
+[node name="points" type="Label" parent="Panel/stats_display/HBoxContainer3"]
+margin_left = 4.0
+margin_right = 131.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 3 )
+text = "Puissance"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Panel/stats_display"]
 margin_top = 141.0
-margin_right = 166.0
+margin_right = 208.0
 margin_bottom = 184.0
-custom_fonts/font = ExtResource( 3 )
-text = "% juste:"
 
-[node name="total_operations" type="Label" parent="margin_c/vboxc/hbox2/vbox"]
+[node name="TextureRect" type="TextureRect" parent="Panel/stats_display/HBoxContainer4"]
+margin_bottom = 43.0
+
+[node name="points" type="Label" parent="Panel/stats_display/HBoxContainer4"]
+margin_left = 4.0
+margin_right = 102.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 3 )
+text = "% juste"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="Panel/stats_display"]
 margin_top = 188.0
-margin_right = 166.0
+margin_right = 208.0
 margin_bottom = 231.0
-custom_fonts/font = ExtResource( 3 )
-text = "Nb calculs:"
 
-[node name="speed_answer" type="Label" parent="margin_c/vboxc/hbox2/vbox"]
+[node name="TextureRect" type="TextureRect" parent="Panel/stats_display/HBoxContainer5"]
+margin_bottom = 43.0
+
+[node name="points" type="Label" parent="Panel/stats_display/HBoxContainer5"]
+margin_left = 4.0
+margin_right = 181.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 3 )
+text = "Total Calculs"
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="Panel/stats_display"]
 margin_top = 235.0
-margin_right = 166.0
+margin_right = 208.0
 margin_bottom = 278.0
-custom_fonts/font = ExtResource( 3 )
-text = "Calculs/sec: "
 
-[node name="stance" type="Label" parent="margin_c/vboxc/hbox2/vbox"]
-margin_top = 282.0
-margin_right = 166.0
-margin_bottom = 325.0
+[node name="TextureRect" type="TextureRect" parent="Panel/stats_display/HBoxContainer6"]
+margin_bottom = 43.0
+
+[node name="points" type="Label" parent="Panel/stats_display/HBoxContainer6"]
+margin_left = 4.0
+margin_right = 152.0
+margin_bottom = 43.0
 custom_fonts/font = ExtResource( 3 )
-text = "Position: "
+text = "Calculs/sec"
+
+[editable path="BaseDomainData"]
+[editable path="Panel/hp_display"]

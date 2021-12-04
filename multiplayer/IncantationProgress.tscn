@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://UI/StatDisplay.tscn" type="PackedScene" id=1]
 [ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=2]
@@ -12,11 +12,37 @@ shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
 shader_param/progression = null
 shader_param/reverse = null
 
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item;
+
+uniform vec3 starting_color = vec3(0.14, 0.99, 0.21);
+uniform vec3 ending_color = vec3(0.99, 0.11, 0.10);
+
+uniform float progression;
+uniform bool reverse;
+void fragment(){
+	vec4 curr_color = texture(TEXTURE,UV);
+	if (reverse){
+		COLOR.rgb = curr_color.rgb * (starting_color + (ending_color - starting_color) *(1.0-progression));
+	}
+	else{
+		COLOR.rgb = curr_color.rgb * (starting_color + (ending_color - starting_color) *progression);
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id=4]
+resource_local_to_scene = true
+shader = SubResource( 3 )
+shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
+shader_param/ending_color = Vector3( 0.99, 0.01, 0.1 )
+shader_param/progression = 0.0
+shader_param/reverse = true
+
 [node name="IncantationProgress" type="Control"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_right = -1720.0
-margin_bottom = -1050.0
+anchor_right = 0.1
+anchor_bottom = 0.028
+margin_right = 8.0
+margin_bottom = -0.240002
 rect_min_size = Vector2( 200, 30 )
 script = ExtResource( 4 )
 __meta__ = {
@@ -28,6 +54,7 @@ material = SubResource( 1 )
 current_value = 0.0
 
 [node name="bar" parent="StatDisplay" index="0"]
+material = SubResource( 4 )
 max_value = 3.0
 step = 0.01
 value = 0.0

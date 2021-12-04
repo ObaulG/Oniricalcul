@@ -29,7 +29,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://multiplayer/BaseDomainData.gd"
 }, {
-"base": "Control",
+"base": "CanvasLayer",
 "class": "BaseDomainDisplay",
 "language": "GDScript",
 "path": "res://multiplayer/BaseDomainDisplay.gd"
@@ -199,7 +199,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://save/player.gd"
 }, {
-"base": "Node",
+"base": "CanvasLayer",
 "class": "PlayerDomain",
 "language": "GDScript",
 "path": "res://multiplayer/PlayerDomain.gd"

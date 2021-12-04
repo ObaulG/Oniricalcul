@@ -96,9 +96,9 @@ remote func spawn_players(pinfo, spawn_index):
 	# Load the scene and create an instance
 	var pclass = load(pinfo["actor_path"])
 	var nactor = pclass.instance()
+	
 	# domain initialization
 	nactor.create(pinfo["id_character_playing"])
-	
 	
 	# If this actor does not belong to the server, change the node name and network master accordingly
 	if (pinfo["net_id"] != 1):
@@ -108,7 +108,7 @@ remote func spawn_players(pinfo, spawn_index):
 	enemy_domains.add_child(nactor)
 
 
-#note: meteor and projectile casts are only visual: if it is display
+#note: meteor and projectile casts are only visual in clients: if it is display
 #on a basedomaindisplay, then it's not the main character so they should
 #not send data from other players.
 
@@ -315,6 +315,14 @@ remote func new_round():
 		
 	#
 	
+remote func restart_timer(t: float):
+	if get_tree().is_network_server():
+		for id in network.players:
+			if id != 1:
+				rpc_id(id, "restart_timer", t)
+				
+	round_timer.start(t)
+
 remote func pause_mode_activation(b: bool):
 	if get_tree().is_network_server():
 		for id in network.players:
@@ -326,8 +334,31 @@ remote func pause_mode_activation(b: bool):
 #for each player.
 func generate_all_shop_operations():
 	if get_tree().is_network_server():
-		pass
+		var domain
+		for id in network.players:
+			if id == 1:
+				domain = my_domain
+			else:
+				domain = enemy_domains.get_node(id)
+				
+			if domain:
+				#operations are common to both players, depends on char played
+				#but generated randomly
+				var operation_preference = domain.get_operation_preference()
+				var difficulty_preference = domain.get_difficulty_preference()
+				var n = domain.get_nb_new_operations()
+				
+				var op_list = []
+				for i in range(n):
+					var type = ponderate_random_choice_dict(operation_preference)
+					var diff = ponderate_random_choice_dict(difficulty_preference)
+					op_list.append([type,diff])
+			if id != 1:
+				rpc_id(id, "send_shop_operation")
 
+remote func send_shop_operations(new_op_player: Array, new_op_others: Dictionary):
+	pass
+	
 func _on_threat_impact(meteor_id, threat_type, current_hp, power):
 	#we only act if it is a node in our field
 	if Gamestate.player_info["net_id"] != 1:

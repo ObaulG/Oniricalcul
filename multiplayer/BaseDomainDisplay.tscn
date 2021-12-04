@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://multiplayer/BaseDomainDisplay.gd" type="Script" id=1]
 [ext_resource path="res://multiplayer/BaseDomainData.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://multiplayer/IncantationProgress.tscn" type="PackedScene" id=6]
 [ext_resource path="res://multiplayer/ThreatLineDisplay.tscn" type="PackedScene" id=7]
 [ext_resource path="res://multiplayer/DomainField.tscn" type="PackedScene" id=8]
+[ext_resource path="res://incantation/Incantation.tscn" type="PackedScene" id=9]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -17,7 +18,7 @@ shader_param/ending_color = Vector3( 0.99, 0.11, 0.1 )
 shader_param/progression = null
 shader_param/reverse = null
 
-[sub_resource type="Shader" id=3]
+[sub_resource type="Shader" id=6]
 code = "shader_type canvas_item;
 
 uniform vec3 starting_color = vec3(0.14, 0.99, 0.21);
@@ -37,30 +38,21 @@ void fragment(){
 
 [sub_resource type="ShaderMaterial" id=4]
 resource_local_to_scene = true
-shader = SubResource( 3 )
+shader = SubResource( 6 )
 shader_param/starting_color = Vector3( 0.14, 0.99, 0.21 )
 shader_param/ending_color = Vector3( 0.99, 0.01, 0.1 )
 shader_param/progression = 0.0
 shader_param/reverse = true
 
-[sub_resource type="DynamicFontData" id=2]
+[sub_resource type="DynamicFontData" id=7]
 font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
 
 [sub_resource type="DynamicFont" id=5]
 size = 21
-font_data = SubResource( 2 )
+font_data = SubResource( 7 )
 
-[node name="BaseDomainDisplay" type="Control"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_right = -1320.0
-margin_bottom = -880.0
-rect_min_size = Vector2( 600, 200 )
-rect_pivot_offset = Vector2( -112, -120 )
+[node name="BaseDomainDisplay" type="CanvasLayer"]
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="BaseDomainData" parent="." instance=ExtResource( 2 )]
 
@@ -203,8 +195,13 @@ margin_top = 175.0
 margin_right = 190.0
 margin_bottom = 196.0
 
-[connection signal="mouse_entered" from="." to="." method="_on_BaseDomainDisplay_mouse_entered"]
-[connection signal="mouse_exited" from="." to="." method="_on_BaseDomainDisplay_mouse_exited"]
+[node name="Incantation" parent="Panel" instance=ExtResource( 9 )]
+visible = false
+margin_left = -144.0
+margin_top = 204.0
+margin_right = -608.0
+margin_bottom = 388.0
+
 [connection signal="incantation_progress_changed" from="BaseDomainData/Spellbook" to="Panel/IncantationProgress" method="_on_Spellbook_incantation_progress_changed"]
 
 [editable path="BaseDomainData"]
