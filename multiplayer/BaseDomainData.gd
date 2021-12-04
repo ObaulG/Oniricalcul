@@ -11,7 +11,7 @@ onready var op_stats = $OperationStats
 #Threats : node handling threat logic
 onready var threats = $Threats
 #smth else ?
-
+onready var shopping_data = $ShoppingData
 
 #Signals
 signal hp_value_changed(new_value)
@@ -77,6 +77,8 @@ func initialise(pid: int):
 	op_stats.initialize(char_dico)
 
 
+
+
 func get_damage(n):
 	hp_current -= n
 	emit_signal("damaged", n)
@@ -120,3 +122,6 @@ func get_answer_time():
 
 # setters
 
+func set_shop_operations(op_list: Array):
+	spellbook.list_shop_operations = op_list.duplicate()
+	

@@ -17,3 +17,5 @@ script = ExtResource( 4 )
 
 [node name="OperationStats" type="Node" parent="."]
 script = ExtResource( 5 )
+
+[node name="ShoppingData" type="Node" parent="."]

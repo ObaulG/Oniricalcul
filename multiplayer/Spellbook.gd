@@ -35,6 +35,7 @@ var threat_count: int
 
 #nb of new operations generated between 2 rounds.
 var nb_new_operations: int
+var list_shop_operations: Array
 var money: int
 var money_per_round: int
 var base_swap_price: int
@@ -78,6 +79,7 @@ func initialise(char_dico):
 	stance = STANCES.ATTACK
 	defense_power = ReliquatNumber.new(0)
 
+	list_shop_operations = []
 	determine_defense_power(pattern.get_power())
 
 func determine_defense_power(potential: int):

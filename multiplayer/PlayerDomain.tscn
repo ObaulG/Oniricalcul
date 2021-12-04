@@ -1,7 +1,7 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://multiplayer/PlayerDomain.gd" type="Script" id=1]
-[ext_resource path="res://scenes/domain/meteor_sender.gd" type="Script" id=2]
+[ext_resource path="res://multiplayer/DomainField.tscn" type="PackedScene" id=2]
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=3]
 [ext_resource path="res://UI/HealthDisplay.tscn" type="PackedScene" id=4]
 [ext_resource path="res://textures/atk_texture_over.png" type="Texture" id=5]
@@ -14,9 +14,6 @@
 [sub_resource type="Gradient" id=2]
 offsets = PoolRealArray( 0, 0, 0.429508, 0.832787 )
 colors = PoolColorArray( 0.780392, 0.756863, 0.133333, 1, 0.811765, 0.0901961, 0.0901961, 1, 0.618938, 0.395921, 0.092058, 1, 0.39315, 0.753906, 0.0942383, 1 )
-
-[sub_resource type="CircleShape2D" id=3]
-radius = 38.4191
 
 [node name="PlayerDomain" type="Control"]
 margin_right = 579.0
@@ -113,19 +110,7 @@ margin_right = 578.0
 margin_bottom = 999.0
 rect_min_size = Vector2( 420, 420 )
 
-[node name="Terrain" type="PanelContainer" parent="margin_c/vboxc/hbox2"]
-margin_right = 350.0
-margin_bottom = 800.0
-rect_min_size = Vector2( 350, 800 )
-rect_clip_content = true
-
-[node name="A2D_send_meteor" type="Area2D" parent="margin_c/vboxc/hbox2/Terrain"]
-position = Vector2( 239, -20.5385 )
-script = ExtResource( 2 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="margin_c/vboxc/hbox2/Terrain/A2D_send_meteor"]
-position = Vector2( 111.118, 9.52441 )
-shape = SubResource( 3 )
+[node name="Terrain" parent="margin_c/vboxc/hbox2" instance=ExtResource( 2 )]
 
 [node name="vbox" type="VBoxContainer" parent="margin_c/vboxc/hbox2"]
 margin_left = 354.0

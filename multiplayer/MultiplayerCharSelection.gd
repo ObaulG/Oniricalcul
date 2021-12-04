@@ -238,25 +238,25 @@ remotesync func validate_choice(net_id):
 	
 remotesync func start_game():
 	state = STATE.START_COUNTDOWN
-	#Starting after 5 seconds
-	for i in range(5,-1,-1):
+	#Starting after 2 seconds
+	for i in range(2,-1,-1):
 		#Each second, we write the countdown in player chat
 		yield(get_tree().create_timer(1),"timeout")
 		if state == STATE.START_COUNTDOWN:
 			panel_chat.write_message(str(i) + "...")
 		else:
+			cancel_start()
 			break
 
 	if state == STATE.START_COUNTDOWN:
 		state = STATE.LAUCHING
-		for id in network.players
-		network.players[id]["id_character_playing"] = network.server_info["character_selected"]
+		for id in network.players:
+			network.players[id]["id_character_playing"] = network.server_info["character_selected"]
 		leave_scene("res://multiplayer/GameFieldMulti.tscn")
-	else:
-		state = STATE.SELECTING
+
 # called if a player disconnects while the game is starting.
 remotesync func cancel_start():
-	state = STATE.LAUCHING
+	state = STATE.SELECTING
 	panel_chat.write_message("Lancement annulé...")
 	
 	
@@ -306,8 +306,6 @@ func leave_scene(dest: String):
 	yield(scene_transition,"transition_finished")
 	get_tree().change_scene(dest)
 
-
-
 func _on_player_list_changed():
 	print("Player list has changed.")
 	ui_player_list()
@@ -330,7 +328,17 @@ func _on_bot_added(id):
 	
 func _on_player_disconnected(pinfo):
 	player_list.remove_player_by_id(pinfo["net_id"])
-	
+	panel_chat.write_message(pinfo["pseudo" + " a été déconnecté du serveur."])
+	# if a players disconnects during the game start countdown
+	# then we stop the countdown
+	match state:
+		STATE.SELECTING:
+			pass
+		STATE.START_COUNTDOWN:
+			state = STATE.SELECTING
+			
+		STATE.LAUCHING:
+			pass
 func _on_bot_removed(binfo):
 	player_list.remove_bot_by_id(binfo["net_id"])
 	
@@ -340,6 +348,7 @@ func _on_connected_to_server():
 	ui_player_list()
 	#when a player connects, we must send him the data
 	update_character_select()
+	
 func _on_connection_failed():
 	pass
 	
@@ -347,32 +356,34 @@ func _on_disconnected_from_server():
 	leave_scene("res://multiplayer/Onirilobby.tscn")
 	
 func _on_disconnected():
-	pass
+	leave_scene("res://multiplayer/Onirilobby.tscn")
 
 func _on_add_bot_button_down():
 	if get_tree().is_network_server():
-		var bot_info = global.player.get_multiplayer_dict().duplicate()
-		bot_info["net_id"] = network.get_nb_bots() + 1 # By default everyone receives "server ID"
-		bot_info["pseudo"] = "Bot " + str(bot_info["net_id"])
-		bot_info["actor_path"] = "res://multiplayer/PlayerDomain.tscn"  # The class used to represent the player in the game world
+		if state == STATE.SELECTING:
+			var bot_info = global.player.get_multiplayer_dict().duplicate()
+			bot_info["net_id"] = network.get_nb_bots() + 1 # By default everyone receives "server ID"
+			bot_info["pseudo"] = "Bot " + str(bot_info["net_id"])
+			bot_info["actor_path"] = "res://multiplayer/PlayerDomain.tscn"  # The class used to represent the player in the game world
 
-		#For character select
-		bot_info["id_character_selected"] = 1
-		bot_info["character_validated"] = false
-		#Validated character id
-		bot_info["id_character_playing"] = -1
-		
-		network.register_bot(bot_info)
+			#For character select
+			bot_info["id_character_selected"] = 1
+			bot_info["character_validated"] = false
+			#Validated character id
+			bot_info["id_character_playing"] = -1
+			
+			network.register_bot(bot_info)
 
 func _on_remove_bot_button_down():
 	if get_tree().is_network_server():
-		var index = network.get_nb_bots()
-		var node_to_remove = player_list.get_bot_by_index(index)
-		if node_to_remove:
-			var id_bot_to_remove = node_to_remove.get_id_player()
-			network.unregister_bot(id_bot_to_remove)
-		else:
-			print("Incorrect index")
+		if state == STATE.SELECTING:
+			var index = network.get_nb_bots()
+			var node_to_remove = player_list.get_bot_by_index(index)
+			if node_to_remove:
+				var id_bot_to_remove = node_to_remove.get_id_player()
+				network.unregister_bot(id_bot_to_remove)
+			else:
+				print("Incorrect index")
 			
 func _on_MultipleCharacterDisplay_bot_diff_changed_bis(id, value):
 	change_bot_diff(id, value)

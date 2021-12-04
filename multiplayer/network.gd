@@ -17,7 +17,8 @@ enum INFO {
 enum GAMESTATE {
 	CHAR_SELECT = 1,
 	GAME_LAUCHING,
-	IN_GAME
+	IN_GAME,
+	GAME_END
 }
 #Contains all players data and handlers to keep
 #data updated
@@ -271,6 +272,7 @@ func _on_disconnected_from_server():
 	# Reset the player info network ID
 	Gamestate.player_info["net_id"] = 1
 
+	
 func get_nb_players():
 	return len(players)
 

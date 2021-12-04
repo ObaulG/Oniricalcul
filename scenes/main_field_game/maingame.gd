@@ -395,8 +395,6 @@ func _on_shop_timer_timeout():
 
 
 func _on_bonus_menu_player_ask_to_buy_operation(op):
-
-	
 	var id = op.get_type()
 	var diff = op.get_diff()
 	var price = op.get_price()

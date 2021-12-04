@@ -107,8 +107,8 @@ custom_constants/separation = 25
 [node name="title" type="Label" parent="MarginContainer/vbox/bonus_zone/new_operations"]
 margin_right = 590.0
 margin_bottom = 43.0
-custom_fonts/font = ExtResource( 2 )
 custom_colors/font_color = Color( 0.905882, 0.937255, 0.341176, 1 )
+custom_fonts/font = ExtResource( 2 )
 text = "Opérations"
 
 [node name="Incantation_Operations" parent="MarginContainer/vbox/bonus_zone/new_operations" instance=ExtResource( 4 )]
@@ -123,8 +123,8 @@ mouse_filter = 1
 margin_top = 190.0
 margin_right = 590.0
 margin_bottom = 233.0
-custom_fonts/font = ExtResource( 2 )
 custom_colors/font_color = Color( 0.905882, 0.937255, 0.341176, 1 )
+custom_fonts/font = ExtResource( 2 )
 text = "Nouvelles opérations"
 
 [node name="new_operations" type="GridContainer" parent="MarginContainer/vbox/bonus_zone/new_operations"]
@@ -138,8 +138,8 @@ script = ExtResource( 6 )
 margin_top = 283.0
 margin_right = 590.0
 margin_bottom = 326.0
-custom_fonts/font = ExtResource( 2 )
 custom_colors/font_color = Color( 0.905882, 0.937255, 0.341176, 1 )
+custom_fonts/font = ExtResource( 2 )
 text = "Echanges"
 
 [node name="swap_button" type="Button" parent="MarginContainer/vbox/bonus_zone/new_operations"]
@@ -168,8 +168,8 @@ margin_bottom = 461.0
 [node name="bonus_title" type="Label" parent="MarginContainer/vbox/bonus_zone/vbox_items"]
 margin_right = 269.0
 margin_bottom = 43.0
-custom_fonts/font = ExtResource( 2 )
 custom_colors/font_color = Color( 0.905882, 0.937255, 0.341176, 1 )
+custom_fonts/font = ExtResource( 2 )
 text = "Objets proposés      "
 
 [node name="list" type="GridContainer" parent="MarginContainer/vbox/bonus_zone/vbox_items"]
@@ -187,8 +187,8 @@ margin_bottom = 461.0
 [node name="bonus_title2" type="Label" parent="MarginContainer/vbox/bonus_zone/Stats"]
 margin_right = 68.0
 margin_bottom = 43.0
-custom_fonts/font = ExtResource( 2 )
 custom_colors/font_color = Color( 0.905882, 0.937255, 0.341176, 1 )
+custom_fonts/font = ExtResource( 2 )
 text = "Stats"
 
 [node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
