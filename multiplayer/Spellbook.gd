@@ -35,6 +35,8 @@ var threat_count: int
 
 #nb of new operations generated between 2 rounds.
 var nb_new_operations: int
+#nb of new operations from enemies
+var inspiration: int
 var list_shop_operations: Array
 var money: int
 var money_per_round: int
@@ -67,6 +69,7 @@ func initialise(char_dico):
 	atk_type = char_dico["threat_type"]
 	atk_hp = char_dico["threat_hp"]
 	malus_level = char_dico["malus_level"]
+	inspiration = char_dico["inspiration"]
 	meteor_sent = 0
 
 	chain = 0

@@ -6,7 +6,7 @@
 [ext_resource path="res://fonts/LMROMAN10-BOLD.OTF" type="DynamicFontData" id=4]
 [ext_resource path="res://scenes/pause/PauseMenu.tscn" type="PackedScene" id=5]
 [ext_resource path="res://UI/TimeDisplay.tscn" type="PackedScene" id=6]
-[ext_resource path="res://bonus/bonus_menu.tscn" type="PackedScene" id=7]
+[ext_resource path="res://bonus_menu.tscn" type="PackedScene" id=7]
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=8]
 [ext_resource path="res://scenes/scene_transition/SceneTransitionRect.tscn" type="PackedScene" id=9]
 

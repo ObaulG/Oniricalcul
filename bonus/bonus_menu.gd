@@ -1,4 +1,4 @@
-extends Container
+extends Control
 
 class_name BonusMenu
 
@@ -110,14 +110,10 @@ func set_new_operations(list_player: Array, list_enemy: Array):
 	for op in list_enemy:
 		var type = op[0]
 		var diff = op[1]
-		var subtype
-		if len(op) == 3:
-			subtype = op[2]
-		else:
-			subtype = -1
+
 		var new_op = global.operation_display.instance()
 		new_operations_grid.add_child(new_op)
-		new_op.change_operation(type, diff, subtype)
+		new_op.change_operation(type, diff)
 		new_op.set_price(10 + 2*pow(diff,2))
 		new_op.set_display_type(Operation_Display.DISPLAY_TYPE.BUYING)
 		new_op.connect("wants_to_buy_op", self, "on_trying_to_buy_op")

@@ -12,6 +12,7 @@ enum STATE{
 }
 signal domain_answer_response(id_domain, good_answer)
 
+var rng = RandomNumberGenerator.new()
 var round_counter: int
 
 #duration of the game
@@ -335,6 +336,10 @@ remote func pause_mode_activation(b: bool):
 func generate_all_shop_operations():
 	if get_tree().is_network_server():
 		var domain
+		#dict of all new operations from all players
+		var new_op_dict = {}
+		
+		#we first generate all new operations
 		for id in network.players:
 			if id == 1:
 				domain = my_domain
@@ -342,22 +347,76 @@ func generate_all_shop_operations():
 				domain = enemy_domains.get_node(id)
 				
 			if domain:
-				#operations are common to both players, depends on char played
-				#but generated randomly
-				var operation_preference = domain.get_operation_preference()
-				var difficulty_preference = domain.get_difficulty_preference()
+				var operation_preference = domain.spellbook.get_operation_preference()
+				var difficulty_preference = domain.spellbook.get_difficulty_preference()
 				var n = domain.get_nb_new_operations()
-				
-				var op_list = []
+				new_op_dict[id] = []
 				for i in range(n):
 					var type = ponderate_random_choice_dict(operation_preference)
 					var diff = ponderate_random_choice_dict(difficulty_preference)
-					op_list.append([type,diff])
-			if id != 1:
-				rpc_id(id, "send_shop_operation")
-
-remote func send_shop_operations(new_op_player: Array, new_op_others: Dictionary):
+					var new_op_data = [type,diff] 
+					new_op_dict[id].append(new_op_data)
+					
+		#the player have also access to a part of operations
+		#from the enemies. Now we can do it.
+		var new_op_enemies_dict = {}
+		for id in network.players:
+			if id == 1:
+				domain = my_domain
+			else:
+				domain = enemy_domains.get_node(id)
+				
+			if domain:
+				new_op_enemies_dict[id] = []
+				#we should create the list of all players
+				#except the one considered here.
+				var all_players_id = network.players.keys()
+				
+				all_players_id.erase(id)
+				var n = domain.spellbook.get_inspiration()
+				for i in range(n):
+					#each time, we choose a random op
+					# from a random player
+					var player_tirage = all_players_id[randi() % all_players_id.size()]
+					var operation = new_op_dict[player_tirage][randi()% new_op_dict[player_tirage].size()]
+					var type = operation.get_type()
+					var diff = operation.get_diff()
+					new_op_enemies_dict[id].append([type,diff, player_tirage])
+		
+			#now we can send the data to the player
+			rpc_id(id, "send_shop_operations", new_op_dict[id], new_op_enemies_dict[id])
+			
+			#and we update server's data
+			
+remote func send_shop_operations(new_op_player: Array, new_op_others: Array):
+	bonus_window.set_new_operations(new_op_player, new_op_others)
+	
+remote func defeated():
 	pass
+	
+remote func end_of_game():
+	pass
+	
+func leave_game():
+	pass
+	
+func ponderate_random_choice_dict(dict: Dictionary):
+	#Returns a random key from dict.
+	#Evaluate first the sum S of all values and generate
+	#then a random number x to determine the key picked.
+	var S = 0
+	for v in dict.values():
+		S += v
+	var r = rng.randf()*S
+	var total = 0
+	
+	var list = dict.keys()
+	var i = 0
+	var n = len(list)
+	while i < n and total <= r:
+		total += dict[list[i]]
+		i+=1
+	return list[i-1]
 	
 func _on_threat_impact(meteor_id, threat_type, current_hp, power):
 	#we only act if it is a node in our field
