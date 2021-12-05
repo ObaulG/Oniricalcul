@@ -52,14 +52,19 @@ font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
 size = 29
 font_data = SubResource( 2 )
 
-[node name="PlayerDomain" type="CanvasLayer"]
+[node name="PlayerDomain" type="Control"]
+rect_min_size = Vector2( 632, 1037 )
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="BaseDomainData" parent="." instance=ExtResource( 8 )]
 
 [node name="Panel" type="Panel" parent="."]
 margin_right = 632.0
 margin_bottom = 1037.0
+rect_min_size = Vector2( 632, 1037 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -289,6 +294,8 @@ margin_right = 152.0
 margin_bottom = 43.0
 custom_fonts/font = ExtResource( 3 )
 text = "Calculs/sec"
+
+[connection signal="eliminated" from="BaseDomainData" to="." method="_on_BaseDomainData_eliminated"]
 
 [editable path="BaseDomainData"]
 [editable path="Panel/hp_display"]

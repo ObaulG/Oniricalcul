@@ -1,11 +1,10 @@
-extends CanvasLayer
+extends Control
 
 class_name PlayerDomain
 
 
 var player_id: int
 var parent_node
-
 
 onready var base_data = $BaseDomainData
 onready var spellbook = $BaseDomainData/Spellbook
@@ -32,7 +31,7 @@ func _ready():
 func initialise(pid: int):
 	player_id = pid
 	var id_char = network.players[player_id]["id_character_selected"]
-	base_data.initialise(player_id)
+	base_data.initialise(id_char, pid)
 	
 	var tex = global.char_data[id_char].get_icon_texture()
 	texture_icon.texture = global.get_resized_ImageTexture(tex, 192, 192)
@@ -47,6 +46,9 @@ func add_threat(id_threat, threat_data, is_for_me = true):
 	
 func remove_threat(id_threat):
 	pass
+	
+func is_eliminated():
+	return base_data.eliminated
 	
 #input handlers
 func _on_check_answer_command():
@@ -79,3 +81,5 @@ func _on_GameFieldMulti_domain_answer_response(id, good_answer):
 			spellbook.wrong_answer()
 
 
+func _on_BaseDomainData_eliminated():
+	pass # Replace with function body.

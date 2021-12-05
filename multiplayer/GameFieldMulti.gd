@@ -34,8 +34,8 @@ onready var my_domain = $main_player_domain
 onready var bonus_window = $bonus_menu
 onready var enemy_domains = $enemy
 onready var round_timer = $round_time_remaining
-
-
+onready var input_handler = $InputHandler
+onready var operation_display = $OperationDisplayBasic
 onready var scene_transition_rect = $SceneTransitionRect
 
 # Called when the node enters the scene tree for the first time.
@@ -108,11 +108,30 @@ remote func spawn_players(pinfo, spawn_index):
 	# Finally add the actor into the world
 	enemy_domains.add_child(nactor)
 
-
+	#we add connections (elimination, meteor cats, projectile cast, etc)
+	#elimination signal
+	nactor.base_data.connect("eliminated", self, "_on_enemy_elimination")
+	#connection to the input handler
+	nactor.base_data.input_handler.connect("check_answer_command", self, "_on_check_answer_command")
+	nactor.base_data.input_handler.connect("changing_stance_command", self, "_on_changing_stance_command")
+	nactor.base_data.input_handler.connect("delete_digit", self, "_on_delete_digit")
+	nactor.base_data.input_handler.connect("write_digit", self, "_on_write_digit")
+	
+	
 #note: meteor and projectile casts are only visual in clients: if it is display
 #on a basedomaindisplay, then it's not the main character so they should
 #not send data from other players.
 
+
+remote func keyboard_action(pid: int, type: int):
+	if get_tree().is_network_server():
+		for id in network.players:
+			if id != 1:
+				rpc_id(id, "keyboard_action", pid, type)
+				
+	#maybe a border slightly glowing ?
+	pass
+	
 #attack from pid to target_id
 remote func meteor_cast(pid: int, target_id: int, threat_data: Dictionary):
 	if get_tree().is_network_server():
@@ -465,3 +484,37 @@ func _on_bonus_menu_players_asks_for_action(action_type, element):
 			pass
 			
 	
+func _on_enemy_elimination(pid: int):
+	pass
+
+
+func _on_InputHandler_changing_stance_command(new_stance):
+	if get_tree().is_network_server():
+		changing_state(new_stance)
+	else:
+		rpc_id(1, "changing_stance", new_stance)
+
+
+func _on_InputHandler_check_answer_command():
+	var op = my_domain.spellbook.get_current_operation()
+	var ans = operation_display.get_answer()
+	var pid = Gamestate.player_info["net_id"]
+	if get_tree().is_network_server():
+		check_answer(op, ans, pid)
+	else:
+		rpc_id(1, "check_answer", op, ans, pid)
+
+
+#if we press buttons, we might send the information to the server but it's useless
+func _on_InputHandler_delete_digit():
+	if get_tree().is_network_server():
+		keyboard_action(1, 1)
+	else:
+		rpc_id(1, "keyboard_action", Gamestate.player_info["net_id"], 1)
+
+
+func _on_InputHandler_write_digit(d):
+	if get_tree().is_network_server():
+		keyboard_action(1, 2)
+	else:
+		rpc_id(1, "keyboard_action", Gamestate.player_info["net_id"], 2)

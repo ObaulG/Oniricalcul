@@ -24,8 +24,12 @@ func get_type():
 	
 func get_subtype():
 	return subtype
+	
 func get_diff():
 	return diff
 
 func get_potential() -> int:
 	return global.get_op_power(type,diff)
+	
+func to_string() -> String:
+	return "Operation"

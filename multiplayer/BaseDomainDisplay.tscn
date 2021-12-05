@@ -51,8 +51,11 @@ font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
 size = 21
 font_data = SubResource( 7 )
 
-[node name="BaseDomainDisplay" type="CanvasLayer"]
+[node name="BaseDomainDisplay" type="Control"]
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="BaseDomainData" parent="." instance=ExtResource( 2 )]
 

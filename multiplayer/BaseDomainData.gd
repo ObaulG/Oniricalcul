@@ -5,7 +5,7 @@ class_name BaseDomainData
 #Spellbook : gestion of pattern progression and sending magic projectiles
 onready var spellbook = $Spellbook
 #InputHandler : calls functions located here
-onready var input_handler = $InputHandler
+#onready var input_handler = $InputHandler
 #OperationStats : node storing all data from the player
 onready var op_stats = $OperationStats
 #Threats : node handling threat logic
@@ -18,7 +18,7 @@ signal hp_value_changed(new_value)
 signal damaged(n)
 signal healed(n)
 signal points_earned(n)
-
+signal eliminated(pid)
 #Enums
 enum BUYING_OP_ATTEMPT_RESULT{FREE_SPACE, NO_SPACE, NO_MONEY, ERROR}
 
@@ -41,6 +41,7 @@ var game_state: int
 var game_time: float
 var answer_time: float
 
+var eliminated: bool
 var hp_current: int
 var hp_max: int
 
@@ -57,9 +58,12 @@ func process(delta):
 
 func _ready():
 	id_character = -1
+	eliminated = false
 	
-func initialise(pid: int):
-	var char_dico = global.characters[pid]
+func initialise(char_id: int, pid: int):
+	var char_dico = global.characters[char_id]
+	id_domain = pid
+	id_character = char_id
 	hp_max = char_dico["hp"]
 	hp_current = hp_max
 
@@ -77,18 +81,23 @@ func initialise(pid: int):
 	op_stats.initialize(char_dico)
 
 
-
-
 func get_damage(n):
-	hp_current -= n
+	hp_current = clamp(hp_current - n, 0, hp_max)
 	emit_signal("damaged", n)
 	emit_signal("hp_value_changed", hp_current)
 	
+	if hp_current <= 0:
+		eliminated = true
+		emit_signal("eliminated", id_domain)
+		
 func heal(n):
 	hp_current = clamp(hp_current + n, 0, hp_max)
 	emit_signal("healed", n)
 	emit_signal("hp_value_changed", hp_current)
 
+func is_alive():
+	return hp_current <= 0
+	
 # getters
 func get_id_domain():
 	return id_domain
@@ -124,4 +133,3 @@ func get_answer_time():
 
 func set_shop_operations(op_list: Array):
 	spellbook.list_shop_operations = op_list.duplicate()
-	

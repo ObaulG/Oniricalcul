@@ -3,7 +3,7 @@
 [ext_resource path="res://multiplayer/GameFieldMulti.gd" type="Script" id=1]
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=2]
 [ext_resource path="res://multiplayer/PlayerDomain.tscn" type="PackedScene" id=3]
-[ext_resource path="res://multiplayer/BasicPlayerInput.gd" type="Script" id=4]
+[ext_resource path="res://multiplayer/InputHandler.gd" type="Script" id=4]
 [ext_resource path="res://multiplayer/OperationDisplay.tscn" type="PackedScene" id=5]
 [ext_resource path="res://bonus/BonusMenu.gd" type="Script" id=6]
 [ext_resource path="res://scenes/scene_transition/SceneTransitionRect.gd" type="Script" id=7]
@@ -20,6 +20,9 @@ font_data = SubResource( 1 )
 [node name="GameFieldMulti" type="Node2D"]
 script = ExtResource( 1 )
 
+[node name="InputHandler" type="Node" parent="."]
+script = ExtResource( 4 )
+
 [node name="round_time_remaining" type="Timer" parent="."]
 pause_mode = 2
 
@@ -32,10 +35,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="PlayerInput" type="Node" parent="."]
-script = ExtResource( 4 )
-
 [node name="main_player_domain" parent="." instance=ExtResource( 3 )]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 648.0
+margin_bottom = 1053.0
 
 [node name="bonus_menu" parent="." instance=ExtResource( 8 )]
 visible = false
@@ -91,12 +95,20 @@ __meta__ = {
 [node name="BaseDomainDisplay" parent="enemy" instance=ExtResource( 9 )]
 
 [node name="BaseDomainDisplay2" parent="enemy" instance=ExtResource( 9 )]
+margin_top = 4.0
+margin_bottom = 4.0
 
 [node name="BaseDomainDisplay3" parent="enemy" instance=ExtResource( 9 )]
+margin_top = 8.0
+margin_bottom = 8.0
 
 [node name="BaseDomainDisplay4" parent="enemy" instance=ExtResource( 9 )]
+margin_top = 12.0
+margin_bottom = 12.0
 
 [node name="BaseDomainDisplay5" parent="enemy" instance=ExtResource( 9 )]
+margin_top = 16.0
+margin_bottom = 16.0
 
 [node name="SceneTransitionRect" type="ColorRect" parent="."]
 visible = false
@@ -153,5 +165,11 @@ __meta__ = {
 }
 
 [connection signal="domain_answer_response" from="." to="main_player_domain" method="_on_GameFieldMulti_domain_answer_response"]
+[connection signal="changing_stance_command" from="InputHandler" to="." method="_on_InputHandler_changing_stance_command"]
+[connection signal="check_answer_command" from="InputHandler" to="." method="_on_InputHandler_check_answer_command"]
+[connection signal="delete_digit" from="InputHandler" to="." method="_on_InputHandler_delete_digit"]
+[connection signal="delete_digit" from="InputHandler" to="OperationDisplayBasic" method="_on_InputHandler_delete_digit"]
+[connection signal="write_digit" from="InputHandler" to="." method="_on_InputHandler_write_digit"]
+[connection signal="write_digit" from="InputHandler" to="OperationDisplayBasic" method="_on_InputHandler_write_digit"]
 [connection signal="timeout" from="round_time_remaining" to="." method="_on_round_time_remaining_timeout"]
 [connection signal="players_asks_for_action" from="bonus_menu" to="." method="_on_bonus_menu_players_asks_for_action"]
