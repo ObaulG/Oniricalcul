@@ -92,6 +92,7 @@ func set_new_operations(list_player: Array, list_enemy: Array):
 		new_operations_grid.remove_child(child)
 		child.queue_free()
 		
+	var i = 0
 	for op in list_player:
 		var type = op[0]
 		var diff = op[1]
@@ -106,7 +107,9 @@ func set_new_operations(list_player: Array, list_enemy: Array):
 		new_op.set_display_type(Operation_Display.DISPLAY_TYPE.BUYING)
 		new_op.set_price(5 + 2*pow(diff,2))
 		new_op.connect("wants_to_buy_op", self, "on_trying_to_buy_op")
-		
+		new_op.set_name("myop"+str(i))
+		i+=1
+	i = 0
 	for op in list_enemy:
 		var type = op[0]
 		var diff = op[1]
@@ -117,6 +120,8 @@ func set_new_operations(list_player: Array, list_enemy: Array):
 		new_op.set_price(10 + 2*pow(diff,2))
 		new_op.set_display_type(Operation_Display.DISPLAY_TYPE.BUYING)
 		new_op.connect("wants_to_buy_op", self, "on_trying_to_buy_op")
+		new_op.set_name("enemyop"+str(i))
+		i+=1
 		
 func get_erase_price():
 	return erase_price
@@ -175,6 +180,13 @@ func pop_up_result(ok_pressed: bool):
 	else:
 		return -1
 
+#each shop element buyable has a name
+#(node name)
+func get_shop_element_by_name(s: String):
+	#for the moment, only operations are buyable
+	var node = new_operations_grid.get_node(s)
+	return node
+	
 func on_trying_to_buy_op(op):
 	emit_signal("player_ask_to_buy_operation", op)
 

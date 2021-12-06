@@ -1,7 +1,13 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=1]
 [ext_resource path="res://UI/PopUpNotification.gd" type="Script" id=2]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
+
+[sub_resource type="DynamicFont" id=2]
+size = 22
+font_data = SubResource( 1 )
 
 [node name="PopUpNotification" type="Control"]
 anchor_right = 1.0
@@ -20,22 +26,22 @@ margin_bottom = 155.0
 popup_exclusive = true
 
 [node name="TextureRect" type="TextureRect" parent="Popup"]
-margin_left = 14.408
-margin_top = 11.6929
-margin_right = 142.408
-margin_bottom = 139.693
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 489.0
+margin_bottom = 151.0
 rect_min_size = Vector2( 128, 128 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Popup"]
-margin_left = 149.0
-margin_top = 16.0
-margin_right = 472.0
-margin_bottom = 135.0
-custom_fonts/normal_font = ExtResource( 1 )
-text = "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 489.0
+margin_bottom = 151.0
+custom_fonts/normal_font = SubResource( 2 )
+text = "notification_text"
 __meta__ = {
 "_edit_use_anchors_": false
 }

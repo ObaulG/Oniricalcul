@@ -20,7 +20,7 @@ signal healed(n)
 signal points_earned(n)
 signal eliminated(pid)
 #Enums
-enum BUYING_OP_ATTEMPT_RESULT{FREE_SPACE, NO_SPACE, NO_MONEY, ERROR}
+enum BUYING_OP_ATTEMPT_RESULT{CAN_BUY=1, NO_SPACE, NO_MONEY, ERROR}
 
 #Consts
 const STANCES = {ATTACK = 1, DEFENSE = 2, BONUS = 3}
@@ -129,6 +129,14 @@ func get_nb_pattern_loops():
 func get_answer_time():
 	return answer_time
 
+func get_money():
+	return spellbook.get_money()
+	
+func get_swap_price():
+	return spellbook.get_swap_price()
+	
+func get_erase_price():
+	return spellbook.get_erase_price()
 # setters
 
 func set_shop_operations(op_list: Array):

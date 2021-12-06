@@ -37,6 +37,8 @@ onready var round_timer = $round_time_remaining
 onready var input_handler = $InputHandler
 onready var operation_display = $OperationDisplayBasic
 onready var scene_transition_rect = $SceneTransitionRect
+onready var time_display = $TimeLeftDisplay
+onready var popup_nodes = $PopUps
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -55,8 +57,6 @@ func _ready():
 	$HUD/PanelPlayerList/lblLocalPlayer.text = Gamestate.player_info["pseudo"]
 	
 
-	#the game starts in pause mode
-	set_pause_mode(true)
 	state = STATE.PREROUND
 	
 	round_time = ROUND_TIME
@@ -68,10 +68,13 @@ func _ready():
 	else:
 		rpc_id(1, "spawn_players", Gamestate.player_info, -1)
 		
+	time_display.set_min_value(0)
+	round_timer.start(preround_time)
+	
 func _process(delta):
 	if not pause_mode:
 		game_time += delta
-		
+	time_display.set_new_value(round_timer.time_left)
 # Spawns a new player actor, using the provided player_info structure and the given spawn index
 remote func spawn_players(pinfo, spawn_index):
 	# If the spawn_index is -1 then we define it based on the size of the player list
@@ -287,43 +290,80 @@ remote func update_incantation(id_domain: int, n: int):
 #we give the new state as an argument
 remote func changing_state(new_state):
 	if get_tree().is_network_server():
+		match(new_state):
+			STATE.PREROUND:
+				pass
+			STATE.ROUND:
+				pass
+			STATE.SHOPPING:
+				#will call rpc in all clients
+				generate_all_shop_operations()
+			STATE.ENDED:
+				pass
+				
 		for id in network.players:
 			if id != 1:
 				rpc_id(id, "changing_state", new_state)
-
+		
 	match(new_state):
 		STATE.PREROUND:
 			round_timer.start(preround_time)
+			time_display.set_max_value(preround_time)
 			bonus_window.hide = true
 		STATE.ROUND:
 			pause_mode_activation(false)
 			round_timer.start(round_time)
+			time_display.set_max_value(round_time)
 		STATE.SHOPPING:
 			pause_mode_activation(true)
 			bonus_window.hide = false
 			round_timer.start(shopping_time)
+			time_display.set_max_value(shopping_time)
 		STATE.ENDED:
 			bonus_window.hide = false
 			pause_mode_activation(true)
 	
-
+remote func set_waiting_transaction(b: bool):
+	my_domain.spellbook.waiting_transaction = b
+	
 remote func ask_server_for_bonus_action(action_type, element):
 	var who = get_tree().get_rpc_sender_id()
 	if get_tree().is_network_server():
-	
-		var action_allowed = false
-		
-		#checking if the action is possible according to 
-		#the data in the server
-		
-		if action_allowed:
-			#updating data in the server
-			pass
+		var domain = get_domain_by_pid(who)
+		if domain:
+			var already_buying = domain.is_waiting_for_transaction_end()
+			if already_buying:
+				rpc_id(who, "server_answer_for_bonus_action", false, Spellbook.BUYING_OP_ATTEMPT_RESULT.ALREADY_BUYING)
+				return
+			var action_allowed = false
 			
-		if who != 1:
-			rpc_id(who, "server_answer_for_bonus_action", action_allowed)
-	
-remote func server_answer_for_bonus_action(answer: bool):
+			#checking if the action is possible according to 
+			#the data in the server
+			if action_allowed:
+				#updating data in the server
+				pass
+	#TO BE CONTINUED!
+#		var display_time = 3.0
+#		var message = ""
+#		var pos = 1
+#		match(buy_status):
+#			Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
+#				pass
+#			Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_MONEY:
+#				message = "Pas assez d'argent, économisez!"
+#			Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_SPACE:
+#				message = "Vous ne pouvez pas compléter davantage votre Incantation !"
+#			Spellbook.BUYING_OP_ATTEMPT_RESULT.ERROR:
+#				message = "Erreur lors de l'achat"
+#
+#		if Gamestate.player_info["net_id"] != 1:
+#			rpc_id(1, "ask_server_for bonus_action", action_type, element)
+#		else:
+#			ask_server_for_bonus_action(action_type, element)
+#
+#		if buy_status != Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
+#			create_pop_up_notification(display_time, message,pos)
+remote func server_answer_for_bonus_action(answer: bool, type):
 	pass
 	#emit signal to update the UI ?
 	#
@@ -416,6 +456,32 @@ remote func defeated():
 remote func end_of_game():
 	pass
 	
+#returns a value explaining if the pid player can buy
+#the thing he asks.
+func check_shop_operation(pid: int, action_type, element):
+	var domain = get_domain_by_pid(pid)
+	if domain:
+		var money = domain.get_money()
+		var cost
+		match(action_type):
+			BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
+				#if the user wants to buy an operation, then
+				#the element given is an instance of Operation_Display
+				var op_name = element.get_name()
+				cost = element.get_price()
+			BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
+				cost = domain.base_data.get_erase_price()
+			BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
+				cost = domain.base_data.get_swap_price()
+
+		#note: buy_attempt_result only considers Operation buying
+		#so it checks if we can add one.
+		var buy_status = domain.spellbook.buy_attempt_result(action_type, cost)
+		return buy_status
+
+remote func answer_shop_operation(transaction_done: bool):
+	pass
+	
 func leave_game():
 	pass
 	
@@ -436,6 +502,25 @@ func ponderate_random_choice_dict(dict: Dictionary):
 		total += dict[list[i]]
 		i+=1
 	return list[i-1]
+	
+func get_domain_by_pid(pid: int):
+	if pid == my_domain.player_id:
+		return my_domain
+		
+	var domain = enemy_domains.get_node(str(pid))
+	if domain:
+		return domain
+		
+	return null
+	
+func is_waiting_for_transaction_end():
+	return my_domain.spellbook.get_waiting_transaction()
+	
+func create_pop_up_notification(display_time: float, message: String, pos = 1):
+	var popup = PopUpNotification.new()
+	popup.initialize(display_time, message, pos)
+	popup_nodes.add_child(popup)
+	popup.display_on_screen()
 	
 func _on_threat_impact(meteor_id, threat_type, current_hp, power):
 	#we only act if it is a node in our field
@@ -475,25 +560,52 @@ func _on_round_time_remaining_timeout():
 		changing_state(next_state)
 
 func _on_bonus_menu_players_asks_for_action(action_type, element):
+	var money = my_domain.get_money()
+	var cost
 	match(action_type):
 		BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
-			pass
+			#if the user wants to buy an operation, then
+			#the element given is an instance of Operation_Display
+			var op_name = element.get_name()
+			cost = element.get_price()
 		BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-			pass
+			cost = my_domain.base_data.get_erase_price()
 		BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
-			pass
+			cost = my_domain.base_data.get_swap_price()
 			
+	#we can make the client check first if he can buy
+	#the server will check it anyway
+	#note: buy_attempt_result only considers Operation buying
+	#so it checks if we can add one.
+	var buy_status = my_domain.spellbook.buy_attempt_result(action_type, cost)
+	var display_time = 3.0
+	var message = ""
+	var pos = 1
+	match(buy_status):
+		Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
+			pass
+		Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_MONEY:
+			message = "Pas assez d'argent, économisez!"
+		Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_SPACE:
+			message = "Vous ne pouvez pas compléter davantage votre Incantation !"
+		Spellbook.BUYING_OP_ATTEMPT_RESULT.ERROR:
+			message = "Erreur lors de l'achat"
 	
+	if Gamestate.player_info["net_id"] != 1:
+		rpc_id(1, "ask_server_for bonus_action", action_type, element)
+	else:
+		ask_server_for_bonus_action(action_type, element)
+	
+	if buy_status != Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
+		create_pop_up_notification(display_time, message,pos)
 func _on_enemy_elimination(pid: int):
 	pass
-
 
 func _on_InputHandler_changing_stance_command(new_stance):
 	if get_tree().is_network_server():
 		changing_state(new_stance)
 	else:
 		rpc_id(1, "changing_stance", new_stance)
-
 
 func _on_InputHandler_check_answer_command():
 	var op = my_domain.spellbook.get_current_operation()

@@ -1,4 +1,4 @@
-extends Container
+extends Control
 
 enum BONUS_ACTION{
 	BUY_OPERATION = 1,
@@ -95,6 +95,7 @@ func set_new_operations(list_player: Array, list_enemy: Array):
 		new_operations_grid.remove_child(child)
 		child.queue_free()
 		
+	var i = 0
 	for op in list_player:
 		var type = op[0]
 		var diff = op[1]
@@ -109,21 +110,21 @@ func set_new_operations(list_player: Array, list_enemy: Array):
 		new_op.set_display_type(Operation_Display.DISPLAY_TYPE.BUYING)
 		new_op.set_price(5 + 2*pow(diff,2))
 		new_op.connect("wants_to_buy_op", self, "on_trying_to_buy_op")
-		
+		new_op.set_name("myop"+str(i))
+		i+=1
+	i = 0
 	for op in list_enemy:
 		var type = op[0]
 		var diff = op[1]
-		var subtype
-		if len(op) == 3:
-			subtype = op[2]
-		else:
-			subtype = -1
+
 		var new_op = global.operation_display.instance()
 		new_operations_grid.add_child(new_op)
-		new_op.change_operation(type, diff, subtype)
+		new_op.change_operation(type, diff)
 		new_op.set_price(10 + 2*pow(diff,2))
 		new_op.set_display_type(Operation_Display.DISPLAY_TYPE.BUYING)
 		new_op.connect("wants_to_buy_op", self, "on_trying_to_buy_op")
+		new_op.set_name("enemyop"+str(i))
+		i+=1
 		
 func get_erase_price():
 	return erase_price
@@ -144,6 +145,11 @@ func get_buyable_new_operations():
 			list_of_new_op.append(child)
 	return list_of_new_op
 	
+func get_shop_element_by_name(s: String):
+	#for the moment, only operations are buyable
+	var node = new_operations_grid.get_node(s)
+	return node
+
 func set_display_potential(value: int):
 	incantation.update_potential(value)
 	

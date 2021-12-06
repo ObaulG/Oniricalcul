@@ -3,7 +3,11 @@ extends Control
 class_name PopUpNotification
 
 enum DISPLAY_POSITION{
-	TOP_RIGHT = 1, TOP_LEFT, BOTTOM_LEFT, BOTTOM_RIGHT, FREE
+	TOP_RIGHT = 1, 
+	TOP_LEFT, 
+	BOTTOM_LEFT, 
+	BOTTOM_RIGHT, 
+	FREE
 }
 var display_time: float
 var text: String
@@ -29,11 +33,18 @@ func _process(delta):
 	
 func display_on_screen():
 	timer.start(display_time)
-
+	popup_node.show()
+	
+func stop_displaying():
+	queue_free()
+	
 func get_display_type():
 	return display_type
 
 func set_texture_icon(pict: Texture):
 	picture.texture = pict
+	
+
+	
 func _on_Timer_timeout():
 	queue_free()
