@@ -7,8 +7,11 @@ enum BUYING_OP_ATTEMPT_RESULT{
 	NO_MONEY,
 	ALREADY_BUYING, 
 	ERROR}
+	
 signal attack()
 signal incantation_progress_changed(new_value)
+signal money_value_has_changed(n)
+
 #Consts
 const STANCES = {ATTACK = 1, DEFENSE = 2, BONUS = 3}
 const THREAT_TYPES = {REGULAR = 1, FAST = 2, STRONG = 3}
@@ -172,6 +175,9 @@ func determine_effective_power() -> int:
 
 	return power
 
+func spend_money(n: int):
+	money = clamp(money-n, 0, money)
+	emit_signal("money_value_has_changed", money)
 func get_current_operation():
 	return pattern.get_current_op()
 

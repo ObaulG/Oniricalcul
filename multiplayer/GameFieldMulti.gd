@@ -335,36 +335,43 @@ remote func ask_server_for_bonus_action(action_type, element):
 			if already_buying:
 				rpc_id(who, "server_answer_for_bonus_action", false, Spellbook.BUYING_OP_ATTEMPT_RESULT.ALREADY_BUYING)
 				return
-			var action_allowed = false
-			
+
 			#checking if the action is possible according to 
 			#the data in the server
-			if action_allowed:
-				#updating data in the server
-				pass
-	#TO BE CONTINUED!
-#		var display_time = 3.0
-#		var message = ""
-#		var pos = 1
-#		match(buy_status):
-#			Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
-#				pass
-#			Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_MONEY:
-#				message = "Pas assez d'argent, économisez!"
-#			Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_SPACE:
-#				message = "Vous ne pouvez pas compléter davantage votre Incantation !"
-#			Spellbook.BUYING_OP_ATTEMPT_RESULT.ERROR:
-#				message = "Erreur lors de l'achat"
-#
-#		if Gamestate.player_info["net_id"] != 1:
-#			rpc_id(1, "ask_server_for bonus_action", action_type, element)
-#		else:
-#			ask_server_for_bonus_action(action_type, element)
-#
-#		if buy_status != Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
-#			create_pop_up_notification(display_time, message,pos)
-remote func server_answer_for_bonus_action(answer: bool, type):
-	pass
+			var buy_status = check_shop_operation(who, action_type, element)
+			
+			if Gamestate.player_info["net_id"] != 1:
+				rpc_id(1, "server_answer_for_bonus_action", buy_status)
+				#then we apply modifications on the server
+		
+				if buy_status == Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
+					pass
+					#to complete
+			else:
+				server_answer_for_bonus_action(buy_status, action_type, element)
+			
+			
+remote func server_answer_for_bonus_action(answer_type, action_type, element):
+	var display_time = 3.0
+	var message = ""
+	var pos = 1
+	match(answer_type):
+		Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
+			pass
+		Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_MONEY:
+			message = "Pas assez d'argent, économisez!"
+		Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_SPACE:
+			message = "Vous ne pouvez pas compléter davantage votre Incantation !"
+		Spellbook.BUYING_OP_ATTEMPT_RESULT.ERROR:
+			message = "Erreur lors de l'achat"
+	
+	if Gamestate.player_info["net_id"] != 1:
+		rpc_id(1, "ask_server_for bonus_action", action_type, element)
+	else:
+		ask_server_for_bonus_action(action_type, element)
+	
+#	if not can_buy:
+#		create_pop_up_notification(display_time, message,pos)
 	#emit signal to update the UI ?
 	#
 	
@@ -446,10 +453,13 @@ func generate_all_shop_operations():
 			rpc_id(id, "send_shop_operations", new_op_dict[id], new_op_enemies_dict[id])
 			
 			#and we update server's data
-			
 remote func send_shop_operations(new_op_player: Array, new_op_others: Array):
 	bonus_window.set_new_operations(new_op_player, new_op_others)
 	
+func apply_shop_transaction(pid, action_type, element):
+	var domain = get_domain_by_pid(pid)
+	if domain:
+		
 remote func defeated():
 	pass
 	
@@ -459,25 +469,26 @@ remote func end_of_game():
 #returns a value explaining if the pid player can buy
 #the thing he asks.
 func check_shop_operation(pid: int, action_type, element):
-	var domain = get_domain_by_pid(pid)
-	if domain:
-		var money = domain.get_money()
-		var cost
-		match(action_type):
-			BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
-				#if the user wants to buy an operation, then
-				#the element given is an instance of Operation_Display
-				var op_name = element.get_name()
-				cost = element.get_price()
-			BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-				cost = domain.base_data.get_erase_price()
-			BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
-				cost = domain.base_data.get_swap_price()
+	if get_tree().is_network_server():
+		var domain = get_domain_by_pid(pid)
+		if domain:
+			var money = domain.get_money()
+			var cost
+			match(action_type):
+				BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
+					#if the user wants to buy an operation, then
+					#the element given is an instance of Operation_Display
+					var op_name = element.get_name()
+					cost = element.get_price()
+				BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
+					cost = domain.base_data.get_erase_price()
+				BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
+					cost = domain.base_data.get_swap_price()
 
-		#note: buy_attempt_result only considers Operation buying
-		#so it checks if we can add one.
-		var buy_status = domain.spellbook.buy_attempt_result(action_type, cost)
-		return buy_status
+			#note: buy_attempt_result only considers Operation buying
+			#so it checks if we can add one.
+			var buy_status = domain.spellbook.buy_attempt_result(action_type, cost)
+			return buy_status
 
 remote func answer_shop_operation(transaction_done: bool):
 	pass
@@ -591,10 +602,21 @@ func _on_bonus_menu_players_asks_for_action(action_type, element):
 		Spellbook.BUYING_OP_ATTEMPT_RESULT.ERROR:
 			message = "Erreur lors de l'achat"
 	
-	if Gamestate.player_info["net_id"] != 1:
-		rpc_id(1, "ask_server_for bonus_action", action_type, element)
-	else:
-		ask_server_for_bonus_action(action_type, element)
+	var can_buy = buy_status == Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY
+	if can_buy:
+		#expecting more action from the user
+		match(action_type):
+			BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
+				bonus_window.change_state(BonusMenu.STATE.SELECTING)
+				#yield selected signal
+				#we get the index of the operation to delete
+				element = yield(bonus_window.select_operation(), "completed")
+
+
+		if Gamestate.player_info["net_id"] != 1:
+			rpc_id(1, "ask_server_for bonus_action", action_type, element)
+		else:
+			ask_server_for_bonus_action(action_type, element)
 	
 	if buy_status != Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
 		create_pop_up_notification(display_time, message,pos)

@@ -1,6 +1,7 @@
 extends Control
 
-signal operation_selected(index)
+signal nb_selected_operations_changed(n)
+
 signal operation_confirmed_and_incantation_updated(index)
 
 class_name Incantation_Operations
@@ -71,7 +72,7 @@ func change_current_index(i: int):
 	if current >= 0:
 		pass #Emphasis of current op
 
-func get_current_selected_operations(L: Array):
+func get_current_selected_operations():
 	var selected = []
 	for i in range(len(operations_list)):
 		if operations_list[i].is_selected():
@@ -80,7 +81,7 @@ func get_current_selected_operations(L: Array):
 	
 func on_operation_selected(index: int):
 	print("Le noeud Incantation a reçu la sélection de l'opération d'index " + str(index))
-	emit_signal("operation_selected", index)
+	emit_signal("nb_selected_operations_changed", len(get_current_selected_operations()))
 	if !multiple_selection:
 		for i in range(len(operations_list)):
 			if i == index:
@@ -92,7 +93,7 @@ func on_operation_selected(index: int):
 func on_operation_unselected(index: int):
 	print("Le noeud Incantation a reçu la désélection de l'opération d'index " + str(index))
 	operations_list[index].set_selected(false)
-	emit_signal("operation_unselected", index)
+	emit_signal("nb_selected_operations_changed", len(get_current_selected_operations()))
 
 func remove_operation_by_index(index: int):
 	assert (index >= 0 and index < 8)
@@ -105,7 +106,6 @@ func assign_operation_to_index(pattern_el: Array, index: int):
 	
 func on_operation_confirmed(index: int):
 	print("Le noeud Incantation a reçu la confirmation de changement de l'opération d'index " + str(index))
-	 
 	emit_signal("operation_confirmed_and_incantation_updated", index)
 
 

@@ -25,7 +25,8 @@ var erase_price
 var swap_price
 
 var state
-var selected_op_index: int
+var selected_op_index: int #useless now
+var nb_selection_needed: int
 var confirm_pop_up_incantation
 var operation_dragged
 var pop_up_ok_button
@@ -50,11 +51,13 @@ func _ready():
 	connect("on_pop_up_ok_press", self, "on_pop_up_ok_press")
 	connect("on_pop_up_cancel", self, "on_pop_up_cancel")
 	selected_op_index = -1
+	change_state(STATE.IDLE)
 	
 func change_state(state):
 	set_state(state)
 	match state:
 		STATE.IDLE:
+			nb_selection_needed = 0
 			swap_button.disabled = false
 			erase_button.disabled = false
 			cancel_button.disabled = true
@@ -76,6 +79,9 @@ func change_state(state):
 			cancel_button.disabled = false
 			make_op_selectionnable(true, true)
 			
+func get_selected_operations():
+	return incantation.get_current_selected_operations()
+	
 func set_pattern(list: Array):
 	incantation.update_operations(list)
 	
@@ -165,23 +171,6 @@ func set_new_stats(list: Array):
 func make_op_selectionnable(b = true, multi = false):
 	incantation.set_operations_selectable(b, multi)
 	
-func select_operation(n = 1):
-	selected_op_index = -1
-	set_shop_operations_buyable(false)
-	change_state(STATE.SWAPPING)
-	print("Sélectionnez une opération")
-	# user selects the operation to change
-	selected_op_index = yield(incantation, "operation_selected")
-	change_state(STATE.IDLE)
-	return selected_op_index
-	
-func select_operations_to_swap():
-	change_state(STATE.SWAPPING)
-	var index1: int
-	var index2: int
-	
-	print("Sélectionnez op1")
-	
 func pop_up_result(ok_pressed: bool):
 	if ok_pressed:
 		return selected_op_index
@@ -227,3 +216,20 @@ func _on_domain_p1_new_money_value(money):
 
 func _on_erase_button_down():
 	emit_signal("player_ask_for_action", BONUS_ACTION.ERASE_OPERATION)
+
+func _on_Incantation_Operations_operation_selected(index):
+	pass # Replace with function body.
+
+
+#if we have the correct number of operations selected
+#for the current state then we call the function needed
+func _on_Incantation_Operations_nb_selected_operations_changed(n):
+	match state:
+		STATE.IDLE:
+			pass
+		STATE.REPLACING_OP:
+			pass
+		STATE.SWAPPING:
+			pass
+		STATE.SELECTING:
+			pass

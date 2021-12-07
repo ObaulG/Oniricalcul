@@ -206,6 +206,7 @@ dialog_text = "Confirmer?"
 
 [connection signal="on_pop_up_cancel" from="." to="." method="_on_pop_up_cancel"]
 [connection signal="on_pop_up_ok_press" from="." to="." method="_on_pop_up_ok_press"]
+[connection signal="nb_selected_operations_changed" from="MarginContainer/vbox/bonus_zone/new_operations/Incantation_Operations" to="." method="_on_Incantation_Operations_nb_selected_operations_changed"]
 [connection signal="button_down" from="MarginContainer/vbox/bonus_zone/new_operations/swap_button" to="." method="_on_swap_button_down"]
 [connection signal="button_down" from="MarginContainer/vbox/bonus_zone/new_operations/erase_button" to="." method="_on_erase_button_down"]
 [connection signal="button_down" from="MarginContainer/vbox/bonus_zone/new_operations/cancel_button" to="." method="_on_cancel_button_down"]
