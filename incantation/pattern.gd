@@ -4,11 +4,12 @@ const MAX_OP = 8
 
 class_name Pattern
 
+signal incantation_has_changed()
+
 var operations_list: Array
 var index: int
 var scaling_coeff: float
 var power: ReliquatNumber
-
 
 func _init(L = [], scaling_value = 5):
 	operations_list = L
@@ -28,18 +29,26 @@ func power_evaluation():
 		
 	power.set_value(total)
 	print("Potentiel: " + str(total))
+	
 func add_to(operation, i):
 	operations_list.insert(i, operation)
+	emit_signal("incantation_has_changed")
 	power_evaluation()
 	
 func append(operation):
 	operations_list.append(operation)
+	emit_signal("incantation_has_changed")
 	power_evaluation()
 	
-func remove(i):
+func remove(i: int):
 	operations_list.remove(i)
 	index = index % len(operations_list)
+	emit_signal("incantation_has_changed")
 	power_evaluation()
+	
+func remove_by_element(op):
+	var i = operations_list.find(op)
+	remove(i)
 	
 func get_current_op() -> Array:
 	return operations_list[index]

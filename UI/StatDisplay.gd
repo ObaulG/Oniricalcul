@@ -70,3 +70,7 @@ func update_label(value):
 		value_label.text = str(stepify((100*value)/max(1,bar.max_value), 0.1)) + " %"
 	else:
 		value_label.text = str(value)
+
+
+func _on_BaseDomainData_hp_value_changed(new_value):
+	set_new_value(new_value)

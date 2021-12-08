@@ -1,5 +1,7 @@
 extends Control
 
+
+class_name BonusMenuBis
 enum BONUS_ACTION{
 	BUY_OPERATION = 1,
 	BUY_BONUS,
@@ -7,11 +9,10 @@ enum BONUS_ACTION{
 	ERASE_OPERATION,
 	SWAP_OPERATIONS
 }
-class_name BonusMenuBis
-
 enum STATE {IDLE, REPLACING_OP, SWAPPING, SELECTING}
 
 signal players_asks_for_action(action_type, element)
+signal operations_selection_done(L)
 signal on_pop_up_ok_press()
 signal on_pop_up_cancel()
 
@@ -35,6 +36,7 @@ var swap_button
 var erase_button
 var cancel_button
 
+onready var state_label = $state_label
 func _ready():
 	operations_node = $MarginContainer/vbox/bonus_zone/new_operations/Incantation_Operations
 	bonus_list_node = $MarginContainer/vbox/bonus_zone/vbox_items/list
@@ -57,6 +59,7 @@ func change_state(state):
 	set_state(state)
 	match state:
 		STATE.IDLE:
+			state_label.text = "Normal"
 			nb_selection_needed = 0
 			swap_button.disabled = false
 			erase_button.disabled = false
@@ -64,16 +67,22 @@ func change_state(state):
 			set_shop_operations_buyable(true)
 			make_op_selectionnable(false, false)
 		STATE.REPLACING_OP:
+			state_label.text = "Remplacement"
+			nb_selection_needed = 1
 			swap_button.disabled = true
 			erase_button.disabled = true
 			cancel_button.disabled = false
 			make_op_selectionnable(true, false)
 		STATE.SWAPPING:
+			state_label.text = "Echange"
+			nb_selection_needed = 2
 			swap_button.disabled = true
 			erase_button.disabled = true
 			cancel_button.disabled = false
 			make_op_selectionnable(true, true)
 		STATE.SELECTING:
+			state_label.text = "Sélection"
+			nb_selection_needed = 1
 			swap_button.disabled = true
 			erase_button.disabled = true
 			cancel_button.disabled = false
@@ -209,16 +218,8 @@ func _on_cancel_button_down():
 	set_shop_operations_buyable(true)
 	change_state(STATE.IDLE)
 
-func _on_domain_p1_new_money_value(money):
-	print("Nouvelle valeur de monnaie recue")
-	points_label.text = "Argent: " + str(money)
-
-
 func _on_erase_button_down():
 	emit_signal("player_ask_for_action", BONUS_ACTION.ERASE_OPERATION)
-
-func _on_Incantation_Operations_operation_selected(index):
-	pass # Replace with function body.
 
 
 #if we have the correct number of operations selected
@@ -233,3 +234,8 @@ func _on_Incantation_Operations_nb_selected_operations_changed(n):
 			pass
 		STATE.SELECTING:
 			pass
+
+	if n == nb_selection_needed:
+		emit_signal("operations_selection_ended", get_selected_operations(), state)
+		change_state(STATE.IDLE)
+		nb_selection_needed = 0

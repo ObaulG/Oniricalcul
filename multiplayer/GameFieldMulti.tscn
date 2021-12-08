@@ -179,4 +179,5 @@ __meta__ = {
 [connection signal="write_digit" from="InputHandler" to="." method="_on_InputHandler_write_digit"]
 [connection signal="write_digit" from="InputHandler" to="OperationDisplayBasic" method="_on_InputHandler_write_digit"]
 [connection signal="timeout" from="round_time_remaining" to="." method="_on_round_time_remaining_timeout"]
+[connection signal="operations_selection_done" from="bonus_menu" to="." method="_on_bonus_menu_operations_selection_done"]
 [connection signal="players_asks_for_action" from="bonus_menu" to="." method="_on_bonus_menu_players_asks_for_action"]

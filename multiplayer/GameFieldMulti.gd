@@ -75,11 +75,13 @@ func _process(delta):
 	if not pause_mode:
 		game_time += delta
 	time_display.set_new_value(round_timer.time_left)
+	
+# to complete with bot data
 # Spawns a new player actor, using the provided player_info structure and the given spawn index
-remote func spawn_players(pinfo, spawn_index):
+remote func spawn_players(pinfo, spawn_index, is_bot = false):
 	# If the spawn_index is -1 then we define it based on the size of the player list
 	if (spawn_index == -1):
-		spawn_index = network.players.size()
+		spawn_index = network.players.size() + network.bots.size()
 	
 	if (get_tree().is_network_server() && pinfo["net_id"] != 1):
 		# We are on the server and the requested spawn does not belong to the server
@@ -96,7 +98,18 @@ remote func spawn_players(pinfo, spawn_index):
 				rpc_id(id, "spawn_players", pinfo, spawn_index)
 			
 			s_index += 1
-	
+		#Same for the bots
+		for id in network.bots:
+			# Spawn currently iterated player within the new player's scene, skipping the new player for now
+			if (id != pinfo["net_id"]):
+				rpc_id(pinfo["net_id"], "spawn_players", network.bots[id], s_index, true)
+			
+			# Spawn the new player within the currently iterated player as long it's not the server
+			# Because the server's list already contains the new player, that one will also get itself!
+			if (id != 1):
+				rpc_id(id, "spawn_players", pinfo, spawn_index, true)
+		
+		
 	# Load the scene and create an instance
 	var pclass = load(pinfo["actor_path"])
 	var nactor = pclass.instance()
@@ -325,8 +338,10 @@ remote func changing_state(new_state):
 	
 remote func set_waiting_transaction(b: bool):
 	my_domain.spellbook.waiting_transaction = b
+	 
 	
-remote func ask_server_for_bonus_action(action_type, element):
+#this function can probably be optimized
+remote func ask_server_for_bonus_action(action_type, L: Array):
 	var who = get_tree().get_rpc_sender_id()
 	if get_tree().is_network_server():
 		var domain = get_domain_by_pid(who)
@@ -338,40 +353,46 @@ remote func ask_server_for_bonus_action(action_type, element):
 
 			#checking if the action is possible according to 
 			#the data in the server
-			var buy_status = check_shop_operation(who, action_type, element)
+			var buy_status = check_shop_operation(who, action_type, L[0])
 			
 			if Gamestate.player_info["net_id"] != 1:
-				rpc_id(1, "server_answer_for_bonus_action", buy_status)
+				rpc_id(1, "server_answer_for_bonus_action", buy_status, action_type, L)
 				#then we apply modifications on the server
 		
 				if buy_status == Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
-					pass
-					#to complete
+					match(action_type):
+						BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
+							domain.shop_action(action_type, L[0].get_price(), L[0])
+						BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
+							domain.shop_action(action_type, L[0].get_price(), L[0])
+						BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
+							pass
 			else:
-				server_answer_for_bonus_action(buy_status, action_type, element)
+				server_answer_for_bonus_action(buy_status, action_type, L)
 			
 			
-remote func server_answer_for_bonus_action(answer_type, action_type, element):
+remote func server_answer_for_bonus_action(answer_type, action_type, L):
 	var display_time = 3.0
 	var message = ""
 	var pos = 1
 	match(answer_type):
 		Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
-			pass
+			message = "Achat effectué !"
+			match(action_type):
+				BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
+					my_domain.shop_action(action_type, L[0].get_price(), L[0])
+				BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
+					my_domain.shop_action(action_type, L[0].get_price(), L[0])
+				BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
+					pass
 		Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_MONEY:
-			message = "Pas assez d'argent, économisez!"
+			message = "Pas assez d'argent, économisez !"
 		Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_SPACE:
 			message = "Vous ne pouvez pas compléter davantage votre Incantation !"
 		Spellbook.BUYING_OP_ATTEMPT_RESULT.ERROR:
-			message = "Erreur lors de l'achat"
-	
-	if Gamestate.player_info["net_id"] != 1:
-		rpc_id(1, "ask_server_for bonus_action", action_type, element)
-	else:
-		ask_server_for_bonus_action(action_type, element)
-	
-#	if not can_buy:
-#		create_pop_up_notification(display_time, message,pos)
+			message = "Erreur lors de l'achat..."
+
+	create_pop_up_notification(display_time, message,pos)
 	#emit signal to update the UI ?
 	#
 	
@@ -458,7 +479,7 @@ remote func send_shop_operations(new_op_player: Array, new_op_others: Array):
 	
 func apply_shop_transaction(pid, action_type, element):
 	var domain = get_domain_by_pid(pid)
-	if domain:
+	#TO BE CONTINUED
 		
 remote func defeated():
 	pass
@@ -608,18 +629,15 @@ func _on_bonus_menu_players_asks_for_action(action_type, element):
 		match(action_type):
 			BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
 				bonus_window.change_state(BonusMenu.STATE.SELECTING)
-				#yield selected signal
-				#we get the index of the operation to delete
-				element = yield(bonus_window.select_operation(), "completed")
 
-
-		if Gamestate.player_info["net_id"] != 1:
-			rpc_id(1, "ask_server_for bonus_action", action_type, element)
-		else:
-			ask_server_for_bonus_action(action_type, element)
-	
-	if buy_status != Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
+			BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
+				if Gamestate.player_info["net_id"] != 1:
+					rpc_id(1, "ask_server_for bonus_action", action_type, element)
+				else:
+					ask_server_for_bonus_action(action_type, element)
+	else:
 		create_pop_up_notification(display_time, message,pos)
+		
 func _on_enemy_elimination(pid: int):
 	pass
 
@@ -652,3 +670,21 @@ func _on_InputHandler_write_digit(d):
 		keyboard_action(1, 2)
 	else:
 		rpc_id(1, "keyboard_action", Gamestate.player_info["net_id"], 2)
+
+
+func _on_bonus_menu_operations_selection_done(L, state):
+	var action_type
+	match(state):
+		STATE.IDLE:
+			pass
+		STATE.REPLACING_OP:
+			pass
+		STATE.SWAPPING:
+			action_type = BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS
+		STATE.SELECTING:
+			action_type = BonusMenuBis.BONUS_ACTION.ERASE_OPERATION
+			
+	if Gamestate.player_info["net_id"] != 1:
+		rpc_id(1, "ask_server_for bonus_action", action_type, L)
+	else:
+		ask_server_for_bonus_action(action_type, L)

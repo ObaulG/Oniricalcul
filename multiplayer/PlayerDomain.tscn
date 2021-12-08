@@ -77,10 +77,10 @@ margin_bottom = 13.0
 
 [node name="hp_display" parent="Panel" instance=ExtResource( 13 )]
 material = SubResource( 4 )
-margin_left = 432.0
-margin_top = 209.972
-margin_right = 632.0
-margin_bottom = 235.972
+margin_left = 336.0
+margin_top = 204.0
+margin_right = 536.0
+margin_bottom = 230.0
 rect_rotation = -90.0
 
 [node name="bar" parent="Panel/hp_display" index="0"]
@@ -296,6 +296,10 @@ custom_fonts/font = ExtResource( 3 )
 text = "Calculs/sec"
 
 [connection signal="eliminated" from="BaseDomainData" to="." method="_on_BaseDomainData_eliminated"]
+[connection signal="hp_value_changed" from="BaseDomainData" to="Panel/hp_display" method="_on_BaseDomainData_hp_value_changed"]
+[connection signal="incantation_has_changed" from="BaseDomainData/Spellbook" to="Panel/Incantation" method="_on_Spellbook_incantation_has_changed"]
+[connection signal="incantation_has_changed" from="BaseDomainData/Spellbook" to="Panel/IncantationProgress" method="_on_Spellbook_incantation_has_changed"]
+[connection signal="incantation_progress_changed" from="BaseDomainData/Spellbook" to="Panel/IncantationProgress" method="_on_Spellbook_incantation_progress_changed"]
 
 [editable path="BaseDomainData"]
 [editable path="Panel/hp_display"]

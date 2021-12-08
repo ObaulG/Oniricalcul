@@ -54,9 +54,10 @@ func shop_action(type, price, element):
 		BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
 			add_operation_to_pattern(element)
 		BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-			spellbook.pattern.remove
+			spellbook.pattern.remove_by_element(element)
 		BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
-			cost = my_domain.base_data.get_swap_price()
+			pass
+			
 func add_operation_to_pattern(op):
 	if op is Operation:
 		spellbook.pattern.append(op)

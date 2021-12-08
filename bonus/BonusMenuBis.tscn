@@ -192,6 +192,17 @@ custom_colors/font_color = Color( 0.905882, 0.937255, 0.341176, 1 )
 custom_fonts/font = ExtResource( 2 )
 text = "Stats"
 
+[node name="state_label" type="Label" parent="."]
+margin_left = 1088.0
+margin_top = 656.0
+margin_right = 1288.0
+margin_bottom = 694.0
+custom_fonts/font = ExtResource( 2 )
+text = "state"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
 margin_right = 229.0
 margin_bottom = 70.0
