@@ -10,7 +10,7 @@ func _init():
 	player_info = global.player.get_multiplayer_dict().duplicate()
 	player_info["net_id"] = 1 # By default everyone receives "server ID"
 	player_info["actor_path"] = "res://multiplayer/PlayerDomain.tscn"  # The class used to represent the player in the game world
-	
+	player_info["is_bot"] = false
 	#For character select
 	player_info["id_character_selected"] = -1
 	player_info["character_validated"] = false

@@ -12,6 +12,7 @@ enum STATE{
 }
 signal domain_answer_response(id_domain, good_answer)
 
+
 var rng = RandomNumberGenerator.new()
 var round_counter: int
 
@@ -39,6 +40,7 @@ onready var operation_display = $OperationDisplayBasic
 onready var scene_transition_rect = $SceneTransitionRect
 onready var time_display = $TimeLeftDisplay
 onready var popup_nodes = $PopUps
+onready var bot_list = $Bots
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -53,21 +55,22 @@ func _ready():
 	
 	# Must act if disconnected from the server
 	network.connect("disconnected", self, "_on_disconnected")
-	# Update the lblLocalPlayer label widget to display the local player name
-	$HUD/PanelPlayerList/lblLocalPlayer.text = Gamestate.player_info["pseudo"]
 	
-
 	state = STATE.PREROUND
 	
 	round_time = ROUND_TIME
 	preround_time = PREROUND_TIME
 	shopping_time = SHOPPING_TIME
 	
+	var my_id = Gamestate.player_info["net_id"]
+	my_domain.initialise(my_id)
+	
 	if (get_tree().is_network_server()):
 		spawn_players(Gamestate.player_info, 1)
 	else:
 		rpc_id(1, "spawn_players", Gamestate.player_info, -1)
 		
+	spawn_bots()
 	time_display.set_min_value(0)
 	round_timer.start(preround_time)
 	
@@ -98,18 +101,16 @@ remote func spawn_players(pinfo, spawn_index, is_bot = false):
 				rpc_id(id, "spawn_players", pinfo, spawn_index)
 			
 			s_index += 1
-		#Same for the bots
-		for id in network.bots:
-			# Spawn currently iterated player within the new player's scene, skipping the new player for now
-			if (id != pinfo["net_id"]):
-				rpc_id(pinfo["net_id"], "spawn_players", network.bots[id], s_index, true)
-			
-			# Spawn the new player within the currently iterated player as long it's not the server
-			# Because the server's list already contains the new player, that one will also get itself!
-			if (id != 1):
-				rpc_id(id, "spawn_players", pinfo, spawn_index, true)
-		
-		
+	generate_actor(pinfo)
+	
+
+#note: meteor and projectile casts are only visual in clients: if it is display
+#on a basedomaindisplay, then it's not the main character so they should
+#not send data from other players.
+func spawn_bots():
+	for id in network.bots:
+		pass
+func generate_actor(pinfo):
 	# Load the scene and create an instance
 	var pclass = load(pinfo["actor_path"])
 	var nactor = pclass.instance()
@@ -121,6 +122,7 @@ remote func spawn_players(pinfo, spawn_index, is_bot = false):
 	if (pinfo["net_id"] != 1):
 		nactor.set_network_master(pinfo["net_id"])
 	nactor.set_name(str(pinfo["net_id"]))
+	
 	# Finally add the actor into the world
 	enemy_domains.add_child(nactor)
 
@@ -132,13 +134,6 @@ remote func spawn_players(pinfo, spawn_index, is_bot = false):
 	nactor.base_data.input_handler.connect("changing_stance_command", self, "_on_changing_stance_command")
 	nactor.base_data.input_handler.connect("delete_digit", self, "_on_delete_digit")
 	nactor.base_data.input_handler.connect("write_digit", self, "_on_write_digit")
-	
-	
-#note: meteor and projectile casts are only visual in clients: if it is display
-#on a basedomaindisplay, then it's not the main character so they should
-#not send data from other players.
-
-
 remote func keyboard_action(pid: int, type: int):
 	if get_tree().is_network_server():
 		for id in network.players:
@@ -473,14 +468,16 @@ func generate_all_shop_operations():
 			#now we can send the data to the player
 			rpc_id(id, "send_shop_operations", new_op_dict[id], new_op_enemies_dict[id])
 			
-			#and we update server's data
+			#and update server's data
 remote func send_shop_operations(new_op_player: Array, new_op_others: Array):
 	bonus_window.set_new_operations(new_op_player, new_op_others)
 	
-func apply_shop_transaction(pid, action_type, element):
+func apply_shop_transaction(pid, action_type, L):
 	var domain = get_domain_by_pid(pid)
-	#TO BE CONTINUED
-		
+	if domain:
+		domain.shop_action(action_type, L[0].get_price(), L[0])
+
+#TO BE CONTINUED
 remote func defeated():
 	pass
 	
@@ -511,9 +508,6 @@ func check_shop_operation(pid: int, action_type, element):
 			var buy_status = domain.spellbook.buy_attempt_result(action_type, cost)
 			return buy_status
 
-remote func answer_shop_operation(transaction_done: bool):
-	pass
-	
 func leave_game():
 	pass
 	

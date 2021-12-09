@@ -336,7 +336,6 @@ func _on_player_disconnected(pinfo):
 			pass
 		STATE.START_COUNTDOWN:
 			state = STATE.SELECTING
-			
 		STATE.LAUCHING:
 			pass
 func _on_bot_removed(binfo):
@@ -362,7 +361,8 @@ func _on_add_bot_button_down():
 	if get_tree().is_network_server():
 		if state == STATE.SELECTING:
 			var bot_info = global.player.get_multiplayer_dict().duplicate()
-			bot_info["net_id"] = network.get_nb_bots() + 1 # By default everyone receives "server ID"
+			bot_info["is_bot"] = true
+			bot_info["net_id"] = network.get_nb_bots() + 1 
 			bot_info["pseudo"] = "Bot " + str(bot_info["net_id"])
 			bot_info["actor_path"] = "res://multiplayer/PlayerDomain.tscn"  # The class used to represent the player in the game world
 
