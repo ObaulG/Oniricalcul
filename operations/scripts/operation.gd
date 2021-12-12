@@ -28,6 +28,9 @@ func get_subtype():
 func get_diff():
 	return diff
 
+func get_pattern_element() -> Array:
+	return [type, diff]
+	
 func get_potential() -> int:
 	return global.get_op_power(type,diff)
 	

@@ -11,10 +11,14 @@ enum STATE{
 	ENDED
 }
 signal domain_answer_response(id_domain, good_answer)
+signal game_state_changed(new_state)
 
+#to avoid conflict between client ids and bot ids
+var game_id: int
 
 var rng = RandomNumberGenerator.new()
 var round_counter: int
+var operation_factory: OperationFactory
 
 #duration of the game
 var game_time: float
@@ -26,6 +30,8 @@ var round_time: float
 var preround_time: float
 var shopping_time: float
 
+#stored by the server. keys and values are pids
+var targets: Dictionary
 var game_stats = []
 
 #The field game, with at least 2 players.
@@ -40,7 +46,7 @@ onready var operation_display = $OperationDisplayBasic
 onready var scene_transition_rect = $SceneTransitionRect
 onready var time_display = $TimeLeftDisplay
 onready var popup_nodes = $PopUps
-onready var bot_list = $Bots
+onready var ai_node = $OniricAI
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -65,12 +71,19 @@ func _ready():
 	var my_id = Gamestate.player_info["net_id"]
 	my_domain.initialise(my_id)
 	
+	my_domain.base_data.spellbook.connect("meteor_invocation", self, "_on_spellbook_meteor_invocation")
+	my_domain.base_data.spellbook.connect("defense_command", self, "_on_spellbook_defense_command")
+	my_domain.base_data.spellbook.connect("low_incantations_stock", self, "_on_spellbook_low_incantations_stock")
+	
+	#to change
 	if (get_tree().is_network_server()):
 		spawn_players(Gamestate.player_info, 1)
+		operation_factory = OperationFactory.new()
 	else:
 		rpc_id(1, "spawn_players", Gamestate.player_info, -1)
 		
 	spawn_bots()
+	targets = {}
 	time_display.set_min_value(0)
 	round_timer.start(preround_time)
 	
@@ -79,8 +92,8 @@ func _process(delta):
 		game_time += delta
 	time_display.set_new_value(round_timer.time_left)
 	
-# to complete with bot data
-# Spawns a new player actor, using the provided player_info structure and the given spawn index
+#must change it to make it central: the server is the only one to send 
+#data to players
 remote func spawn_players(pinfo, spawn_index, is_bot = false):
 	# If the spawn_index is -1 then we define it based on the size of the player list
 	if (spawn_index == -1):
@@ -101,16 +114,29 @@ remote func spawn_players(pinfo, spawn_index, is_bot = false):
 				rpc_id(id, "spawn_players", pinfo, spawn_index)
 			
 			s_index += 1
-	generate_actor(pinfo)
+	generate_actor(pinfo, is_bot)
+	
+#called to tell everyone the game is about to start
+remote func client_ready(pid: int):
+	pass
+#called to tell the server that all the player data has been received
+remote func all_players_data_received(pid: int):
+	pass
 	
 
+	
 #note: meteor and projectile casts are only visual in clients: if it is display
 #on a basedomaindisplay, then it's not the main character so they should
 #not send data from other players.
 func spawn_bots():
-	for id in network.bots:
-		pass
-func generate_actor(pinfo):
+	if get_tree().is_network_server():
+		for id in network.bots:
+			spawn_players(network.bots[id], -1, true)
+	else:
+		for id in network.bots:
+			generate_actor(network.bots[id], true)
+		
+func generate_actor(pinfo, is_bot = false):
 	# Load the scene and create an instance
 	var pclass = load(pinfo["actor_path"])
 	var nactor = pclass.instance()
@@ -121,8 +147,11 @@ func generate_actor(pinfo):
 	# If this actor does not belong to the server, change the node name and network master accordingly
 	if (pinfo["net_id"] != 1):
 		nactor.set_network_master(pinfo["net_id"])
-	nactor.set_name(str(pinfo["net_id"]))
 	
+	nactor.set_name(str(pinfo["net_id"]))
+	if is_bot:
+		nactor.set_name("bot_"+str(pinfo["net_id"]))
+		ai_node.activate_AI()
 	# Finally add the actor into the world
 	enemy_domains.add_child(nactor)
 
@@ -134,6 +163,7 @@ func generate_actor(pinfo):
 	nactor.base_data.input_handler.connect("changing_stance_command", self, "_on_changing_stance_command")
 	nactor.base_data.input_handler.connect("delete_digit", self, "_on_delete_digit")
 	nactor.base_data.input_handler.connect("write_digit", self, "_on_write_digit")
+	
 remote func keyboard_action(pid: int, type: int):
 	if get_tree().is_network_server():
 		for id in network.players:
@@ -141,7 +171,7 @@ remote func keyboard_action(pid: int, type: int):
 				rpc_id(id, "keyboard_action", pid, type)
 				
 	#maybe a border slightly glowing ?
-	pass
+
 	
 #attack from pid to target_id
 remote func meteor_cast(pid: int, target_id: int, threat_data: Dictionary):
@@ -511,6 +541,56 @@ func check_shop_operation(pid: int, action_type, element):
 func leave_game():
 	pass
 	
+remote func get_new_incantation_operations(L: Array):
+	my_domain.base_data.spellbook.charge_new_incantations(L)
+	
+#the players rpc this function and the server determines the target
+#or the target is given by the player
+remote func player_meteor_incantation(dico_threat):
+	var who = get_tree().get_rpc_sender_id()
+	if get_tree().is_network_server():
+		#for now, random target...
+		var target = operation_factory.choice(get_all_targetable_players(who))
+		#rpc_id(targe)
+remote func player_defense_command(power):
+	if get_tree().is_network_server():
+		pass
+	
+func determine_target(dico_threat):
+	pass
+	
+#generate n full patterns of operations for the player pid.
+remote func generate_new_incantation_operations(pid: int, n = 2):
+	if get_tree().is_network_server():
+		var domain = get_domain_by_pid(pid)
+		if domain:
+			var array_of_full_operation_list = []
+			var pattern = domain.base_data.spellbook.pattern.get_list()
+			var new_operation_list = []
+			var new_operation
+			for i in range(n):
+				new_operation_list.clear()
+				for p_element in pattern:
+					new_operation = operation_factory.generate(p_element)
+					new_operation_list.append(new_operation)
+				array_of_full_operation_list.append(new_operation_list)
+			rpc_id(pid, "get_new_incantation_operations", array_of_full_operation_list)
+			
+func get_all_targetable_players(for_pid: int) -> Array:
+	var targets = []
+	for id in network.players:
+		var domain = get_domain_by_pid(id)
+		if domain:
+			if id != for_pid and not domain.base_data.is_eliminated():
+				targets.append(id)
+	#there is a risk for a bot to have the same id than a player !
+	for id in network.bots:
+		var domain = get_domain_by_pid(id)
+		if domain:
+			if not domain.base_data.is_eliminated():
+				targets.append(id)
+	return targets
+	
 func ponderate_random_choice_dict(dict: Dictionary):
 	#Returns a random key from dict.
 	#Evaluate first the sum S of all values and generate
@@ -529,6 +609,7 @@ func ponderate_random_choice_dict(dict: Dictionary):
 		i+=1
 	return list[i-1]
 	
+
 func get_domain_by_pid(pid: int):
 	if pid == my_domain.player_id:
 		return my_domain
@@ -682,3 +763,18 @@ func _on_bonus_menu_operations_selection_done(L, state):
 		rpc_id(1, "ask_server_for bonus_action", action_type, L)
 	else:
 		ask_server_for_bonus_action(action_type, L)
+
+func _on_spellbook_meteor_invocation(dico_threat):
+	if get_tree().is_network_server():
+		player_meteor_incantation(dico_threat)
+	else:
+		rpc_id(1, "player_meteor_incantation", dico_threat)
+		
+func _on_spellbook_defense_command(power):
+	if get_tree().is_network_server():
+		player_defense_command(power)
+	else:
+		rpc_id(1, "player_defense_command", power)
+
+func _on_spellbook_low_incantations_stock():
+	rpc_id(1, "generate_new_incantation_operations", Gamestate.player_info["net_id"], 2)

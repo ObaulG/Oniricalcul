@@ -6,13 +6,15 @@ class_name Pattern
 
 signal incantation_has_changed()
 
-var operations_list: Array
+#contains arrays of size 2 : [type, diff]
+var elements: Array
+
 var index: int
 var scaling_coeff: float
 var power: ReliquatNumber
 
 func _init(L = [], scaling_value = 5):
-	operations_list = L
+	elements = L
 	index = 0
 	power = ReliquatNumber.new(0)
 	scaling_coeff = 1 + scaling_value/100
@@ -20,9 +22,9 @@ func _init(L = [], scaling_value = 5):
 
 func power_evaluation():
 	var total = 0
-	for i in range(len(operations_list)):
-		var type = operations_list[i][0]
-		var diff = operations_list[i][1]
+	for i in range(len(elements)):
+		var type = elements[i][0]
+		var diff = elements[i][1]
 		print(str([type,diff]))
 		print("Potentiel opération numero " + str(i) + ": " + str(global.get_op_power(type, diff)))
 		total += global.get_op_power(type, diff) * pow(scaling_coeff, i)
@@ -30,47 +32,47 @@ func power_evaluation():
 	power.set_value(total)
 	print("Potentiel: " + str(total))
 	
-func add_to(operation, i):
-	operations_list.insert(i, operation)
+func add_to(p_el, i):
+	elements.insert(i, p_el)
 	emit_signal("incantation_has_changed")
 	power_evaluation()
 	
-func append(operation):
-	operations_list.append(operation)
+func append(p_el):
+	elements.append(p_el)
 	emit_signal("incantation_has_changed")
 	power_evaluation()
 	
 func remove(i: int):
-	operations_list.remove(i)
-	index = index % len(operations_list)
+	elements.remove(i)
+	index = index % len(elements)
 	emit_signal("incantation_has_changed")
 	power_evaluation()
 	
-func remove_by_element(op):
-	var i = operations_list.find(op)
+func remove_by_element(p_el):
+	var i = elements.find(p_el)
 	remove(i)
 	
-func get_current_op() -> Array:
-	return operations_list[index]
+func get_current_element() -> Array:
+	return elements[index]
 	
 func reverse_gear(n = 1):
 	index = max(0, index - n)
 	
 func next() -> bool:
-	index = (index + 1) % len(operations_list)
+	index = (index + 1) % len(elements)
 	return index == 0
 	
 func get_index() -> int:
 	return index
 	
 func get_len() -> int:
-	return len(operations_list)
+	return len(elements)
 	
-func get_operation(i: int):
-	return operations_list[i]
+func get_pattern_element(i: int):
+	return elements[i]
 
 func get_list() -> Array:
-	return operations_list.duplicate()
+	return elements.duplicate()
 	
 func get_power(bonus = 0.0, for_display_only = false) -> float:
 	if for_display_only:
@@ -84,9 +86,9 @@ func set_coeff(value: float):
 func set_index(i: int):
 	index = i
 	
-func set_operations_list(L: Array):
-	operations_list = L
+func set_elements(L: Array):
+	elements = L
 	power_evaluation()
-	if index < len(operations_list):
+	if index < len(elements):
 		index = 0
 	

@@ -6,6 +6,5 @@
 script = ExtResource( 1 )
 
 [node name="answer_timer" type="Timer" parent="."]
-wait_time = 1.555
 
 [connection signal="timeout" from="answer_timer" to="." method="_on_answer_timer_timeout"]

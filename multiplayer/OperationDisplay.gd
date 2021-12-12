@@ -9,11 +9,8 @@ onready var label_answer = $operation_answer
 func _ready():
 	pass # Replace with function body.
 
-
-
 func _on_InputHandler_write_digit(d):
 	label_answer.text += d
-
 
 func _on_InputHandler_delete_digit():
 	label_answer.text = label_answer.text.substr(0, len(label_answer.text)-1)
