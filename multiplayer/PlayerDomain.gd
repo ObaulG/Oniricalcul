@@ -4,6 +4,7 @@ class_name PlayerDomain
 
 
 var player_id: int
+var game_id: int
 var parent_node
 
 onready var base_data = $BaseDomainData
@@ -17,19 +18,20 @@ onready var incantation_progress = $Panel/IncantationProgress
 onready var stats_display = $Panel/stats_display
 onready var threat_vbox_list = $Panel/threat_data_display/vbox
 onready var incantation_display = $Panel/Incantation
+onready var ai_node = $OniricAI
 
 func _ready():
 	parent_node = get_parent()
 	player_id = -1
 	#connection on the input handler
-	base_data.input_handler.connect("check_answer_command", self, "_on_check_answer_command")
-	base_data.input_handler.connect("changing_stance_command", self, "_on_changing_stance_command")
-	base_data.input_handler.connect("delete_digit", self, "_on_delete_digit")
-	base_data.input_handler.connect("write_digit", self, "_on_write_digit")
-	
+#	parent_node.input_handler.connect("check_answer_command", self, "_on_check_answer_command")
+#	parent_node.input_handler.connect("changing_stance_command", self, "_on_changing_stance_command")
+#	parent_node.input_handler.connect("delete_digit", self, "_on_delete_digit")
+#	parent_node.input_handler.connect("write_digit", self, "_on_write_digit")
 	
 func initialise(pid: int):
 	player_id = pid
+	game_id = network.players[player_id]["game_id"]
 	var id_char = network.players[player_id]["id_character_selected"]
 	base_data.initialise(id_char, pid)
 	
@@ -62,8 +64,14 @@ func add_operation_to_pattern(op):
 	if op is Operation:
 		spellbook.pattern.append(op)
 		
+func get_gid():
+	return game_id
+	
 func is_eliminated():
 	return base_data.eliminated
+	
+func is_bot():
+	return ai_node.is_activated()
 	
 #input handlers
 func _on_check_answer_command():
@@ -98,3 +106,7 @@ func _on_GameFieldMulti_domain_answer_response(id, good_answer):
 
 func _on_BaseDomainData_eliminated():
 	pass # Replace with function body.
+
+
+func _on_GameFieldMulti_changing_stance_command(new_stance):
+	base_data.spellbook.set_stance(new_stance)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://multiplayer/BaseDomainDisplay.gd" type="Script" id=1]
 [ext_resource path="res://multiplayer/BaseDomainData.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://multiplayer/ThreatLineDisplay.tscn" type="PackedScene" id=7]
 [ext_resource path="res://multiplayer/DomainField.tscn" type="PackedScene" id=8]
 [ext_resource path="res://incantation/Incantation.tscn" type="PackedScene" id=9]
+[ext_resource path="res://multiplayer/OniricAI.tscn" type="PackedScene" id=10]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -56,6 +57,8 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="OniricAI" parent="." instance=ExtResource( 10 )]
 
 [node name="BaseDomainData" parent="." instance=ExtResource( 2 )]
 

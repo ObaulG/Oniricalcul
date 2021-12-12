@@ -79,6 +79,13 @@ func receive_threat(dico_threat, signals_connection = true):
 	
 	change_magic_projectiles_target()
 	
+func get_total_hp_threats():
+	var total = 0
+	for child in threats_container.get_children():
+		if child is Threat:
+			total += child.get_hp()
+	return total
+	
 func remove_threat(meteor_id):
 	var meteor_node = threats_container.get_node(str(meteor_id))
 	#the meteor might have exploded already so we check if the node is still here

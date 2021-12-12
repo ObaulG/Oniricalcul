@@ -47,6 +47,18 @@ var bar_yellow = load("res://textures/barHorizontal_yellow.png")
 var bonus = load("res://bonus/bonus.tscn")
 var operation_display = load("res://operations/displaying/operation_display.tscn")
 var character_display = load("res://scenes/character_display/CharacterDisplay.tscn")
+
+# Icon Textures
+var icons_textures = {
+	brain = load("res://textures/brain.png"),
+	calculator = load("res://textures/calculator.png"),
+	heart_drop = load("res://textures/heart-drop.png"),
+	magic_palm = load("res://textures/magic-palm.png"),
+	magic_shield = load("res://textures/magic-shield.png"),
+	rune_sword = load("res://textures/rune-sword.png"),
+	speedometer = load("res://textures/speedometer.png"),
+	stars = load("res://textures/stars-stack.png"),
+}
 # Bonus
 var BONUS = [
 	{"id": 0,

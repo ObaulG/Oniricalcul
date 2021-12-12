@@ -78,11 +78,11 @@ var good_answers: int
 var chain: int
 var nb_pattern_loops: int
 
-onready var domain_field = get_parent().get_node("domain_field")
+#onready var domain_field = get_parent().get_parent().get_node("domain_field")
 
 func _ready():
 	connect("changing_stance_command", self, "_on_changing_stance_command")
-	pattern.connect("incantation_has_changed", self, "_on_incantation_change")
+	
 	
 func initialise(char_dico):
 	waiting_transaction = false
@@ -105,14 +105,19 @@ func initialise(char_dico):
 	stance = STANCES.ATTACK
 	defense_power = ReliquatNumber.new(0)
 
+	pattern = Pattern.new()
 	pattern.set_elements(char_dico["base_pattern"])
-		
+	pattern.connect("incantation_has_changed", self, "_on_incantation_change")
 	list_shop_operations = []
 	operations = []
 	operations_stock = []
 	determine_defense_power(pattern.get_power())
 
-
+	base_swap_price = 5
+	base_erase_price = 7
+	
+	swap_price = base_swap_price
+	erase_price = base_erase_price
 func determine_defense_power(potential: int):
 	defense_power.set_value(7 + 0.18*potential )
 	
@@ -189,9 +194,18 @@ func determine_effective_power() -> int:
 	power = round(power)
 
 	return power
-
+	
+func new_round():
+	swap_price += 3
+	erase_price += 5
+	earn_money(money_per_round)
+	
 func spend_money(n: int):
 	money = clamp(money-n, 0, money)
+	emit_signal("money_value_has_changed", money)
+	
+func earn_money(n: int):
+	money += n
 	emit_signal("money_value_has_changed", money)
 	
 func get_current_operation():
@@ -282,5 +296,8 @@ func get_erase_price():
 func get_waiting_transaction():
 	return waiting_transaction
 
+func set_stance(new_stance):
+	stance = new_stance
+	
 func _on_incantation_change():
 	emit_signal("incantation_has_changed", pattern.get_list())

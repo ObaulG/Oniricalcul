@@ -1,9 +1,10 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://multiplayer/PlayerDomain.gd" type="Script" id=1]
 [ext_resource path="res://multiplayer/DomainField.tscn" type="PackedScene" id=2]
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=3]
 [ext_resource path="res://characters/01/icon_128.png" type="Texture" id=4]
+[ext_resource path="res://multiplayer/OniricAI.tscn" type="PackedScene" id=5]
 [ext_resource path="res://multiplayer/BaseDomainData.tscn" type="PackedScene" id=8]
 [ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=10]
 [ext_resource path="res://multiplayer/ThreatLineDisplay.tscn" type="PackedScene" id=11]
@@ -58,6 +59,8 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="OniricAI" parent="." instance=ExtResource( 5 )]
 
 [node name="BaseDomainData" parent="." instance=ExtResource( 8 )]
 

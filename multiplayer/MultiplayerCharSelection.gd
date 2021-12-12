@@ -212,10 +212,11 @@ remote func change_bot_diff(bot_id, new_diff):
 			# Send new player info to currently iterated player, skipping the server (which will get the info shortly)
 			if (id != 1):
 				rpc_id(id, "change_bot_diff", bot_id, new_diff)
-				
+		
 	var bot_display = player_list.get_bot_by_id(bot_id)
 	if bot_display:
 		bot_display.set_bot_diff(new_diff)
+		network.bots[bot_id]["bot_diff"] = new_diff
 		
 remotesync func write_message(sender, msg, server = false): 
 	panel_chat.write_message(msg)
@@ -227,7 +228,7 @@ remotesync func validate_choice(net_id):
 		
 		# if at least two players are ready (or there is 1 player and bots), 
 		# then the game may start.
-		if is_everyone_ready() and len(network.players) > 1:
+		if is_everyone_ready() and network.get_total_players_entities() > 1:
 			#we validate bot character display
 			rpc("ui_validate_all_bots")
 			rpc("write_message", 1, "Tous les joueurs sont prêts!")
@@ -251,7 +252,7 @@ remotesync func start_game():
 	if state == STATE.START_COUNTDOWN:
 		state = STATE.LAUCHING
 		for id in network.players:
-			network.players[id]["id_character_playing"] = network.server_info["character_selected"]
+			network.players[id]["id_character_playing"] = network.players[id]["id_character_selected"]
 		leave_scene("res://multiplayer/GameFieldMulti.tscn")
 
 # called if a player disconnects while the game is starting.

@@ -5,17 +5,18 @@ const PREROUND_TIME = 5.0
 const SHOPPING_TIME = 15.0
 
 enum STATE{
-	PREROUND = 1,
+	WAITING_EVERYONE = 1,
+	PREROUND,
 	ROUND,
 	SHOPPING,
 	ENDED
 }
 signal domain_answer_response(id_domain, good_answer)
 signal game_state_changed(new_state)
-
+signal changing_stance_command(new_stance)
 #to avoid conflict between client ids and bot ids
 var game_id: int
-
+var clients_ready_to_play = []
 var rng = RandomNumberGenerator.new()
 var round_counter: int
 var operation_factory: OperationFactory
@@ -30,6 +31,9 @@ var round_time: float
 var preround_time: float
 var shopping_time: float
 
+#data that can't be stored because bots don't have
+#bonus menu
+var bot_game_data = {}
 #stored by the server. keys and values are pids
 var targets: Dictionary
 var game_stats = []
@@ -46,10 +50,11 @@ onready var operation_display = $OperationDisplayBasic
 onready var scene_transition_rect = $SceneTransitionRect
 onready var time_display = $TimeLeftDisplay
 onready var popup_nodes = $PopUps
-onready var ai_node = $OniricAI
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	game_id = Gamestate.player_info["game_id"]
 	# Connect event handler to the player_list_changed signal
 	network.connect("player_list_changed", self, "_on_player_list_changed")
 	
@@ -62,7 +67,7 @@ func _ready():
 	# Must act if disconnected from the server
 	network.connect("disconnected", self, "_on_disconnected")
 	
-	state = STATE.PREROUND
+	state = STATE.WAITING_EVERYONE
 	
 	round_time = ROUND_TIME
 	preround_time = PREROUND_TIME
@@ -74,69 +79,61 @@ func _ready():
 	my_domain.base_data.spellbook.connect("meteor_invocation", self, "_on_spellbook_meteor_invocation")
 	my_domain.base_data.spellbook.connect("defense_command", self, "_on_spellbook_defense_command")
 	my_domain.base_data.spellbook.connect("low_incantations_stock", self, "_on_spellbook_low_incantations_stock")
+	operation_factory = OperationFactory.new()
 	
-	#to change
-	if (get_tree().is_network_server()):
-		spawn_players(Gamestate.player_info, 1)
-		operation_factory = OperationFactory.new()
-	else:
-		rpc_id(1, "spawn_players", Gamestate.player_info, -1)
-		
-	spawn_bots()
+	#everyone has already the data to spawn every single player
+	spawn_players()
+
 	targets = {}
 	time_display.set_min_value(0)
 	round_timer.start(preround_time)
+	
+	if get_tree().is_network_server():
+		client_ready(1)
+	else:
+		rpc_id(1, "client_ready", game_id)
+		
+	pause_mode = true
 	
 func _process(delta):
 	if not pause_mode:
 		game_time += delta
 	time_display.set_new_value(round_timer.time_left)
 	
-#must change it to make it central: the server is the only one to send 
-#data to players
-remote func spawn_players(pinfo, spawn_index, is_bot = false):
-	# If the spawn_index is -1 then we define it based on the size of the player list
-	if (spawn_index == -1):
-		spawn_index = network.players.size() + network.bots.size()
-	
-	if (get_tree().is_network_server() && pinfo["net_id"] != 1):
-		# We are on the server and the requested spawn does not belong to the server
-		# Iterate through the connected players
-		var s_index = 1      # Will be used as spawn index
-		for id in network.players:
-			# Spawn currently iterated player within the new player's scene, skipping the new player for now
-			if (id != pinfo["net_id"]):
-				rpc_id(pinfo["net_id"], "spawn_players", network.players[id], s_index)
-			
-			# Spawn the new player within the currently iterated player as long it's not the server
-			# Because the server's list already contains the new player, that one will also get itself!
-			if (id != 1):
-				rpc_id(id, "spawn_players", pinfo, spawn_index)
-			
-			s_index += 1
-	generate_actor(pinfo, is_bot)
-	
-#called to tell everyone the game is about to start
-remote func client_ready(pid: int):
+func _on_player_disconnected(pinfo):
 	pass
-#called to tell the server that all the player data has been received
-remote func all_players_data_received(pid: int):
-	pass
+	#remove the player from the scene
+	var domain_to_remove = get_domain_by_gid(pinfo["game_id"])
+	domain_to_remove.queue_free()
 	
+func _on_disconnected_from_server():
+	leave_game()
 
+func leave_game():
+	scene_transition_rect.change_scene("res://scenes/titlescreen/title.tscn")
 	
+remote func spawn_players():
+	for id in network.players:
+		generate_actor(network.players[id])
+	for id in network.bots:
+		generate_actor(network.bots[id])
+		
+#called to tell everyone the game is about to start
+remote func client_ready(gid: int):
+	clients_ready_to_play.append(gid)
+	if get_tree().is_network_server():
+		for id in network.players:
+			if id != 1:
+				rpc_id(id, "client_ready", gid)
+		#might cause problems ?
+		if len(clients_ready_to_play) == network.get_nb_players():
+			rpc("game_about_to_start")
+
 #note: meteor and projectile casts are only visual in clients: if it is display
 #on a basedomaindisplay, then it's not the main character so they should
 #not send data from other players.
-func spawn_bots():
-	if get_tree().is_network_server():
-		for id in network.bots:
-			spawn_players(network.bots[id], -1, true)
-	else:
-		for id in network.bots:
-			generate_actor(network.bots[id], true)
-		
-func generate_actor(pinfo, is_bot = false):
+
+func generate_actor(pinfo):
 	# Load the scene and create an instance
 	var pclass = load(pinfo["actor_path"])
 	var nactor = pclass.instance()
@@ -149,9 +146,13 @@ func generate_actor(pinfo, is_bot = false):
 		nactor.set_network_master(pinfo["net_id"])
 	
 	nactor.set_name(str(pinfo["net_id"]))
-	if is_bot:
+	if pinfo["is_bot"]:
+		bot_game_data[pinfo["game_id"]]["shop_operations"] = []
 		nactor.set_name("bot_"+str(pinfo["net_id"]))
-		ai_node.activate_AI()
+		var bot_diff = pinfo["bot_diff"]
+		nactor.ai_node.set_hardness(bot_diff)
+		nactor.activate_AI()
+		
 	# Finally add the actor into the world
 	enemy_domains.add_child(nactor)
 
@@ -164,180 +165,30 @@ func generate_actor(pinfo, is_bot = false):
 	nactor.base_data.input_handler.connect("delete_digit", self, "_on_delete_digit")
 	nactor.base_data.input_handler.connect("write_digit", self, "_on_write_digit")
 	
-remote func keyboard_action(pid: int, type: int):
-	if get_tree().is_network_server():
-		for id in network.players:
-			if id != 1:
-				rpc_id(id, "keyboard_action", pid, type)
-				
-	#maybe a border slightly glowing ?
-
-	
-#attack from pid to target_id
-remote func meteor_cast(pid: int, target_id: int, threat_data: Dictionary):
-	if get_tree().is_network_server():
+	#send signal to tell everyone this bot is ready
+	if get_tree().is_network_server() and pinfo["is_bot"]:
+		client_ready(pinfo["game_id"])
 		
-		#data must be sent to everyone by the server
-		for id in network.players:
-			if id != 1:
-				rpc_id(id, "meteor_cast", pid, target_id, threat_data)
-
-	if target_id != my_domain.id_domain:
-		var target_domain = enemy_domains.get_node(str(target_id))
-		if target_domain:
-			target_domain.domain_field.add_threat(pid, threat_data, false)
-	else:
-		my_domain.domain_field.add_threat(pid, threat_data)
-
-remote func meteor_remove(pid: int, meteor_id: int):
-	if get_tree().is_network_server():
-		for id in network.players:
-			if id != 1:
-				rpc_id(id, "meteor_remove", pid, meteor_id)
-			
-	if pid == my_domain.id_domain:
-		my_domain.domain_field.remove_meteor(meteor_id)
-	else:
-		var target_domain = enemy_domains.get_node(str(pid))
-		if target_domain:
-			target_domain.domain_field.remove_meteor(meteor_id)
+#called to tell all clients the game can start
+remotesync func game_about_to_start():
+	pause_mode = false
+	changing_state(STATE.PREROUND)
 	
-remote func magic_projectile_cast(id_domain: int, target, char_id, start_pos: Vector2, power):
-	if get_tree().is_network_server():
-		#data must be sent to everyone by the server
-		for id in network.players:
-			if id != 1:
-				rpc_id(id, "magic_projectile_cast", id_domain, target, char_id, start_pos, power)
-
-	if id_domain != my_domain.id_domain:
-		var target_domain = enemy_domains.get_node(str(id_domain))
-		if target_domain:
-			target_domain.domain_field.create_magic_homing_projectile(target, char_id, start_pos, power)
-		else:
-			pass
-	else:
-		my_domain.domain_field.create_magic_homing_projectile(target, char_id, start_pos, power)
-		
-#calls result_answer
-remote func check_answer(op, ans, id_domain):
-	#only the server is habilitated to give the answer
-	if get_tree().is_network_server():
-		var domain
-		if id_domain != 1:
-			domain = enemy_domains.get_node(str(id_domain))
-		else:
-			domain = my_domain
-			
-		if domain:
-			var stat_calcul = [
-				op.get_type(),
-				op.get_diff(),
-				op.get_parameters(),
-				domain.base_data.get_answer_time(),
-				ans, 
-				true, #correct answer
-			]
-			# the result is stored inside the operation for now...
-			
-			#calling the function in other players instance
-			if op.is_result(ans):
-				for id in network.players:
-					if id != 1:
-						rpc("result_answer", id_domain, stat_calcul[5])
-			else:
-				stat_calcul[5] = false
-				for id in network.players:
-					if id != 1:
-						rpc("result_answer", id_domain, stat_calcul[5])
-			
-			#we store it in the list
-			game_stats.append(stat_calcul)
-			
-			#then we call it on ourself
-			result_answer(id_domain, stat_calcul[5])
-	
-#called from server by check_answer
-remote func result_answer(id_domain, good_answer: bool):
-	emit_signal("domain_answer_response", id_domain, good_answer)
-
-remote func damage_taken(id_domain: int, n: int):
-	if get_tree().is_network_server():
-		for id in network.players:
-			if id != 1:
-				rpc_id(id, "damage_taken", id_domain, n)
-			
-	if id_domain == my_domain.id_domain:
-		my_domain.base_data.get_damage(n)
-	else:
-		var domain = enemy_domains.get_node(str(id_domain))
-		if domain:
-			domain.base_data.get_damage(n)
-
-remote func threat_damage_taken(id_domain, id_meteor, n):
-	if get_tree().is_network_server():
-		for id in network.players:
-			if id != 1:
-				rpc_id(id, "threat_damage_taken", id_domain, id_meteor, n)
-			
-	var domain_field
-	var domain
-	if id_domain == my_domain.id_domain:
-		domain_field = my_domain.domain_field
-	else:
-		domain = enemy_domains.get_node(str(id_domain))
-		if domain:
-			domain_field = domain.domain_field
-	
-	if domain:
-		domain_field.inflict_damage_to_threat(id_meteor, n)
-		
-remote func damage_healed(id_domain: int, n: int):
-	if get_tree().is_network_server():
-		for id in network.players:
-			if id != 1:
-				rpc_id(id, "damage_healed", id_domain, n)
-	var domain_field
-	var domain
-	if id_domain == my_domain.id_domain:
-		domain_field = my_domain.domain_field
-	else:
-		domain = enemy_domains.get_node(str(id_domain))
-		if domain:
-			domain_field = domain.domain_field
-	if domain:
-		domain_field.heal(n)
-
-remote func update_incantation(id_domain: int, n: int):
-	if get_tree().is_network_server():
-		for id in network.players:
-			if id != 1:
-				rpc_id(id, "update_incantation", id_domain, n)
-			
-	var domain_field
-	var domain
-	if id_domain == my_domain.id_domain:
-		domain_field = my_domain.domain_field
-	else:
-		domain = enemy_domains.get_node(str(id_domain))
-		if domain:
-			domain_field = domain.domain_field
-	if domain:
-		emit_signal("update_incantation", n)
-
 #we are not supposed to jump states, but just in case,
 #we give the new state as an argument
+#TO BE CONTINUED
 remote func changing_state(new_state):
 	if get_tree().is_network_server():
 		match(new_state):
 			STATE.PREROUND:
-				pass
+				new_round()
 			STATE.ROUND:
-				pass
+				pass #RAF
 			STATE.SHOPPING:
 				#will call rpc in all clients
 				generate_all_shop_operations()
 			STATE.ENDED:
-				pass
+				pass #TO BE CONTINUED
 				
 		for id in network.players:
 			if id != 1:
@@ -360,11 +211,138 @@ remote func changing_state(new_state):
 		STATE.ENDED:
 			bonus_window.hide = false
 			pause_mode_activation(true)
+			
+			
+remote func keyboard_action(pid: int, type: int):
+	if get_tree().is_network_server():
+		for id in network.players:
+			if id != 1:
+				rpc_id(id, "keyboard_action", pid, type)
+				
+	#maybe a border slightly glowing ?
+
+remote func changing_stance(gid: int, new_stance):
+	if get_tree().is_network_server():
+		for id in network.players:
+			if id != 1:
+				rpc_id(id, "changing_stance", gid, new_stance)
+				
+	var targetted_domain = get_domain_by_gid(gid)
+	if targetted_domain:
+		targetted_domain.base_data.spellbook.set_stance(new_stance)
+	emit_signal("changing_stance_command", new_stance)
 	
+#attack from pid to target_id
+remote func meteor_cast(gid: int, target_game_id: int, threat_data: Dictionary):
+	if get_tree().is_network_server():
+		#data must be sent to everyone by the server
+		for id in network.players:
+			if id != 1:
+				rpc_id(id, "meteor_cast", gid, target_game_id, threat_data)
+
+	var targetted_domain = get_domain_by_gid(target_game_id)
+	if targetted_domain:
+		targetted_domain.domain_field.add_threat(gid, threat_data, false)
+
+remote func meteor_remove(gid: int, meteor_id: int):
+	if get_tree().is_network_server():
+		for id in network.players:
+			if id != 1:
+				rpc_id(id, "meteor_remove", gid, meteor_id)
+			#since bots are controlled by server, their meteors
+			#destroy themselves
+			
+	var target_domain = get_domain_by_gid(gid)
+	if target_domain:
+		target_domain.domain_field.remove_meteor(meteor_id)
+	
+remote func magic_projectile_cast(gid, target, char_id, start_pos: Vector2, power):
+	if get_tree().is_network_server():
+		#data must be sent to everyone by the server
+		for id in network.players:
+			if id != 1:
+				rpc_id(id, "magic_projectile_cast", gid, target, char_id, start_pos, power)
+
+				
+	var target_domain = get_domain_by_gid(gid)
+	if target_domain:
+		target_domain.domain_field.create_magic_homing_projectile(target, char_id, start_pos, power)
+
+#calls result_answer from player identified with gid
+remote func check_answer(op, ans, gid):
+	#only the server is habilitated to give the answer
+	if get_tree().is_network_server():
+		var domain = get_domain_by_gid(gid)
+		if domain:
+			var stat_calcul = [
+				op.get_type(),
+				op.get_diff(),
+				op.get_parameters(),
+				domain.base_data.get_answer_time(),
+				ans, 
+				true, #correct answer
+			]
+			# the result is stored inside the operation for now...
+			
+			#calling the function in other players instance
+			if not op.is_result(ans):
+				stat_calcul[5] = false
+			for id in network.players:
+				if id != 1:
+					rpc_id(id, "result_answer", gid, stat_calcul[5])
+			#we store it in the list
+			game_stats.append(stat_calcul)
+			
+			#then we call it on ourself
+			result_answer(gid, stat_calcul[5])
+	
+#called from server by check_answer
+remote func result_answer(gid, good_answer: bool):
+	emit_signal("domain_answer_response", gid, good_answer)
+
+remote func damage_taken(gid: int, n: int):
+	if get_tree().is_network_server():
+		for id in network.players:
+			if id != 1:
+				rpc_id(id, "damage_taken", gid, n)
+
+	var target_domain = get_domain_by_gid(gid)
+	if target_domain:
+		target_domain.base_data.get_damage(n)
+
+remote func threat_damage_taken(gid, id_meteor, n):
+	if get_tree().is_network_server():
+		for id in network.players:
+			if id != 1:
+				rpc_id(id, "threat_damage_taken", gid, id_meteor, n)
+			
+	var domain = get_domain_by_gid(gid)
+	if domain:
+		domain.domain_field.inflict_damage_to_threat(id_meteor, n)
+
+remote func damage_healed(gid: int, n: int):
+	if get_tree().is_network_server():
+		for id in network.players:
+			if id != 1:
+				rpc_id(id, "damage_healed", gid, n)
+				
+	var domain = get_domain_by_gid(gid)
+	if domain:
+		domain.base_data.heal(n)
+
+remote func update_incantation(gid: int, n: int):
+	if get_tree().is_network_server():
+		for id in network.players:
+			if id != 1:
+				rpc_id(id, "update_incantation", gid, n)
+			
+	var domain = get_domain_by_gid(gid)
+	if domain:
+		domain.incantation_progress.update_nb_elements_completed(n)
+
 remote func set_waiting_transaction(b: bool):
 	my_domain.spellbook.waiting_transaction = b
 	 
-	
 #this function can probably be optimized
 remote func ask_server_for_bonus_action(action_type, L: Array):
 	var who = get_tree().get_rpc_sender_id()
@@ -421,12 +399,15 @@ remote func server_answer_for_bonus_action(answer_type, action_type, L):
 	#emit signal to update the UI ?
 	#
 	
+#TO BE CONTINUED
 remote func new_round():
 	if get_tree().is_network_server():
-		pass
-		#
-		
-	#
+		round_counter += 1
+		for domain in get_array_of_all_domains():
+			if domain != my_domain:
+				domain.base_data.spellbook.new_round()
+	
+	my_domain.base_data.spellbook.new_round()
 	
 remote func restart_timer(t: float):
 	if get_tree().is_network_server():
@@ -447,17 +428,14 @@ remote func pause_mode_activation(b: bool):
 #for each player.
 func generate_all_shop_operations():
 	if get_tree().is_network_server():
-		var domain
 		#dict of all new operations from all players
 		var new_op_dict = {}
-		
-		#we first generate all new operations
-		for id in network.players:
-			if id == 1:
-				domain = my_domain
-			else:
-				domain = enemy_domains.get_node(id)
-				
+		var all_domains_array = get_array_of_all_domains()
+		#we first generate all new operations from all players
+		#(bots included)
+		for domain in all_domains_array:
+			var id = domain.game_id
+			
 			if domain:
 				var operation_preference = domain.spellbook.get_operation_preference()
 				var difficulty_preference = domain.spellbook.get_difficulty_preference()
@@ -472,11 +450,9 @@ func generate_all_shop_operations():
 		#the player have also access to a part of operations
 		#from the enemies. Now we can do it.
 		var new_op_enemies_dict = {}
-		for id in network.players:
-			if id == 1:
-				domain = my_domain
-			else:
-				domain = enemy_domains.get_node(id)
+		
+		for domain in all_domains_array:
+			var id = domain.game_id
 				
 			if domain:
 				new_op_enemies_dict[id] = []
@@ -496,14 +472,17 @@ func generate_all_shop_operations():
 					new_op_enemies_dict[id].append([type,diff, player_tirage])
 		
 			#now we can send the data to the player
-			rpc_id(id, "send_shop_operations", new_op_dict[id], new_op_enemies_dict[id])
-			
+			#only if the domain is not one of a bot !
+			if not domain.is_bot():
+				rpc_id(id, "send_shop_operations", new_op_dict[id], new_op_enemies_dict[id])
 			#and update server's data
+			
+			
 remote func send_shop_operations(new_op_player: Array, new_op_others: Array):
 	bonus_window.set_new_operations(new_op_player, new_op_others)
 	
-func apply_shop_transaction(pid, action_type, L):
-	var domain = get_domain_by_pid(pid)
+func apply_shop_transaction(gid, action_type, L):
+	var domain = get_domain_by_pid(gid)
 	if domain:
 		domain.shop_action(action_type, L[0].get_price(), L[0])
 
@@ -516,9 +495,9 @@ remote func end_of_game():
 	
 #returns a value explaining if the pid player can buy
 #the thing he asks.
-func check_shop_operation(pid: int, action_type, element):
+func check_shop_operation(gid: int, action_type, element):
 	if get_tree().is_network_server():
-		var domain = get_domain_by_pid(pid)
+		var domain = get_domain_by_gid(gid)
 		if domain:
 			var money = domain.get_money()
 			var cost
@@ -538,8 +517,7 @@ func check_shop_operation(pid: int, action_type, element):
 			var buy_status = domain.spellbook.buy_attempt_result(action_type, cost)
 			return buy_status
 
-func leave_game():
-	pass
+
 	
 remote func get_new_incantation_operations(L: Array):
 	my_domain.base_data.spellbook.charge_new_incantations(L)
@@ -559,10 +537,11 @@ remote func player_defense_command(power):
 func determine_target(dico_threat):
 	pass
 	
-#generate n full patterns of operations for the player pid.
-remote func generate_new_incantation_operations(pid: int, n = 2):
+#generate n full patterns of operations for the player gid.
+remote func generate_new_incantation_operations(gid: int, n = 2):
+	var pid = get_tree().get_rpc_sender_id()
 	if get_tree().is_network_server():
-		var domain = get_domain_by_pid(pid)
+		var domain = get_domain_by_gid(gid)
 		if domain:
 			var array_of_full_operation_list = []
 			var pattern = domain.base_data.spellbook.pattern.get_list()
@@ -576,19 +555,13 @@ remote func generate_new_incantation_operations(pid: int, n = 2):
 				array_of_full_operation_list.append(new_operation_list)
 			rpc_id(pid, "get_new_incantation_operations", array_of_full_operation_list)
 			
-func get_all_targetable_players(for_pid: int) -> Array:
+func get_all_targetable_players(gid: int) -> Array:
 	var targets = []
-	for id in network.players:
-		var domain = get_domain_by_pid(id)
-		if domain:
-			if id != for_pid and not domain.base_data.is_eliminated():
-				targets.append(id)
-	#there is a risk for a bot to have the same id than a player !
-	for id in network.bots:
-		var domain = get_domain_by_pid(id)
-		if domain:
-			if not domain.base_data.is_eliminated():
-				targets.append(id)
+	var iterated_domain_gid
+	for domain in get_array_of_all_domains():
+		iterated_domain_gid = domain.get_gid()
+		if not domain.is_eliminated() and iterated_domain_gid != gid:
+			targets.append(iterated_domain_gid)
 	return targets
 	
 func ponderate_random_choice_dict(dict: Dictionary):
@@ -614,11 +587,36 @@ func get_domain_by_pid(pid: int):
 	if pid == my_domain.player_id:
 		return my_domain
 		
-	var domain = enemy_domains.get_node(str(pid))
+	var node_name
+	if pid in network.players:
+		node_name = str(pid)
+	elif pid in network.bots:
+		node_name = "bot_"+str(pid)
+		
+	var domain = enemy_domains.get_node(node_name)
 	if domain:
 		return domain
 		
 	return null
+	
+func get_domain_by_gid(gid: int):
+	if gid == game_id:
+		return my_domain
+
+	for domain in enemy_domains.get_children():
+		if domain.get_gid() == gid:
+			return domain
+			
+	return null
+	
+func get_gid():
+	return game_id
+	
+func get_array_of_all_domains() -> Array:
+	var array = []
+	array.append(my_domain)
+	array.append_array(enemy_domains.get_children())
+	return array
 	
 func is_waiting_for_transaction_end():
 	return my_domain.spellbook.get_waiting_transaction()
@@ -655,12 +653,8 @@ func _on_player_list_changed():
 			nlabel.text = network.players[p]["pseudo"]
 			enemy_domains.add_child(nlabel)
 
-func _on_player_disconnected(pinfo):
-	pass
-	
-func _on_disconnected_from_server():
-	pass
 
+	
 func _on_round_time_remaining_timeout():
 	if get_tree().is_network_server():
 		var next_state = (state+1)%len(STATE)
@@ -718,9 +712,9 @@ func _on_enemy_elimination(pid: int):
 
 func _on_InputHandler_changing_stance_command(new_stance):
 	if get_tree().is_network_server():
-		changing_state(new_stance)
+		changing_stance(1, new_stance)
 	else:
-		rpc_id(1, "changing_stance", new_stance)
+		rpc_id(1, "changing_stance",game_id, new_stance)
 
 func _on_InputHandler_check_answer_command():
 	var op = my_domain.spellbook.get_current_operation()

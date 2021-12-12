@@ -90,18 +90,20 @@ remote func _on_join_success():
 	rpc_id(1,"authentication",Gamestate.player_info)
 	
 remote func authentication(pinfo: Dictionary):
-	var sender = get_tree().get_rpc_sender_id()
-	var pseudo = pinfo["pseudo"]
-	print("Player " + str(sender) + " authentication...")
-	var room_in_server = get_nb_players() < server_info.max_players
-	var name_approved = verify_info(INFO.NAME, pseudo)
-	
-	var connection_approved = name_approved and room_in_server and server_info.game_state == GAMESTATE.CHAR_SELECT
-	if connection_approved:
-		#register the new player into the table
-		print("Auth. approved! Registering the player on the table.")
-		register_player(pinfo)
-	rpc_id(sender, "server_response_to_auth", connection_approved, server_info)
+	if get_tree().is_network_server():
+		var sender = get_tree().get_rpc_sender_id()
+		var pseudo = pinfo["pseudo"]
+		print("Player " + str(sender) + " authentication...")
+		var room_in_server = get_nb_players() < server_info.max_players
+		var name_approved = verify_info(INFO.NAME, pseudo)
+		
+		var connection_approved = name_approved and room_in_server and server_info.game_state == GAMESTATE.CHAR_SELECT
+		if connection_approved:
+			#register the new player into the table
+			print("Auth. approved! Registering the player on the table.")
+			pinfo["game_id"] = get_nb_players() + 1
+			register_player(pinfo)
+		rpc_id(sender, "server_response_to_auth", connection_approved, server_info)
 
 remote func register_player(pinfo):
 	if (get_tree().is_network_server()):
@@ -131,6 +133,7 @@ remote func register_player(pinfo):
 
 remote func register_bot(pinfo):
 	if get_total_players_entities() < server_info.max_players:
+		pinfo["game_id"] = get_nb_players() + 1
 		if (get_tree().is_network_server()):
 			# We are on the server, so distribute the player list information throughout the connected players
 			for id in players:

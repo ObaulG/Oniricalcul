@@ -23,13 +23,13 @@ func _input(event):
 			emit_signal("check_answer_command")
 
 		if event.is_action("attack_stance") && event.is_pressed() && !event.is_echo():
-			emit_signal("changing_stance_command", 1)
+			emit_signal("input_stance_change", 1)
 			
 		if event.is_action("defense_stance") && event.is_pressed() && !event.is_echo():
-			emit_signal("changing_stance_command", 2)
+			emit_signal("input_stance_change", 2)
 			
 		if event.is_action("bonus_stance") && event.is_pressed() && !event.is_echo():
-			emit_signal("changing_stance_command", 1)
+			emit_signal("input_stance_change", 1)
 			
 		if event is InputEventKey and event.pressed:
 			if event.scancode in keypad_numbers:
@@ -37,8 +37,3 @@ func _input(event):
 			elif event.scancode in numpad_numbers:
 				emit_signal("write_digit", numpad_numbers.bsearch(event.scancode))
 
-func input_check_answer():
-	emit_signal("check_answer_command")
-	
-func input_stance_change(new_stance):
-	emit_signal("input_stance_change", new_stance)

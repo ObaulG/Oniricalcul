@@ -5,19 +5,22 @@ extends Node
 var player_info: Dictionary
 var update_rate = 30  # How many game updates per second
 var update_delta = 1.0 / update_rate
+
 # Called when the node enters the scene tree for the first time.
 func _init():
 	player_info = global.player.get_multiplayer_dict().duplicate()
+	reset()
+	print("Informations joueurs terminées")
+	
+func reset():
 	player_info["net_id"] = 1 # By default everyone receives "server ID"
+	player_info["game_id"] = -1 #will be given in game
 	player_info["actor_path"] = "res://multiplayer/PlayerDomain.tscn"  # The class used to represent the player in the game world
 	player_info["is_bot"] = false
-	#For character select
+	player_info["bot_diff"] = -1
 	player_info["id_character_selected"] = -1
 	player_info["character_validated"] = false
-	#Validated character id
 	player_info["id_character_playing"] = -1
-	
-	print("Informations joueurs terminées")
 	
 func get_data() -> Dictionary:
 	return player_info

@@ -8,8 +8,6 @@ onready var spellbook = $Spellbook
 #onready var input_handler = $InputHandler
 #OperationStats : node storing all data from the player
 onready var op_stats = $OperationStats
-#Threats : node handling threat logic
-onready var threats = $Threats
 #smth else ?
 onready var shopping_data = $ShoppingData
 
@@ -76,9 +74,9 @@ func initialise(char_id: int, pid: int):
 	chain = 0
 	nb_pattern_loops = 0
 	
-	spellbook.initialize(char_dico)
+	spellbook.initialise(char_dico)
 	#input_handler.initialize()
-	op_stats.initialize(char_dico)
+	#op_stats.initialise(char_dico)
 
 
 func get_damage(n):
