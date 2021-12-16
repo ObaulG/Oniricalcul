@@ -208,15 +208,17 @@ remote func ui_bot_list():
 	
 remote func change_bot_diff(bot_id, new_diff):
 	if get_tree().is_network_server():
+		
 		for id in network.players:
 			# Send new player info to currently iterated player, skipping the server (which will get the info shortly)
 			if (id != 1):
 				rpc_id(id, "change_bot_diff", bot_id, new_diff)
-		
+				
+	network.bots[bot_id]["bot_diff"] = new_diff
 	var bot_display = player_list.get_bot_by_id(bot_id)
 	if bot_display:
 		bot_display.set_bot_diff(new_diff)
-		network.bots[bot_id]["bot_diff"] = new_diff
+	
 		
 remotesync func write_message(sender, msg, server = false): 
 	panel_chat.write_message(msg)
@@ -363,8 +365,7 @@ func _on_add_bot_button_down():
 		if state == STATE.SELECTING:
 			var bot_info = global.player.get_multiplayer_dict().duplicate()
 			bot_info["is_bot"] = true
-			bot_info["net_id"] = network.get_nb_bots() + 1 
-			bot_info["pseudo"] = "Bot " + str(bot_info["net_id"])
+			bot_info["bot_diff"] = 3
 			bot_info["actor_path"] = "res://multiplayer/PlayerDomain.tscn"  # The class used to represent the player in the game world
 
 			#For character select

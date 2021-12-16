@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://multiplayer/GameFieldMulti.gd" type="Script" id=1]
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=2]
@@ -7,7 +7,6 @@
 [ext_resource path="res://multiplayer/OperationDisplay.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/scene_transition/SceneTransitionRect.tscn" type="PackedScene" id=6]
 [ext_resource path="res://bonus/BonusMenuBis.tscn" type="PackedScene" id=8]
-[ext_resource path="res://multiplayer/BaseDomainDisplay.tscn" type="PackedScene" id=9]
 [ext_resource path="res://UI/StatDisplay.tscn" type="PackedScene" id=10]
 
 [sub_resource type="DynamicFontData" id=1]
@@ -16,6 +15,13 @@ font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
 [sub_resource type="DynamicFont" id=2]
 size = 51
 font_data = SubResource( 1 )
+
+[sub_resource type="DynamicFontData" id=3]
+font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
+
+[sub_resource type="DynamicFont" id=4]
+size = 60
+font_data = SubResource( 3 )
 
 [node name="GameFieldMulti" type="Node2D"]
 script = ExtResource( 1 )
@@ -67,27 +73,10 @@ margin_left = 1280.0
 margin_top = 32.0
 margin_right = 1880.0
 margin_bottom = 1053.0
+custom_constants/vseparation = 218
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="BaseDomainDisplay" parent="enemy" instance=ExtResource( 9 )]
-
-[node name="BaseDomainDisplay2" parent="enemy" instance=ExtResource( 9 )]
-margin_top = 4.0
-margin_bottom = 4.0
-
-[node name="BaseDomainDisplay3" parent="enemy" instance=ExtResource( 9 )]
-margin_top = 8.0
-margin_bottom = 8.0
-
-[node name="BaseDomainDisplay4" parent="enemy" instance=ExtResource( 9 )]
-margin_top = 12.0
-margin_bottom = 12.0
-
-[node name="BaseDomainDisplay5" parent="enemy" instance=ExtResource( 9 )]
-margin_top = 16.0
-margin_bottom = 16.0
 
 [node name="end_game_window" type="CanvasLayer" parent="."]
 
@@ -135,9 +124,73 @@ __meta__ = {
 
 [node name="SceneTransitionRect" parent="." instance=ExtResource( 6 )]
 
+[node name="state_label" type="Label" parent="."]
+margin_left = 728.0
+margin_top = 456.0
+margin_right = 1224.0
+margin_bottom = 542.0
+custom_fonts/font = SubResource( 4 )
+text = "state"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="players_ready" type="Label" parent="."]
+margin_left = 728.0
+margin_top = 552.0
+margin_right = 1224.0
+margin_bottom = 638.0
+custom_fonts/font = SubResource( 4 )
+text = "state"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="test_buttons" type="VBoxContainer" parent="."]
+margin_left = 784.0
+margin_top = 688.0
+margin_right = 1216.0
+margin_bottom = 1008.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="test_buttons"]
+margin_right = 432.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 2 )
+text = "Invoquer Météore partout"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="receive_meteor" type="Button" parent="test_buttons"]
+margin_top = 53.0
+margin_right = 432.0
+margin_bottom = 102.0
+custom_fonts/font = ExtResource( 2 )
+text = "Recevoir Météore"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button3" type="Button" parent="test_buttons"]
+margin_top = 106.0
+margin_right = 432.0
+margin_bottom = 155.0
+custom_fonts/font = ExtResource( 2 )
+text = "Envoyer Météore"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [connection signal="changing_stance_command" from="." to="main_player_domain" method="_on_GameFieldMulti_changing_stance_command"]
-[connection signal="domain_answer_response" from="." to="main_player_domain" method="_on_GameFieldMulti_domain_answer_response"]
-[connection signal="changing_stance_command" from="InputHandler" to="." method="_on_InputHandler_changing_stance_command"]
+[connection signal="new_incantations_received" from="." to="main_player_domain" method="_on_GameFieldMulti_new_incantations_received"]
+[connection signal="ready" from="." to="." method="_on_GameFieldMulti_ready"]
 [connection signal="check_answer_command" from="InputHandler" to="." method="_on_InputHandler_check_answer_command"]
 [connection signal="delete_digit" from="InputHandler" to="." method="_on_InputHandler_delete_digit"]
 [connection signal="delete_digit" from="InputHandler" to="OperationDisplayBasic" method="_on_InputHandler_delete_digit"]
@@ -146,3 +199,4 @@ __meta__ = {
 [connection signal="timeout" from="round_time_remaining" to="." method="_on_round_time_remaining_timeout"]
 [connection signal="operations_selection_done" from="bonus_menu" to="." method="_on_bonus_menu_operations_selection_done"]
 [connection signal="players_asks_for_action" from="bonus_menu" to="." method="_on_bonus_menu_players_asks_for_action"]
+[connection signal="pressed" from="test_buttons/receive_meteor" to="." method="_on_receive_meteor_pressed"]

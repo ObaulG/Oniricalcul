@@ -11,13 +11,23 @@ enum BUYING_OP_ATTEMPT_RESULT{
 signal attack()
 signal good_answer()
 signal wrong_answer()
+signal operation_to_display_has_changed(new_op)
 signal incantation_has_changed(L)
-signal incantation_progress_changed(new_value)
-signal money_value_has_changed(n)
+signal new_incantation_charged()
+signal incantation_progress_changed(game_id, new_value)
+signal money_value_has_changed(gid, n)
+signal low_incantation_stock(gid)
+signal meteor_invocation(gid, dico_threat)
+signal defense_command(gid, power)
+signal potential_value_changed(gid, x)
+signal defense_power_changed(gid, x)
+signal chain_value_changed(gid, n)
 
 #Consts
 const STANCES = {ATTACK = 1, DEFENSE = 2, BONUS = 3}
 const THREAT_TYPES = {REGULAR = 1, FAST = 2, STRONG = 3}
+
+var game_id
 
 var rng
 var stance: int
@@ -39,13 +49,13 @@ var pattern: Pattern
 var reliquat: float
 
 var defense_power: ReliquatNumber
-var meteor_sent := 0
+var meteor_sent: int
 var threat_count: int
 
 #the threat with least remaining time
 
 #nb of new operations generated between 2 rounds.
-var nb_new_operations: int
+var operation_production: int
 #nb of new operations from enemies
 var inspiration: int
 var list_shop_operations: Array
@@ -81,11 +91,12 @@ var nb_pattern_loops: int
 #onready var domain_field = get_parent().get_parent().get_node("domain_field")
 
 func _ready():
-	connect("changing_stance_command", self, "_on_changing_stance_command")
+	pass
 	
 	
 func initialise(char_dico):
 	waiting_transaction = false
+	game_id = get_parent().game_id
 	rng = get_parent().rng
 	
 	atk_power = char_dico["threat_power"]
@@ -93,6 +104,9 @@ func initialise(char_dico):
 	atk_hp = char_dico["threat_hp"]
 	malus_level = char_dico["malus_level"]
 	inspiration = char_dico["inspiration"]
+	operation_preference = char_dico["operations_preference"]
+	difficulty_preference = char_dico["difficulty_preference"]
+	
 	meteor_sent = 0
 
 	chain = 0
@@ -118,8 +132,10 @@ func initialise(char_dico):
 	
 	swap_price = base_swap_price
 	erase_price = base_erase_price
+
 func determine_defense_power(potential: int):
 	defense_power.set_value(7 + 0.18*potential )
+	emit_signal("defense_power_changed", game_id, defense_power.get_value())
 	
 func random_int_rounding(x: float) -> int:
 	var difference = x - int(x)
@@ -202,11 +218,17 @@ func new_round():
 	
 func spend_money(n: int):
 	money = clamp(money-n, 0, money)
-	emit_signal("money_value_has_changed", money)
+	emit_signal("money_value_has_changed", game_id, money)
 	
 func earn_money(n: int):
 	money += n
-	emit_signal("money_value_has_changed", money)
+	emit_signal("money_value_has_changed", game_id, money)
+	
+func get_potential():
+	return pattern.get_power(0, true)
+	
+func get_defense_power():
+	return defense_power.get_value()
 	
 func get_current_operation():
 	return operations[pattern.get_index()]
@@ -225,41 +247,55 @@ func store_new_incantations(L: Array):
 func charge_new_incantation():
 	var new_incantation = operations_stock.pop_front()
 	if len(operations_stock) < 3:
-		emit_signal("low_incantation_stock")
+		emit_signal("low_incantation_stock", game_id)
 	#what if there wasn't any new incantation in the stock??
 	if new_incantation:
 		operations = new_incantation
+		emit_signal("new_incantation_charged")
+
+func answer_response(good_answer):
+	if good_answer:
+		good_answer()
+		print("good answer")
+	else:
+		wrong_answer()
+		print("wrong_answer")
+	emit_signal("chain_value_changed", game_id, chain)
+	emit_signal("operation_to_display_has_changed", get_current_operation())
 	
-func _on_domain_answer_response(id_domain, good_answer):
-	if id_domain == get_parent().id_domain:
-		if good_answer:
-			good_answer()
-		else:
-			wrong_answer()
-			
 func good_answer():
+	var current_pattern_el = get_current_pattern_element()
+	get_parent().score_points(global.get_op_power_by_obj(current_pattern_el))
+	chain += 1
+	
 	var is_incantation_completed = pattern.next()
 	if is_incantation_completed:
 		match(stance):
 			STANCES.ATTACK:
+				#[power, delay_time, hp, atk_side_effects]
+				var threat_stats = determine_threat_stats(pattern.get_power())
 				var dico_threat = {
-					hp = atk_hp,
+					meteor_id = meteor_sent,
+					hp = threat_stats[2],
 					type = atk_type,
-					power = atk_power,
-					delay = atk_delay_time,
-					side_effects = []
+					power = threat_stats[0],
+					delay = atk_type,
+					side_effects = threat_stats[3],
+					sender = game_id
 				}
-				emit_signal("meteor_invocation", dico_threat)
+				meteor_sent += 1
+				emit_signal("meteor_invocation", game_id, dico_threat)
 			STANCES.DEFENSE:
 				determine_defense_power(pattern.get_power())
 				var defense_damage = 0.5* (1 + (defense_power.apply() / pattern.get_len()))
-				emit_signal("defense_command", defense_damage)
+				emit_signal("defense_command", game_id, defense_damage)
 			STANCES.BONUS:
 				pass
-	emit_signal("incantation_progress_changed", pattern.get_index())
+	emit_signal("incantation_progress_changed", game_id, pattern.get_index())
 	
 func wrong_answer():
 	emit_signal("wrong_answer")
+	chain = 0
 	var progression_removal = 0
 	match(malus_level):
 		1:
@@ -271,7 +307,7 @@ func wrong_answer():
 		4:
 			progression_removal = 10
 	pattern.reverse_gear(progression_removal)
-	emit_signal("incantation_progress_changed", pattern.get_index())
+	emit_signal("incantation_progress_changed", game_id, pattern.get_index())
 
 func buy_attempt_result(action_type, price: int):
 	if price <= money:
@@ -293,11 +329,27 @@ func get_swap_price():
 func get_erase_price():
 	return erase_price
 	
+func get_inspiration():
+	return inspiration
+	
 func get_waiting_transaction():
 	return waiting_transaction
 
+func get_operation_preference():
+	return operation_preference
+	
+func get_operation_production():
+	return operation_production
+	
+func get_difficulty_preference():
+	return difficulty_preference
+	
 func set_stance(new_stance):
 	stance = new_stance
 	
 func _on_incantation_change():
 	emit_signal("incantation_has_changed", pattern.get_list())
+	emit_signal("potential_value_changed", game_id, get_potential())
+	determine_defense_power(get_potential())
+func _on_changing_stance_command(new_stance):
+	set_stance(new_stance)

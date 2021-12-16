@@ -489,7 +489,10 @@ func get_op_power(type: int, diff: int) -> int:
 
 func get_op_power_by_obj(values: Array) -> int:
 	return op_data[values[0]].get_potential(values[1])
-
+	
+func get_op_power_by_op(op: Operation):
+	return op_data[op.get_type()].get_potential(op.get_diff())
+	
 func get_dialog_line(id):
 	return dialog_data["dialogue_lines"][str(id)][lang]
 	

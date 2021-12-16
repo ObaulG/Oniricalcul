@@ -31,7 +31,6 @@ shape = SubResource( 1 )
 
 [node name="base_projectile_start" type="Area2D" parent="."]
 position = Vector2( 56, 816 )
-script = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="base_projectile_start"]
 position = Vector2( 111.118, 9.52441 )

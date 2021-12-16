@@ -10,7 +10,7 @@ func update_nb_max_elements(n):
 func update_nb_elements_completed(n):
 	progression_display.set_new_value(n)
 
-func _on_Spellbook_incantation_progress_changed(new_value):
+func _on_Spellbook_incantation_progress_changed(_game_id, new_value):
 	update_nb_elements_completed(new_value)
 
 func _on_Spellbook_incantation_has_changed(L):

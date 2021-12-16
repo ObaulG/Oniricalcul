@@ -133,7 +133,9 @@ remote func register_player(pinfo):
 
 remote func register_bot(pinfo):
 	if get_total_players_entities() < server_info.max_players:
-		pinfo["game_id"] = get_nb_players() + 1
+		pinfo["net_id"] = get_nb_bots() + 38
+		pinfo["game_id"] = get_total_players_entities() + 1
+		pinfo["pseudo"] = "Bot " + str(get_nb_bots()+1)
 		if (get_tree().is_network_server()):
 			# We are on the server, so distribute the player list information throughout the connected players
 			for id in players:

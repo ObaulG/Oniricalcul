@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://UI/IconStatNumberDisplay.gd" type="Script" id=1]
+[ext_resource path="res://textures/rune-sword.png" type="Texture" id=2]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
+
+[sub_resource type="DynamicFont" id=2]
+size = 32
+font_data = SubResource( 1 )
+
+[node name="IconStatNumberDisplay" type="Control"]
+margin_right = 129.0
+margin_bottom = 46.0
+rect_min_size = Vector2( 129, 46 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 120.0
+margin_bottom = 47.0
+custom_constants/separation = 20
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="HBoxContainer"]
+margin_right = 32.0
+margin_bottom = 47.0
+
+[node name="texture" type="TextureRect" parent="HBoxContainer/CenterContainer"]
+margin_top = 7.0
+margin_right = 32.0
+margin_bottom = 39.0
+rect_min_size = Vector2( 32, 32 )
+texture = ExtResource( 2 )
+expand = true
+
+[node name="value_label" type="Label" parent="HBoxContainer"]
+margin_left = 52.0
+margin_right = 126.0
+margin_bottom = 47.0
+rect_min_size = Vector2( 40, 40 )
+custom_fonts/font = SubResource( 2 )
+text = "value"
+valign = 1

@@ -15,8 +15,9 @@ onready var shopping_data = $ShoppingData
 signal hp_value_changed(new_value)
 signal damaged(n)
 signal healed(n)
-signal points_earned(n)
+signal points_value_changed(n)
 signal eliminated(pid)
+signal good_answers_value_changed(n)
 #Enums
 enum BUYING_OP_ATTEMPT_RESULT{CAN_BUY=1, NO_SPACE, NO_MONEY, ERROR}
 
@@ -29,7 +30,7 @@ const THREAT_TYPES = {REGULAR = 1, FAST = 2, STRONG = 3}
 #Public vars
 
 #Private 
-var id_domain
+var game_id
 var id_character: int
 
 var rng = RandomNumberGenerator.new()
@@ -49,10 +50,10 @@ var good_answers: int
 var chain: int
 var nb_pattern_loops: int
 
-
 func process(delta):
 	if game_state == 1:
 		answer_time += delta
+		game_time += delta
 
 func _ready():
 	id_character = -1
@@ -60,11 +61,11 @@ func _ready():
 	
 func initialise(char_id: int, pid: int):
 	var char_dico = global.characters[char_id]
-	id_domain = pid
+	game_id = pid
 	id_character = char_id
 	hp_max = char_dico["hp"]
 	hp_current = hp_max
-
+	emit_signal("hp_value_changed", hp_current)
 	answer_time = 0.0
 	game_time = 0.0
 	
@@ -86,19 +87,28 @@ func get_damage(n):
 	
 	if hp_current <= 0:
 		eliminated = true
-		emit_signal("eliminated", id_domain)
+		emit_signal("eliminated", game_id)
 		
 func heal(n):
 	hp_current = clamp(hp_current + n, 0, hp_max)
 	emit_signal("healed", n)
 	emit_signal("hp_value_changed", hp_current)
 
+func score_points(n: int):
+	points += n
+	emit_signal("points_value_changed", points)
+	
+func answer_response(good_answer):
+	spellbook.answer_response(good_answer)
+	if good_answer:
+		good_answers += 1
+		emit_signal("good_answers_value_changed", good_answers)
 func is_alive():
 	return hp_current <= 0
-	
+
 # getters
 func get_id_domain():
-	return id_domain
+	return game_id
 
 func get_id_character():
 	return id_character
@@ -135,6 +145,8 @@ func get_swap_price():
 	
 func get_erase_price():
 	return spellbook.get_erase_price()
+	
+
 # setters
 
 func set_shop_operations(op_list: Array):

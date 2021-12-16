@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://multiplayer/BaseDomainDisplay.gd" type="Script" id=1]
 [ext_resource path="res://multiplayer/BaseDomainData.tscn" type="PackedScene" id=2]
@@ -6,10 +6,15 @@
 [ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=4]
 [ext_resource path="res://characters/01/icon_128.png" type="Texture" id=5]
 [ext_resource path="res://multiplayer/IncantationProgress.tscn" type="PackedScene" id=6]
-[ext_resource path="res://multiplayer/ThreatLineDisplay.tscn" type="PackedScene" id=7]
+[ext_resource path="res://textures/chain.png" type="Texture" id=7]
 [ext_resource path="res://multiplayer/DomainField.tscn" type="PackedScene" id=8]
 [ext_resource path="res://incantation/Incantation.tscn" type="PackedScene" id=9]
 [ext_resource path="res://multiplayer/OniricAI.tscn" type="PackedScene" id=10]
+[ext_resource path="res://textures/calculator.png" type="Texture" id=11]
+[ext_resource path="res://textures/magic-shield.png" type="Texture" id=12]
+[ext_resource path="res://textures/stars-stack.png" type="Texture" id=13]
+[ext_resource path="res://textures/speedometer.png" type="Texture" id=14]
+[ext_resource path="res://UI/IconStatNumberDisplay.tscn" type="PackedScene" id=15]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -124,15 +129,6 @@ margin_top = -304.0
 margin_right = -2.0
 margin_bottom = 496.0
 
-[node name="stats_display" type="VBoxContainer" parent="Panel"]
-margin_left = 200.0
-margin_top = 32.0
-margin_right = 360.0
-margin_bottom = 184.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="threat_data_display" type="ScrollContainer" parent="Panel"]
 margin_left = 384.0
 margin_top = 8.0
@@ -143,63 +139,6 @@ __meta__ = {
 }
 
 [node name="vbox" type="VBoxContainer" parent="Panel/threat_data_display"]
-margin_right = 190.0
-margin_bottom = 196.0
-
-[node name="ThreatLineDisplay" parent="Panel/threat_data_display/vbox" instance=ExtResource( 7 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 190.0
-margin_bottom = 21.0
-
-[node name="ThreatLineDisplay2" parent="Panel/threat_data_display/vbox" instance=ExtResource( 7 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 25.0
-margin_right = 190.0
-margin_bottom = 46.0
-
-[node name="ThreatLineDisplay3" parent="Panel/threat_data_display/vbox" instance=ExtResource( 7 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 50.0
-margin_right = 190.0
-margin_bottom = 71.0
-
-[node name="ThreatLineDisplay4" parent="Panel/threat_data_display/vbox" instance=ExtResource( 7 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 75.0
-margin_right = 190.0
-margin_bottom = 96.0
-
-[node name="ThreatLineDisplay5" parent="Panel/threat_data_display/vbox" instance=ExtResource( 7 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 100.0
-margin_right = 190.0
-margin_bottom = 121.0
-
-[node name="ThreatLineDisplay6" parent="Panel/threat_data_display/vbox" instance=ExtResource( 7 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 125.0
-margin_right = 190.0
-margin_bottom = 146.0
-
-[node name="ThreatLineDisplay7" parent="Panel/threat_data_display/vbox" instance=ExtResource( 7 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 150.0
-margin_right = 190.0
-margin_bottom = 171.0
-
-[node name="ThreatLineDisplay8" parent="Panel/threat_data_display/vbox" instance=ExtResource( 7 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 175.0
-margin_right = 190.0
-margin_bottom = 196.0
 
 [node name="Incantation" parent="Panel" instance=ExtResource( 9 )]
 visible = false
@@ -208,7 +147,65 @@ margin_top = 112.546
 margin_right = -952.0
 margin_bottom = 296.546
 
+[node name="stats_display" type="GridContainer" parent="Panel"]
+margin_left = 208.0
+margin_top = 56.0
+margin_right = 470.0
+margin_bottom = 202.0
+rect_scale = Vector2( 0.75, 0.75 )
+columns = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="points" parent="Panel/stats_display" instance=ExtResource( 15 )]
+
+[node name="texture" parent="Panel/stats_display/points/HBoxContainer/CenterContainer" index="0"]
+texture = ExtResource( 13 )
+
+[node name="potential" parent="Panel/stats_display" instance=ExtResource( 15 )]
+margin_left = 133.0
+margin_right = 262.0
+
+[node name="defense_power" parent="Panel/stats_display" instance=ExtResource( 15 )]
+margin_top = 50.0
+margin_bottom = 96.0
+
+[node name="texture" parent="Panel/stats_display/defense_power/HBoxContainer/CenterContainer" index="0"]
+texture = ExtResource( 12 )
+
+[node name="chain" parent="Panel/stats_display" instance=ExtResource( 15 )]
+margin_left = 133.0
+margin_top = 50.0
+margin_right = 262.0
+margin_bottom = 96.0
+
+[node name="texture" parent="Panel/stats_display/chain/HBoxContainer/CenterContainer" index="0"]
+texture = ExtResource( 7 )
+
+[node name="speed" parent="Panel/stats_display" instance=ExtResource( 15 )]
+margin_top = 100.0
+margin_bottom = 146.0
+
+[node name="texture" parent="Panel/stats_display/speed/HBoxContainer/CenterContainer" index="0"]
+texture = ExtResource( 14 )
+
+[node name="good_answers" parent="Panel/stats_display" instance=ExtResource( 15 )]
+margin_left = 133.0
+margin_top = 100.0
+margin_right = 262.0
+margin_bottom = 146.0
+
+[node name="texture" parent="Panel/stats_display/good_answers/HBoxContainer/CenterContainer" index="0"]
+texture = ExtResource( 11 )
+
 [connection signal="incantation_progress_changed" from="BaseDomainData/Spellbook" to="Panel/IncantationProgress" method="_on_Spellbook_incantation_progress_changed"]
 
 [editable path="BaseDomainData"]
 [editable path="Panel/hp_display"]
+[editable path="Panel/stats_display/points"]
+[editable path="Panel/stats_display/potential"]
+[editable path="Panel/stats_display/defense_power"]
+[editable path="Panel/stats_display/chain"]
+[editable path="Panel/stats_display/speed"]
+[editable path="Panel/stats_display/good_answers"]

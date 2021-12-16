@@ -1,16 +1,21 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://multiplayer/PlayerDomain.gd" type="Script" id=1]
 [ext_resource path="res://multiplayer/DomainField.tscn" type="PackedScene" id=2]
-[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=3]
-[ext_resource path="res://characters/01/icon_128.png" type="Texture" id=4]
+[ext_resource path="res://textures/calculator.png" type="Texture" id=3]
+[ext_resource path="res://characters/01/icon.png" type="Texture" id=4]
 [ext_resource path="res://multiplayer/OniricAI.tscn" type="PackedScene" id=5]
+[ext_resource path="res://UI/IconStatNumberDisplay.tscn" type="PackedScene" id=6]
+[ext_resource path="res://textures/magic-shield.png" type="Texture" id=7]
 [ext_resource path="res://multiplayer/BaseDomainData.tscn" type="PackedScene" id=8]
+[ext_resource path="res://textures/stars-stack.png" type="Texture" id=9]
 [ext_resource path="res://UI/gradient_bar.shader" type="Shader" id=10]
-[ext_resource path="res://multiplayer/ThreatLineDisplay.tscn" type="PackedScene" id=11]
+[ext_resource path="res://textures/speedometer.png" type="Texture" id=11]
 [ext_resource path="res://multiplayer/IncantationProgress.tscn" type="PackedScene" id=12]
 [ext_resource path="res://UI/StatDisplay.tscn" type="PackedScene" id=13]
 [ext_resource path="res://incantation/Incantation.tscn" type="PackedScene" id=14]
+[ext_resource path="res://textures/chain.png" type="Texture" id=15]
+[ext_resource path="res://multiplayer/threat_data_display.gd" type="Script" id=16]
 
 [sub_resource type="ShaderMaterial" id=4]
 resource_local_to_scene = true
@@ -72,6 +77,18 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="threat_data_display" type="ScrollContainer" parent="Panel"]
+margin_left = 16.0
+margin_top = 8.0
+margin_right = 206.0
+margin_bottom = 184.0
+script = ExtResource( 16 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="vbox" type="VBoxContainer" parent="Panel/threat_data_display"]
+
 [node name="Incantation" parent="Panel" instance=ExtResource( 14 )]
 margin_left = 416.0
 margin_top = 632.0
@@ -98,10 +115,10 @@ rect_rotation = 90.0
 
 [node name="char_icon" type="TextureRect" parent="Panel"]
 margin_left = 374.118
-margin_right = 502.118
-margin_bottom = 128.0
+margin_top = 2.51981
+margin_right = 630.118
+margin_bottom = 258.52
 rect_min_size = Vector2( 128, 128 )
-rect_scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -122,85 +139,18 @@ __meta__ = {
 
 [node name="IncantationProgress" parent="Panel" instance=ExtResource( 12 )]
 margin_left = 400.0
-margin_top = 584.0
+margin_top = 592.241
 margin_right = 536.8
-margin_bottom = 579.308
+margin_bottom = 593.205
 
 [node name="domain_field" parent="Panel" instance=ExtResource( 2 )]
 margin_left = 16.0
 margin_top = 216.0
 margin_right = 366.0
 margin_bottom = 1016.0
+rect_pivot_offset = Vector2( -330.461, 121 )
 
-[node name="threat_data_display" type="ScrollContainer" parent="Panel"]
-margin_left = 16.0
-margin_top = 8.0
-margin_right = 206.0
-margin_bottom = 184.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="vbox" type="VBoxContainer" parent="Panel/threat_data_display"]
-margin_right = 190.0
-margin_bottom = 196.0
-
-[node name="ThreatLineDisplay" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 190.0
-margin_bottom = 21.0
-
-[node name="ThreatLineDisplay2" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 25.0
-margin_right = 190.0
-margin_bottom = 46.0
-
-[node name="ThreatLineDisplay3" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 50.0
-margin_right = 190.0
-margin_bottom = 71.0
-
-[node name="ThreatLineDisplay4" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 75.0
-margin_right = 190.0
-margin_bottom = 96.0
-
-[node name="ThreatLineDisplay5" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 100.0
-margin_right = 190.0
-margin_bottom = 121.0
-
-[node name="ThreatLineDisplay6" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 125.0
-margin_right = 190.0
-margin_bottom = 146.0
-
-[node name="ThreatLineDisplay7" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 150.0
-margin_right = 190.0
-margin_bottom = 171.0
-
-[node name="ThreatLineDisplay8" parent="Panel/threat_data_display/vbox" instance=ExtResource( 11 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 175.0
-margin_right = 190.0
-margin_bottom = 196.0
-
-[node name="stats_display" type="VBoxContainer" parent="Panel"]
+[node name="stats_display" type="GridContainer" parent="Panel"]
 margin_left = 400.0
 margin_top = 298.0
 margin_right = 608.0
@@ -209,100 +159,60 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/stats_display"]
-margin_right = 208.0
-margin_bottom = 43.0
+[node name="points" parent="Panel/stats_display" instance=ExtResource( 6 )]
 
-[node name="TextureRect" type="TextureRect" parent="Panel/stats_display/HBoxContainer"]
-margin_bottom = 43.0
+[node name="texture" parent="Panel/stats_display/points/HBoxContainer/CenterContainer" index="0"]
+texture = ExtResource( 9 )
 
-[node name="lb" type="Label" parent="Panel/stats_display/HBoxContainer"]
-margin_left = 4.0
-margin_right = 88.0
-margin_bottom = 43.0
-custom_fonts/font = ExtResource( 3 )
-text = "Points"
+[node name="potential" parent="Panel/stats_display" instance=ExtResource( 6 )]
+margin_top = 50.0
+margin_bottom = 96.0
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Panel/stats_display"]
-margin_top = 47.0
-margin_right = 208.0
-margin_bottom = 90.0
+[node name="defense_power" parent="Panel/stats_display" instance=ExtResource( 6 )]
+margin_top = 100.0
+margin_bottom = 146.0
 
-[node name="TextureRect" type="TextureRect" parent="Panel/stats_display/HBoxContainer2"]
-margin_bottom = 43.0
+[node name="texture" parent="Panel/stats_display/defense_power/HBoxContainer/CenterContainer" index="0"]
+texture = ExtResource( 7 )
 
-[node name="chain" type="Label" parent="Panel/stats_display/HBoxContainer2"]
-margin_left = 4.0
-margin_right = 96.0
-margin_bottom = 43.0
-custom_fonts/font = ExtResource( 3 )
-text = "Chaîne"
+[node name="chain" parent="Panel/stats_display" instance=ExtResource( 6 )]
+margin_top = 150.0
+margin_bottom = 196.0
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="Panel/stats_display"]
-margin_top = 94.0
-margin_right = 208.0
-margin_bottom = 137.0
+[node name="texture" parent="Panel/stats_display/chain/HBoxContainer/CenterContainer" index="0"]
+texture = ExtResource( 15 )
 
-[node name="TextureRect" type="TextureRect" parent="Panel/stats_display/HBoxContainer3"]
-margin_bottom = 43.0
+[node name="speed" parent="Panel/stats_display" instance=ExtResource( 6 )]
+margin_top = 200.0
+margin_bottom = 246.0
 
-[node name="points" type="Label" parent="Panel/stats_display/HBoxContainer3"]
-margin_left = 4.0
-margin_right = 131.0
-margin_bottom = 43.0
-custom_fonts/font = ExtResource( 3 )
-text = "Puissance"
+[node name="texture" parent="Panel/stats_display/speed/HBoxContainer/CenterContainer" index="0"]
+texture = ExtResource( 11 )
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="Panel/stats_display"]
-margin_top = 141.0
-margin_right = 208.0
-margin_bottom = 184.0
+[node name="good_answers" parent="Panel/stats_display" instance=ExtResource( 6 )]
+margin_top = 250.0
+margin_bottom = 296.0
 
-[node name="TextureRect" type="TextureRect" parent="Panel/stats_display/HBoxContainer4"]
-margin_bottom = 43.0
-
-[node name="points" type="Label" parent="Panel/stats_display/HBoxContainer4"]
-margin_left = 4.0
-margin_right = 102.0
-margin_bottom = 43.0
-custom_fonts/font = ExtResource( 3 )
-text = "% juste"
-
-[node name="HBoxContainer5" type="HBoxContainer" parent="Panel/stats_display"]
-margin_top = 188.0
-margin_right = 208.0
-margin_bottom = 231.0
-
-[node name="TextureRect" type="TextureRect" parent="Panel/stats_display/HBoxContainer5"]
-margin_bottom = 43.0
-
-[node name="points" type="Label" parent="Panel/stats_display/HBoxContainer5"]
-margin_left = 4.0
-margin_right = 181.0
-margin_bottom = 43.0
-custom_fonts/font = ExtResource( 3 )
-text = "Total Calculs"
-
-[node name="HBoxContainer6" type="HBoxContainer" parent="Panel/stats_display"]
-margin_top = 235.0
-margin_right = 208.0
-margin_bottom = 278.0
-
-[node name="TextureRect" type="TextureRect" parent="Panel/stats_display/HBoxContainer6"]
-margin_bottom = 43.0
-
-[node name="points" type="Label" parent="Panel/stats_display/HBoxContainer6"]
-margin_left = 4.0
-margin_right = 152.0
-margin_bottom = 43.0
-custom_fonts/font = ExtResource( 3 )
-text = "Calculs/sec"
+[node name="texture" parent="Panel/stats_display/good_answers/HBoxContainer/CenterContainer" index="0"]
+texture = ExtResource( 3 )
 
 [connection signal="eliminated" from="BaseDomainData" to="." method="_on_BaseDomainData_eliminated"]
+[connection signal="good_answers_value_changed" from="BaseDomainData" to="." method="_on_BaseDomainData_good_answers_value_changed"]
 [connection signal="hp_value_changed" from="BaseDomainData" to="Panel/hp_display" method="_on_BaseDomainData_hp_value_changed"]
+[connection signal="points_value_changed" from="BaseDomainData" to="." method="_on_BaseDomainData_points_value_changed"]
+[connection signal="chain_value_changed" from="BaseDomainData/Spellbook" to="." method="_on_Spellbook_chain_value_changed"]
+[connection signal="defense_power_changed" from="BaseDomainData/Spellbook" to="." method="_on_Spellbook_defense_power_changed"]
 [connection signal="incantation_has_changed" from="BaseDomainData/Spellbook" to="Panel/Incantation" method="_on_Spellbook_incantation_has_changed"]
 [connection signal="incantation_has_changed" from="BaseDomainData/Spellbook" to="Panel/IncantationProgress" method="_on_Spellbook_incantation_has_changed"]
 [connection signal="incantation_progress_changed" from="BaseDomainData/Spellbook" to="Panel/IncantationProgress" method="_on_Spellbook_incantation_progress_changed"]
+[connection signal="money_value_has_changed" from="BaseDomainData/Spellbook" to="." method="_on_Spellbook_money_value_has_changed"]
+[connection signal="potential_value_changed" from="BaseDomainData/Spellbook" to="." method="_on_Spellbook_potential_value_changed"]
 
 [editable path="BaseDomainData"]
 [editable path="Panel/hp_display"]
+[editable path="Panel/stats_display/points"]
+[editable path="Panel/stats_display/potential"]
+[editable path="Panel/stats_display/defense_power"]
+[editable path="Panel/stats_display/chain"]
+[editable path="Panel/stats_display/speed"]
+[editable path="Panel/stats_display/good_answers"]

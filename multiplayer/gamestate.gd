@@ -14,7 +14,7 @@ func _init():
 	
 func reset():
 	player_info["net_id"] = 1 # By default everyone receives "server ID"
-	player_info["game_id"] = -1 #will be given in game
+	player_info["game_id"] = 1 #will be given in game
 	player_info["actor_path"] = "res://multiplayer/PlayerDomain.tscn"  # The class used to represent the player in the game world
 	player_info["is_bot"] = false
 	player_info["bot_diff"] = -1

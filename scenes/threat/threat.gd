@@ -5,8 +5,9 @@ const THREAT_TYPE = {
 	2: "Type B",
 	3: "Type C",
 }
-signal impact(id, threat_type, current_hp, power)
-signal destroyed(id, threat_type, power)
+signal impact(id, threat_type, hp_current, power)
+signal hp_value_changed(id, new_hp)
+signal destroyed(id, threat_type, power, id_character, over_damage, pos)
 
 class_name Threat
 
@@ -32,6 +33,7 @@ func create(id, hp, type, power, delay, player_nodes: Array, x_speed, y_speed, s
 	print("Création du Threat")
 	print("Temps: " + str(delay))
 	self.id = id
+	name = str(id)
 	isdead = false
 	self.x_speed = x_speed
 	self.y_speed = y_speed
@@ -50,6 +52,7 @@ func create(id, hp, type, power, delay, player_nodes: Array, x_speed, y_speed, s
 	if signals_connection:
 		for player_node in player_nodes:
 			connect("impact", player_node, "_on_threat_impact")
+			connect("hp_value_changed", player_node, "_on_threat_hp_value_changed")
 			connect("destroyed", player_node, "_on_threat_destroyed")
 	self.add_child(timer)
 	
@@ -70,10 +73,11 @@ func delay_elapsed():
 	
 func hit(power, character, id_character, base_speed, type):
 	var over_damage = receive_damage(power)
+	emit_signal("hp_value_changed", id, hp_current)
 	if over_damage >= 0:
 		# if done later, this threat will be counted alive
 		isdead = true
-		emit_signal("destroyed", threat_type, power, id_character, over_damage, self.position)
+		emit_signal("destroyed", id, threat_type, power, id_character, over_damage, self.position)
 		remove_animation(true)
 		
 func receive_damage(n):
@@ -126,12 +130,11 @@ func get_remaining_time():
 func _to_string():
 	return "Threat type " + str(threat_type) + " HP: " + str(hp_current) + "/"+str(hp_max)
 
-func _on_Threat_impact(_threat_type, _current_hp, _power):
+func _on_Threat_impact(_threat_id, _threat_type, _current_hp, _power):
 	x_speed = 0.0
 	y_speed = 0.0
 	if not isdead:
 		remove_animation()
-
 
 func _on_Tween_tween_all_completed():
 	print("prout")
