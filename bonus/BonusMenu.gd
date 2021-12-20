@@ -11,10 +11,12 @@ enum BONUS_ACTION{
 }
 enum STATE {IDLE, REPLACING_OP, SWAPPING, SELECTING}
 
-signal players_asks_for_action(action_type, element)
+signal player_asks_for_action(gid, action_type, element)
 signal operations_selection_done(L)
 signal on_pop_up_ok_press()
 signal on_pop_up_cancel()
+
+var game_id
 
 var operations_node
 var bonus_list_node
@@ -37,11 +39,12 @@ var erase_button
 var cancel_button
 
 onready var state_label = $state_label
+
 func _ready():
 	operations_node = $MarginContainer/vbox/bonus_zone/new_operations/Incantation_Operations
 	bonus_list_node = $MarginContainer/vbox/bonus_zone/vbox_items/list
 	incantation = $MarginContainer/vbox/bonus_zone/new_operations/Incantation_Operations
-	points_label = $MarginContainer/vbox/HBoxContainer/points
+	points_label = $MarginContainer/vbox/CenterContainer2/HBoxContainer/points
 	new_operations_grid = $MarginContainer/vbox/bonus_zone/new_operations/new_operations
 	confirm_pop_up_incantation = $ConfirmationDialog
 	timedisplay = $MarginContainer/vbox/HBoxContainer/TimeDisplay
@@ -54,6 +57,8 @@ func _ready():
 	connect("on_pop_up_cancel", self, "on_pop_up_cancel")
 	selected_op_index = -1
 	change_state(STATE.IDLE)
+	
+	game_id = get_parent().game_id
 	
 func change_state(state):
 	set_state(state)
@@ -187,7 +192,8 @@ func pop_up_result(ok_pressed: bool):
 		return -1
 
 func on_trying_to_buy_op(op):
-	emit_signal("player_ask_for_action", BONUS_ACTION.BUY_OPERATION, op)
+	print("You try to buy " + str(op))
+	emit_signal("player_asks_for_action", game_id, BONUS_ACTION.BUY_OPERATION, op)
 
 
 func _on_operation_confirmed(index):
@@ -212,15 +218,14 @@ func set_shop_operations_buyable(b = true):
 					op.set_display_type(Operation_Display.DISPLAY_TYPE.BASIC)
 					
 func _on_swap_button_down():
-	emit_signal("player_ask_for_action", BONUS_ACTION.SWAP_OPERATIONS, -1)
+	emit_signal("player_asks_for_action", game_id, BONUS_ACTION.SWAP_OPERATIONS, -1)
 
 func _on_cancel_button_down():
 	set_shop_operations_buyable(true)
 	change_state(STATE.IDLE)
 
 func _on_erase_button_down():
-	emit_signal("player_ask_for_action", BONUS_ACTION.ERASE_OPERATION)
-
+	emit_signal("player_asks_for_action", game_id, BONUS_ACTION.ERASE_OPERATION)
 
 #if we have the correct number of operations selected
 #for the current state then we call the function needed
@@ -239,3 +244,9 @@ func _on_Incantation_Operations_nb_selected_operations_changed(n):
 		emit_signal("operations_selection_ended", get_selected_operations(), state)
 		change_state(STATE.IDLE)
 		nb_selection_needed = 0
+
+func _on_spellbook_incantation_has_changed(L: Array):
+	set_pattern(L)
+	
+func _on_spellbook_money_value_has_changed(n):
+	points_label.text = "Argent : " + str(n)

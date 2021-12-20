@@ -19,6 +19,7 @@ __meta__ = {
 [node name="cr_bg" type="ColorRect" parent="."]
 margin_right = 400.0
 margin_bottom = 176.0
+mouse_filter = 1
 color = Color( 0.92549, 1, 0.929412, 0.258824 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -72,6 +73,7 @@ margin_left = 176.0
 margin_top = 16.0
 margin_right = 192.0
 margin_bottom = 160.0
+mouse_filter = 1
 max_value = 5.0
 
 [node name="value_label" parent="bot_diff_label/Panel/VBoxContainer/CenterContainer2" index="0"]
@@ -79,6 +81,7 @@ margin_left = 3.0
 margin_right = 77.0
 text = "<hardness>"
 
+[connection signal="mouse_entered" from="bot_diff_label" to="." method="_on_bot_diff_label_mouse_entered"]
 [connection signal="value_changed" from="bot_diff_label" to="." method="_on_bot_diff_label_value_changed"]
 
 [editable path="bot_diff_label"]

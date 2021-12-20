@@ -12,12 +12,12 @@ onready var op_stats = $OperationStats
 onready var shopping_data = $ShoppingData
 
 #Signals
-signal hp_value_changed(new_value)
-signal damaged(n)
-signal healed(n)
-signal points_value_changed(n)
-signal eliminated(pid)
-signal good_answers_value_changed(n)
+signal hp_value_changed(gid, new_value)
+signal damaged(gid, n)
+signal healed(gid, n)
+signal points_value_changed(gid, n)
+signal eliminated(gid)
+signal good_answers_value_changed(gid, n)
 #Enums
 enum BUYING_OP_ATTEMPT_RESULT{CAN_BUY=1, NO_SPACE, NO_MONEY, ERROR}
 
@@ -56,6 +56,7 @@ func process(delta):
 		game_time += delta
 
 func _ready():
+	spellbook.connect("wrong_answer", self, "on_spellbook_wrong_answer")
 	id_character = -1
 	eliminated = false
 	
@@ -65,7 +66,7 @@ func initialise(char_id: int, pid: int):
 	id_character = char_id
 	hp_max = char_dico["hp"]
 	hp_current = hp_max
-	emit_signal("hp_value_changed", hp_current)
+	emit_signal("hp_value_changed", game_id, hp_current)
 	answer_time = 0.0
 	game_time = 0.0
 	
@@ -82,27 +83,27 @@ func initialise(char_id: int, pid: int):
 
 func get_damage(n):
 	hp_current = clamp(hp_current - n, 0, hp_max)
-	emit_signal("damaged", n)
-	emit_signal("hp_value_changed", hp_current)
-	
+	print("damages: " + str(n))
+	emit_signal("damaged", game_id, n)
+	emit_signal("hp_value_changed", game_id, hp_current)
 	if hp_current <= 0:
 		eliminated = true
 		emit_signal("eliminated", game_id)
 		
 func heal(n):
 	hp_current = clamp(hp_current + n, 0, hp_max)
-	emit_signal("healed", n)
-	emit_signal("hp_value_changed", hp_current)
+	emit_signal("healed", game_id, n)
+	emit_signal("hp_value_changed", game_id, hp_current)
 
 func score_points(n: int):
 	points += n
-	emit_signal("points_value_changed", points)
+	emit_signal("points_value_changed", game_id, points)
 	
 func answer_response(good_answer):
 	spellbook.answer_response(good_answer)
 	if good_answer:
 		good_answers += 1
-		emit_signal("good_answers_value_changed", good_answers)
+		emit_signal("good_answers_value_changed", game_id, good_answers)
 func is_alive():
 	return hp_current <= 0
 
@@ -148,6 +149,12 @@ func get_erase_price():
 	
 
 # setters
-
 func set_shop_operations(op_list: Array):
 	spellbook.list_shop_operations = op_list.duplicate()
+
+func set_hp_value(hp: int):
+	hp_current = hp
+
+func on_spellbook_wrong_answer():
+	if id_character == 1:
+		get_damage(1)

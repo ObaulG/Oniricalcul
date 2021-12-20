@@ -37,23 +37,27 @@ onready var nodes_stats_display = {
 		speed = $Panel/stats_display/speed,
 		good_answers = $Panel/stats_display/good_answers,
 	}
+
 func _ready():
 	parent_node = get_parent()
 	player_id = -1
 	domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
+	domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
 	domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
 	
 func initialise(pinfo):
 	player_id = pinfo["net_id"]
 	game_id = pinfo["game_id"]
 	var id_char = pinfo["id_character_selected"]
-	base_data.initialise(id_char, player_id)
+	base_data.initialise(id_char, game_id)
+	hp_display.set_new_value(global.char_data[id_char].get_base_hp())
 	hp_display.set_max_value(global.char_data[id_char].get_base_hp())
 	var tex = global.char_data[id_char].get_icon_texture()
 	texture_icon.texture = global.get_resized_ImageTexture(tex, 128, 128)
 	
 	player_name_lbl.text = pinfo["pseudo"]
 
+	domain_field.initialise(game_id, base_data.id_character)
 func activate_AI():
 	ai_node.activate_AI()
 	
@@ -64,6 +68,11 @@ func update_all_stats_display():
 	update_stat_display(STAT.CHAIN, base_data.spellbook.chain)
 	update_stat_display(STAT.SPEED, base_data.good_answers/max(1.0, base_data.game_time))
 	update_stat_display(STAT.GOOD_ANSWERS, base_data.good_answers)
+	
+func update_hp_value(hp):
+	print("updating hp values in nodes in domain "+str(game_id))
+	base_data.set_hp_value(hp)
+	hp_display.set_new_value(hp)
 	
 #returns a dict containing values of all stats displayed
 func get_array_stats_display():
@@ -97,6 +106,10 @@ func update_threat_hp(meteor_id, hp):
 	if threat_display_node:
 		threat_display_node.update_hp(hp)
 
+func threat_impact(threat_hp, power):
+	print("threat impact confirmed in domain " + str(power))
+	base_data.get_damage(power)
+	
 func remove_threat(id_threat):
 	var threat_display_node = threat_vbox_list.get_node(str(id_threat))
 	if threat_display_node:
@@ -169,8 +182,6 @@ func _on_delete_digit():
 func _on_write_digit():
 	pass
 
-
-	
 #we display the field if the mouse comes in
 func _on_BaseDomainDisplay_mouse_entered():
 	pass # Replace with function body.
@@ -187,7 +198,6 @@ func _on_GameFieldMulti_domain_answer_response(id, good_answer):
 func _on_BaseDomainData_eliminated():
 	pass # Replace with function body.
 
-
 func _on_GameFieldMulti_changing_stance_command(new_stance):
 	base_data.spellbook.set_stance(new_stance)
 
@@ -203,6 +213,11 @@ func _on_BaseDomainData_good_answers_value_changed(n):
 func _on_domain_field_meteor_destroyed(_game_id, meteor_id):
 	if get_tree().is_network_server():
 		remove_threat(meteor_id)
+
+func _on_domain_field_meteor_impact(gid, threat_type, hp_current, power):
+	if get_tree().is_network_server():
+		print("damage application")
+		base_data.get_damage(power)
 
 func _on_domain_field_meteor_hp_changed(_game_id, meteor_id, hp):
 	if get_tree().is_network_server():

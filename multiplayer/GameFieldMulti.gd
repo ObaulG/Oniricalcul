@@ -1,5 +1,7 @@
 extends Node2D
 
+var POPUPCLASS = load("res://UI/PopUpNotification.tscn")
+
 const ROUND_TIME = 40.0
 const PREROUND_TIME = 5.0
 const SHOPPING_TIME = 15.0
@@ -99,13 +101,16 @@ func _ready():
 	my_domain.base_data.spellbook.connect("defense_command", self, "_on_spellbook_defense_command")
 	my_domain.base_data.spellbook.connect("low_incantation_stock", self, "_on_spellbook_low_incantations_stock")
 	my_domain.base_data.spellbook.connect("incantation_has_changed", self, "_on_spellbook_incantation_has_changed")
+	my_domain.base_data.spellbook.connect("incantation_has_changed", bonus_window, "_on_spellbook_incantation_has_changed")
 	my_domain.base_data.spellbook.connect("incantation_progress_changed", self, "_on_spellbook_incantation_progress_changed")
 	my_domain.base_data.spellbook.connect("potential_value_changed", self, "_on_spellbook_potential_value_changed")
 	my_domain.base_data.spellbook.connect("defense_power_changed", self, "_on_spellbook_defense_power_changed")
 	my_domain.base_data.spellbook.connect("operation_to_display_has_changed", operation_display, "_on_spellbook_operation_to_display_has_changed")
-	
+	my_domain.base_data.connect("hp_value_changed", self, "_on_base_data_hp_value_changed")
 	my_domain.domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
+	my_domain.domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
 	my_domain.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
+	
 	connect("changing_stance_command", my_domain.base_data.spellbook, "_on_changing_stance_command")
 	
 	#everyone has already the data to spawn every single player
@@ -124,8 +129,6 @@ func _ready():
 		rpc_id(1,"generate_new_incantation_operations", my_domain.game_id, 3)
 	print("my operations are generated")
 	
-	
-
 	#pause_mode = true
 	
 func _process(delta):
@@ -205,6 +208,7 @@ func generate_actor(pinfo):
 
 	if get_tree().is_network_server():
 		generate_new_incantation_operations(pinfo["game_id"], 3)
+		
 	#send signal to tell everyone this bot is ready
 	if get_tree().is_network_server() and pinfo["is_bot"]:
 		nactor.base_data.spellbook.connect("meteor_invocation", self, "_on_spellbook_meteor_invocation")
@@ -213,10 +217,14 @@ func generate_actor(pinfo):
 		nactor.base_data.spellbook.connect("incantation_has_changed", self, "_on_spellbook_incantation_has_changed")
 		nactor.base_data.spellbook.connect("potential_value_changed", self, "_on_spellbook_potential_value_changed")
 		nactor.base_data.spellbook.connect("defense_power_changed", self, "_on_spellbook_defense_power_changed")
-		nactor.base_data.spellbook.connect("operation_to_display_has_changed", operation_display, "_on_spellbook_operation_to_display_has_changed")
 		
+		nactor.base_data.connect("hp_value_changed", self, "_on_base_data_hp_value_changed")
 		nactor.domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
+		nactor.domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
 		nactor.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
+		
+		nactor.base_data.spellbook.connect("operation_to_display_has_changed", operation_display, "_on_spellbook_operation_to_display_has_changed")
+		nactor.base_data.spellbook.connect("money_value_has_changed", bonus_window, "_on_spellbook_money_value_has_changed")
 		client_ready(pinfo["game_id"])
 	else:
 		rpc_id(1, "client_ready", pinfo["game_id"])
@@ -267,6 +275,7 @@ remotesync func changing_state(new_state):
 			state_label.text = "Manche " + str(round_counter)
 		STATE.SHOPPING:
 			pause_mode_activation(true)
+			bonus_window.set_pattern(my_domain.spellbook.pattern.get_list())
 			bonus_window.show()
 			round_timer.start(shopping_time)
 			time_display.set_max_value(shopping_time)
@@ -317,14 +326,22 @@ remote func potential_value_changed(game_id, x):
 	var targetted_domain = get_domain_by_gid(game_id)
 	if targetted_domain:
 		targetted_domain.update_stat_display(PlayerDomain.STAT.DEFENSE_POWER, x)
+		
 #attack from pid to target_id
-remote func meteor_cast(gid: int, target_game_id: int, threat_data: Dictionary):
+func meteor_cast(gid: int, target_game_id: int, threat_data: Dictionary):
 	var targetted_domain = get_domain_by_gid(target_game_id)
 	if targetted_domain:
 		total_meteor_sent+=1
 		targetted_domain.add_threat(gid, threat_data, false)
-
-remote func meteor_remove(gid: int, meteor_id: int):
+		print("meteor casted")
+		
+func meteor_impact(gid: int, meteor_id, meteor_hp, power):
+	print("GamefieldMulti meteor impact in domain " + str(gid))
+	var targetted_domain = get_domain_by_gid(gid) 
+	if targetted_domain:
+		targetted_domain.threat_impact(meteor_hp, power)
+		
+func meteor_remove(gid: int, meteor_id: int):
 	if get_tree().is_network_server():
 		for id in network.players:
 			if id != 1:
@@ -343,7 +360,6 @@ remote func magic_projectile_cast(gid, target, char_id, start_pos: Vector2, powe
 			if id != 1:
 				rpc_id(id, "magic_projectile_cast", gid, target, char_id, start_pos, power)
 
-				
 	var target_domain = get_domain_by_gid(gid)
 	if target_domain:
 		target_domain.domain_field.create_magic_homing_projectile(target, char_id, start_pos, power)
@@ -360,7 +376,7 @@ remote func check_answer(op, ans, gid):
 				op.get_diff(),
 				op.get_parameters(),
 				domain.base_data.get_answer_time(),
-				ans, 
+				ans,
 				true, #correct answer
 			]
 			# the result is stored inside the operation for now...
@@ -396,6 +412,15 @@ remote func damage_taken(gid: int, n: int):
 	if target_domain:
 		target_domain.base_data.get_damage(n)
 
+remote func hp_value_changed(gid, hp):
+	if get_tree().is_network_server():
+		rpc("hp_value_changed", gid, hp)
+	
+	print("domain " + str(gid) + " has now " + str(hp) + " hp.")
+	var domain = get_domain_by_gid(gid)
+	if domain:
+		domain.update_hp_value(hp)
+
 remote func threat_damage_taken(gid, id_meteor, n):
 	if get_tree().is_network_server():
 		for id in network.players:
@@ -430,10 +455,11 @@ remote func set_waiting_transaction(b: bool):
 	my_domain.spellbook.waiting_transaction = b
 	 
 #this function can probably be optimized
-remote func ask_server_for_bonus_action(action_type, L: Array):
+remote func ask_server_for_bonus_action(gid, action_type, L: Array):
 	var who = get_tree().get_rpc_sender_id()
 	if get_tree().is_network_server():
-		var domain = get_domain_by_pid(who)
+		var domain = get_domain_by_gid(gid)
+		print("Player " + str(gid) + " wants to do shop action " + str(action_type))
 		if domain:
 			var already_buying = domain.is_waiting_for_transaction_end()
 			if already_buying:
@@ -514,6 +540,7 @@ remote func pause_mode_activation(b: bool):
 #for each player.
 func generate_all_shop_operations():
 	if get_tree().is_network_server():
+
 		#dict of all new operations from all players
 		#keys are game_ids
 		var all_players_game_id = []
@@ -528,11 +555,13 @@ func generate_all_shop_operations():
 				var operation_preference = domain.spellbook.get_operation_preference()
 				var difficulty_preference = domain.spellbook.get_difficulty_preference()
 				var n = domain.spellbook.get_operation_production()
+				print("Player " + str(id) + ": " + str(n) + " new operations")
 				new_op_dict[id] = []
 				for i in range(n):
 					var type = ponderate_random_choice_dict(operation_preference)
 					var diff = ponderate_random_choice_dict(difficulty_preference)
 					var new_op_data = [type,diff] 
+					print("new operation element added : " + str(new_op_data))
 					new_op_dict[id].append(new_op_data)
 					
 		#the player have also access to a part of operations
@@ -556,15 +585,18 @@ func generate_all_shop_operations():
 				# from a random player
 				var player_tirage = all_players_game_id_except_one[randi() % all_players_game_id_except_one.size()]
 				var operation = new_op_dict[player_tirage][randi()% new_op_dict[player_tirage].size()]
-				var type = operation.get_type()
-				var diff = operation.get_diff()
+				var type = operation[0]
+				var diff = operation[1]
 				new_op_enemies_dict[gid].append([type,diff, player_tirage])
 		
 			#now we can send the data to the player
 			#only if the domain is not one of a bot !
 			if not domain.is_bot():
-				#send with the PID and not the GID
-				rpc_id(domain.player_id, "send_shop_operations", new_op_dict[gid], new_op_enemies_dict[gid])
+				if gid == 1:
+					send_shop_operations(new_op_dict[gid], new_op_enemies_dict[gid])
+				else:
+					#send with the PID and not the GID
+					rpc_id(domain.player_id, "send_shop_operations", new_op_dict[gid], new_op_enemies_dict[gid])
 			#and update server's data
 			
 			
@@ -622,13 +654,9 @@ remote func player_meteor_incantation(gid, dico_threat):
 	if get_tree().is_network_server():
 		#for now, random target...
 		var target = operation_factory.choice(get_all_targetable_players(who))
-		#rpc_id(targe)
-		#data must be sent to everyone by the server
-		for id in network.players:
-			if id != 1:
-				rpc_id(id, "meteor_cast", gid, target, dico_threat)
-			else:
-				meteor_cast(gid, target, dico_threat)
+		print("Player " + str(gid) + " targets " + str(target))
+		rpc("meteor_cast", gid, target, dico_threat)
+		meteor_cast(gid, target, dico_threat)
 
 remote func player_defense_command(power):
 	if get_tree().is_network_server():
@@ -728,9 +756,9 @@ func is_waiting_for_transaction_end():
 	return my_domain.spellbook.get_waiting_transaction()
 	
 func create_pop_up_notification(display_time: float, message: String, pos = 1):
-	var popup = PopUpNotification.new()
-	popup.initialize(display_time, message, pos)
+	var popup = POPUPCLASS.instance()
 	popup_nodes.add_child(popup)
+	popup.initialize(display_time, message, pos)
 	popup.display_on_screen()
 	
 func _on_GameFieldMulti_ready():
@@ -738,20 +766,6 @@ func _on_GameFieldMulti_ready():
 		client_ready(1)
 	else:
 		rpc_id(1, "client_ready", game_id)
-
-func _on_threat_impact(meteor_id, threat_type, current_hp, power):
-	#we only act if it is a node in our field
-	if Gamestate.player_info["net_id"] != 1:
-		rpc_id(1, "meteor_remove", my_domain.id_domain, meteor_id)
-		rpc_id(1, "damage_taken", my_domain.id_domain, power)
-	else:
-		meteor_remove(my_domain.id_domain, meteor_id)
-
-func _on_threat_destroyed(meteor_id, threat_type, power):
-	if Gamestate.player_info["net_id"] != 1:
-		rpc_id(1, "meteor_remove", my_domain.id_domain, meteor_id)
-	else:
-		meteor_remove(my_domain.id_domain, meteor_id)
 
 func _on_player_list_changed():
 	# First remove all children from the boxList widget
@@ -785,8 +799,8 @@ func _on_round_time_remaining_timeout():
 		print(next_state)
 		rpc("changing_state", next_state)
 
-func _on_bonus_menu_players_asks_for_action(action_type, element):
-	var money = my_domain.get_money()
+func _on_bonus_menu_player_asks_for_action(game_id, action_type, element):
+	var money = my_domain.base_data.get_money()
 	var cost
 	match(action_type):
 		BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
@@ -826,9 +840,9 @@ func _on_bonus_menu_players_asks_for_action(action_type, element):
 
 			BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
 				if Gamestate.player_info["net_id"] != 1:
-					rpc_id(1, "ask_server_for bonus_action", action_type, element)
+					rpc_id(1, "ask_server_for bonus_action", game_id, action_type, element)
 				else:
-					ask_server_for_bonus_action(action_type, element)
+					ask_server_for_bonus_action(game_id, action_type, element)
 	else:
 		create_pop_up_notification(display_time, message,pos)
 		
@@ -841,6 +855,10 @@ func _on_InputHandler_changing_stance_command(new_stance):
 	else:
 		rpc_id(1, "changing_stance",game_id, new_stance)
 
+
+func _on_InputHandler_keyboard_action(action):
+	pass
+	
 func _on_InputHandler_check_answer_command():
 	print("checking answer command")
 	var op = my_domain.spellbook.get_current_operation()
@@ -850,7 +868,6 @@ func _on_InputHandler_check_answer_command():
 		check_answer(op, ans, pid)
 	else:
 		rpc_id(1, "check_answer", op, ans, pid)
-
 
 #if we press buttons, we might send the information to the server but it's useless
 func _on_InputHandler_delete_digit():
@@ -880,9 +897,9 @@ func _on_bonus_menu_operations_selection_done(L, state):
 			action_type = BonusMenuBis.BONUS_ACTION.ERASE_OPERATION
 			
 	if Gamestate.player_info["net_id"] != 1:
-		rpc_id(1, "ask_server_for bonus_action", action_type, L)
+		rpc_id(1, "ask_server_for bonus_action", game_id, action_type, L)
 	else:
-		ask_server_for_bonus_action(action_type, L)
+		ask_server_for_bonus_action(game_id, action_type, L)
 
 func _on_spellbook_meteor_invocation(game_id, dico_threat):
 	print("Meteor invocation !")
@@ -933,10 +950,23 @@ func _on_domain_field_meteor_destroyed(gid, meteor_id):
 func _on_domain_field_meteor_hp_changed(gid, meteor_id, hp):
 	if get_tree().is_network_server():
 		threat_damage_taken(gid, meteor_id, hp)
-		
+
+func _on_domain_field_meteor_impact(gid, meteor_id, meteor_hp, power):
+	if get_tree().is_network_server():
+		meteor_impact(gid, meteor_id, meteor_hp, power)
+
+func _on_base_data_hp_value_changed(gid, hp):
+	if get_tree().is_network_server():
+		hp_value_changed(gid, hp)
+	else:
+		rpc_id(1, "hp_value_changed", gid, hp)
 #tests
 func _on_receive_meteor_pressed():
 	if get_tree().is_network_server():
 		pass
 
 
+
+
+func _on_remove10sec_button_button_down():
+	round_timer.start(clamp(round_timer.time_left - 10, 0, 100))

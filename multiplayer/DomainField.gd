@@ -2,6 +2,7 @@ extends Control
 
 
 signal meteor_hp_changed(gid, id, hp)
+signal meteor_impact(gid, threat_type, hp_current, power)
 signal meteor_destroyed(gid, id)
 signal first_threat_ref_changed(t)
 
@@ -115,8 +116,10 @@ func inflict_damage_to_threat(id_threat, n):
 		threat.receive_damage(n)
 	
 func _on_threat_impact(id, threat_type, hp_current, power):
+	print("meteor impact in domain " + str(id_domain))
 	determine_nearest_threat()
 	emit_signal("meteor_destroyed", id_domain, id)
+	emit_signal("meteor_impact", id, threat_type, hp_current, power)
 	
 func _on_threat_destroyed(id, threat_type, power, id_character, over_damage, pos):
 	determine_nearest_threat()

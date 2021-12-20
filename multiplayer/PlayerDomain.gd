@@ -43,6 +43,7 @@ func _ready():
 	parent_node = get_parent()
 	player_id = -1
 	domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
+	domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
 	domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
 	
 func initialise(pinfo):
@@ -52,12 +53,14 @@ func initialise(pinfo):
 	base_data.initialise(id_char, player_id)
 	
 	hp_display.set_max_value(global.char_data[id_char].get_base_hp())
+	hp_display.set_max_value(global.char_data[id_char].get_base_hp())
 	var tex = global.char_data[id_char].get_icon_texture()
 	texture_icon.texture = tex
 	
 	player_name_lbl.text = pinfo["pseudo"]
 
 	domain_field.initialise(game_id, base_data.id_character)
+	
 func activate_AI():
 	ai_node.activate_AI()
 	
@@ -101,6 +104,10 @@ func update_threat_hp(meteor_id, hp):
 	if threat_display_node:
 		threat_display_node.update_hp(hp)
 		
+func threat_impact(threat_hp, power):
+	print("threat impact confirmed in domain " + str(power))
+	base_data.get_damage(power)
+	
 func remove_threat(id_threat):
 	print("ThreatLine removal: " + str(id_threat))
 	var threat_display_node = threat_vbox_list.get_node(str(id_threat))
@@ -162,6 +169,10 @@ func update_stat_display(stat_name, x: float):
 	if node_to_change:
 		node_to_change.change_value_displayed(x)
 	
+func update_hp_value(hp):
+	base_data.set_hp_value(hp)
+	hp_display.set_new_value(hp)
+	
 #input handlers
 func _on_check_answer_command():
 	pass
@@ -199,19 +210,23 @@ func _on_BaseDomainData_eliminated():
 func _on_GameFieldMulti_changing_stance_command(new_stance):
 	base_data.spellbook.set_stance(new_stance)
 
-func _on_BaseDomainData_points_value_changed(n):
+func _on_BaseDomainData_points_value_changed(_gid, n):
 	update_stat_display(STAT.POINTS, n)
 
 func _on_Spellbook_chain_value_changed(_game_id, n):
 	update_stat_display(STAT.CHAIN, n)
 
-func _on_BaseDomainData_good_answers_value_changed(n):
+func _on_BaseDomainData_good_answers_value_changed(_gid, n):
 	update_stat_display(STAT.GOOD_ANSWERS, n)
 
 func _on_domain_field_meteor_destroyed(_game_id, meteor_id):
 	if get_tree().is_network_server():
 		remove_threat(meteor_id)
 
+func _on_domain_field_meteor_impact(gid, threat_type, hp_current, power):
+	if get_tree().is_network_server():
+		base_data.get_damage(power)
+		
 func _on_domain_field_meteor_hp_changed(_game_id, meteor_id, hp):
 	if get_tree().is_network_server():
 		update_threat_hp(meteor_id, hp)
@@ -225,4 +240,4 @@ func _on_Spellbook_money_value_has_changed(_game_id, _n):
 
 
 func _on_Spellbook_potential_value_changed(_game_id, x):
-	update_stat_display(STAT.POWER, x)
+	update_stat_display(STAT.POTENTIAL, x)

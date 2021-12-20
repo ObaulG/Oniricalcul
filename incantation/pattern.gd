@@ -91,4 +91,4 @@ func set_elements(L: Array):
 	power_evaluation()
 	if index < len(elements):
 		index = 0
-	
+	emit_signal("incantation_has_changed")

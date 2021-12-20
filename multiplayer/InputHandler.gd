@@ -1,9 +1,16 @@
 extends Node
 
+class_name InputHandler
 #All input logic will be handled here. 
 const keypad_numbers = [48,49,50,51,52,53,54,55,56,57]
 const numpad_numbers = [KEY_KP_0,KEY_KP_1,KEY_KP_2,KEY_KP_3,KEY_KP_4,KEY_KP_5,KEY_KP_6,KEY_KP_7,KEY_KP_8,KEY_KP_9]
 
+enum ACTION{
+	WRITE_DIGIT,
+	DELETE_DIGIT,
+	CONFIRM_ANSWER,
+	STANCE_CHANGE
+}
 signal check_answer_command()
 signal input_stance_change(new_stance)
 signal delete_digit()

@@ -6,6 +6,7 @@
 margin_left = 171.0
 margin_right = 187.0
 margin_bottom = 176.0
+mouse_default_cursor_shape = 2
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false

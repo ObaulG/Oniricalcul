@@ -54,48 +54,57 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/vbox"]
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/vbox"]
 margin_right = 1300.0
-margin_bottom = 66.0
+margin_bottom = 43.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/vbox/CenterContainer2"]
+margin_left = 367.0
+margin_right = 933.0
+margin_bottom = 43.0
 custom_constants/separation = 336
 
-[node name="TimeDisplay" parent="MarginContainer/vbox/HBoxContainer" instance=ExtResource( 3 )]
-margin_bottom = 66.0
-mouse_filter = 2
-
-[node name="titlecontainer" type="CenterContainer" parent="MarginContainer/vbox/HBoxContainer"]
-margin_left = 536.0
-margin_right = 656.0
-margin_bottom = 66.0
-mouse_filter = 2
-
-[node name="title" type="Label" parent="MarginContainer/vbox/HBoxContainer/titlecontainer"]
-modulate = Color( 0, 0, 0, 1 )
-margin_top = 11.0
+[node name="titlecontainer" type="CenterContainer" parent="MarginContainer/vbox/CenterContainer2/HBoxContainer"]
 margin_right = 120.0
-margin_bottom = 54.0
+margin_bottom = 43.0
+mouse_filter = 2
+
+[node name="title" type="Label" parent="MarginContainer/vbox/CenterContainer2/HBoxContainer/titlecontainer"]
+modulate = Color( 0, 0, 0, 1 )
+margin_right = 120.0
+margin_bottom = 43.0
 custom_fonts/font = SubResource( 1 )
 text = "Interlude"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="points" type="Label" parent="MarginContainer/vbox/HBoxContainer"]
+[node name="points" type="Label" parent="MarginContainer/vbox/CenterContainer2/HBoxContainer"]
 modulate = Color( 0, 0, 0, 1 )
-margin_left = 992.0
-margin_top = 11.0
-margin_right = 1102.0
-margin_bottom = 54.0
+margin_left = 456.0
+margin_right = 566.0
+margin_bottom = 43.0
 custom_fonts/font = SubResource( 3 )
 text = "Argent: "
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="bonus_zone" type="HBoxContainer" parent="MarginContainer/vbox"]
-margin_top = 99.0
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/vbox"]
+margin_top = 76.0
 margin_right = 1300.0
-margin_bottom = 560.0
+margin_bottom = 142.0
+
+[node name="TimeDisplay" parent="MarginContainer/vbox/CenterContainer" instance=ExtResource( 3 )]
+margin_left = 550.0
+margin_right = 750.0
+margin_bottom = 66.0
+mouse_filter = 2
+
+[node name="bonus_zone" type="HBoxContainer" parent="MarginContainer/vbox"]
+margin_top = 175.0
+margin_right = 1300.0
+margin_bottom = 636.0
 mouse_filter = 2
 custom_constants/separation = 50
 

@@ -25,6 +25,7 @@ func _ready():
 func initialize(t, message, d_type = DISPLAY_POSITION.BOTTOM_RIGHT):
 	display_time = t
 	text = message
+	display_text.text = text
 	display_type = d_type
 	
 func _process(delta):
@@ -45,6 +46,5 @@ func set_texture_icon(pict: Texture):
 	picture.texture = pict
 	
 
-	
 func _on_Timer_timeout():
 	queue_free()

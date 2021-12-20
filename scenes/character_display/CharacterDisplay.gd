@@ -119,3 +119,7 @@ func set_bot_diff(new_value):
 	
 func _on_bot_diff_label_value_changed(value):
 	emit_signal("bot_diff_changed", id_player, value)
+
+
+func _on_bot_diff_label_mouse_entered():
+	print("mouse in vslider in character display")

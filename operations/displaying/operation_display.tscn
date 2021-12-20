@@ -83,8 +83,8 @@ align = 1
 
 [node name="Area2D" type="Area2D" parent="."]
 z_index = 1
-priority = 3.0
 collision_layer = 33825
+priority = 3.0
 
 [node name="click_zone" type="CollisionShape2D" parent="Area2D"]
 position = Vector2( 32, 32 )

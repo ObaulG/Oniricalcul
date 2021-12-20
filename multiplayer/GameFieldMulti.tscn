@@ -55,13 +55,6 @@ margin_top = 16.0
 margin_right = 648.0
 margin_bottom = 1053.0
 
-[node name="bonus_menu" parent="." instance=ExtResource( 8 )]
-visible = false
-margin_left = 346.0
-margin_top = 230.986
-margin_right = 346.0
-margin_bottom = 230.986
-
 [node name="OperationDisplayBasic" parent="." instance=ExtResource( 5 )]
 margin_left = 728.0
 margin_top = 32.0
@@ -159,11 +152,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button" type="Button" parent="test_buttons"]
+[node name="remove10sec_button" type="Button" parent="test_buttons"]
 margin_right = 432.0
 margin_bottom = 49.0
 custom_fonts/font = ExtResource( 2 )
-text = "Invoquer Météore partout"
+text = "Retirer 10 sec"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -188,6 +181,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="bonus_menu" parent="." instance=ExtResource( 8 )]
+visible = false
+margin_left = 346.0
+margin_top = 230.986
+margin_right = 1646.0
+margin_bottom = 930.986
+
 [connection signal="changing_stance_command" from="." to="main_player_domain" method="_on_GameFieldMulti_changing_stance_command"]
 [connection signal="new_incantations_received" from="." to="main_player_domain" method="_on_GameFieldMulti_new_incantations_received"]
 [connection signal="ready" from="." to="." method="_on_GameFieldMulti_ready"]
@@ -197,6 +197,7 @@ __meta__ = {
 [connection signal="write_digit" from="InputHandler" to="." method="_on_InputHandler_write_digit"]
 [connection signal="write_digit" from="InputHandler" to="OperationDisplayBasic" method="_on_InputHandler_write_digit"]
 [connection signal="timeout" from="round_time_remaining" to="." method="_on_round_time_remaining_timeout"]
-[connection signal="operations_selection_done" from="bonus_menu" to="." method="_on_bonus_menu_operations_selection_done"]
-[connection signal="players_asks_for_action" from="bonus_menu" to="." method="_on_bonus_menu_players_asks_for_action"]
+[connection signal="button_down" from="test_buttons/remove10sec_button" to="." method="_on_remove10sec_button_button_down"]
 [connection signal="pressed" from="test_buttons/receive_meteor" to="." method="_on_receive_meteor_pressed"]
+[connection signal="operations_selection_done" from="bonus_menu" to="." method="_on_bonus_menu_operations_selection_done"]
+[connection signal="player_asks_for_action" from="bonus_menu" to="." method="_on_bonus_menu_player_asks_for_action"]

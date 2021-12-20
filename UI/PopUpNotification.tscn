@@ -19,6 +19,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
 [node name="Popup" type="PopupPanel" parent="."]
 visible = true
 margin_right = 493.0
@@ -36,17 +39,14 @@ __meta__ = {
 }
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Popup"]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 489.0
-margin_bottom = 151.0
+margin_left = 24.0
+margin_top = 24.0
+margin_right = 464.0
+margin_bottom = 136.0
 custom_fonts/normal_font = SubResource( 2 )
 text = "notification_text"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Timer" type="Timer" parent="."]
-one_shot = true
 
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

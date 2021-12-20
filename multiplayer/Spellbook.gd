@@ -28,12 +28,10 @@ const STANCES = {ATTACK = 1, DEFENSE = 2, BONUS = 3}
 const THREAT_TYPES = {REGULAR = 1, FAST = 2, STRONG = 3}
 
 var game_id
-
+var character
 var rng
-var stance: int
-var atk_type: int
-var atk_speed
-var atk_cd
+var stance
+var atk_type
 var atk_power
 var atk_hp
 var atk_delay_time
@@ -99,6 +97,7 @@ func initialise(char_dico):
 	game_id = get_parent().game_id
 	rng = get_parent().rng
 	
+	character = char_dico["id"]
 	atk_power = char_dico["threat_power"]
 	atk_type = char_dico["threat_type"]
 	atk_hp = char_dico["threat_hp"]
@@ -106,7 +105,7 @@ func initialise(char_dico):
 	inspiration = char_dico["inspiration"]
 	operation_preference = char_dico["operations_preference"]
 	difficulty_preference = char_dico["difficulty_preference"]
-	
+	operation_production = char_dico["operation_production"]
 	meteor_sent = 0
 
 	chain = 0
@@ -115,17 +114,17 @@ func initialise(char_dico):
 	threat_count = 0
 	points = 0
 	energy = 0
-	chain = 0
 	stance = STANCES.ATTACK
 	defense_power = ReliquatNumber.new(0)
 
 	pattern = Pattern.new()
-	pattern.set_elements(char_dico["base_pattern"])
 	pattern.connect("incantation_has_changed", self, "_on_incantation_change")
+	pattern.set_elements(char_dico["base_pattern"])
+	
 	list_shop_operations = []
 	operations = []
 	operations_stock = []
-	determine_defense_power(pattern.get_power())
+	determine_defense_power()
 
 	base_swap_price = 5
 	base_erase_price = 7
@@ -133,8 +132,9 @@ func initialise(char_dico):
 	swap_price = base_swap_price
 	erase_price = base_erase_price
 
-func determine_defense_power(potential: int):
-	defense_power.set_value(7 + 0.18*potential )
+func determine_defense_power():
+	defense_power.set_value(7 + 0.18*determine_effective_power() )
+	print("new defense power " + str(defense_power.get_value()))
 	emit_signal("defense_power_changed", game_id, defense_power.get_value())
 	
 func random_int_rounding(x: float) -> int:
@@ -179,16 +179,22 @@ func determine_threat_hp(potential: int) -> int:
 	return hp
 	
 func determine_threat_stats(potential: float):
-	var power = determine_threat_power(potential)
-	var delay_time = determine_threat_delay_time(potential)
-	var hp = determine_threat_hp(potential)
+	var effective_potential = determine_effective_power()
+	var power = determine_threat_power(effective_potential)
+	var delay_time = determine_threat_delay_time(effective_potential)
+	var hp = determine_threat_hp(effective_potential)
 	var atk_side_effects = []
 	
 	return [power, delay_time, hp, atk_side_effects]
 
 func determine_effective_power() -> int:
 	var power = pattern.get_power()
+	print("base potential " + str(power))
+	var coeff = 1
+	var bonus_potential = 0
 	
+	print("chain " + str(chain))
+	print("character id" + str(character))
 #	var bonus_keys = bonus.keys()
 #	if 12 in bonus_keys:
 #		power += 8*bonus[12]
@@ -204,11 +210,17 @@ func determine_effective_power() -> int:
 #		power *= (1 + 0.05*get_nb_threats())
 #	if 0 in bonus_keys:
 #		power *= 1.1
-	if get_parent().id_character == 1:
-		power = power * (1 + max(chain, 20)/100 )
+	if character == 1:
+		coeff += float(min(chain, 20)) / 100.0
 #	power = power * fit_coeff
-	power = round(power)
-
+	
+	print("coeff " + str(coeff))
+	print("flat bonus " + str(bonus_potential))
+	
+	power = power * coeff + bonus_potential
+	print("effective potential used " + str(power))
+	power = stepify(power, 0.01)
+	emit_signal("potential_value_changed", game_id, power)
 	return power
 	
 func new_round():
@@ -260,6 +272,7 @@ func answer_response(good_answer):
 	else:
 		wrong_answer()
 		print("wrong_answer")
+	determine_defense_power()
 	emit_signal("chain_value_changed", game_id, chain)
 	emit_signal("operation_to_display_has_changed", get_current_operation())
 	
@@ -286,11 +299,12 @@ func good_answer():
 				meteor_sent += 1
 				emit_signal("meteor_invocation", game_id, dico_threat)
 			STANCES.DEFENSE:
-				determine_defense_power(pattern.get_power())
 				var defense_damage = 0.5* (1 + (defense_power.apply() / pattern.get_len()))
 				emit_signal("defense_command", game_id, defense_damage)
 			STANCES.BONUS:
 				pass
+		charge_new_incantation()
+	
 	emit_signal("incantation_progress_changed", game_id, pattern.get_index())
 	
 func wrong_answer():
@@ -303,10 +317,13 @@ func wrong_answer():
 		2:
 			progression_removal = 1
 		3:
-			progression_removal = 1
+			progression_removal = 10
+			charge_new_incantation()
 		4:
 			progression_removal = 10
+			charge_new_incantation()
 	pattern.reverse_gear(progression_removal)
+
 	emit_signal("incantation_progress_changed", game_id, pattern.get_index())
 
 func buy_attempt_result(action_type, price: int):
@@ -350,6 +367,7 @@ func set_stance(new_stance):
 func _on_incantation_change():
 	emit_signal("incantation_has_changed", pattern.get_list())
 	emit_signal("potential_value_changed", game_id, get_potential())
-	determine_defense_power(get_potential())
+	determine_defense_power()
+	
 func _on_changing_stance_command(new_stance):
 	set_stance(new_stance)

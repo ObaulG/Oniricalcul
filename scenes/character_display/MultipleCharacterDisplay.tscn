@@ -5,8 +5,6 @@
 [node name="MultipleCharacterDisplay" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -1488.0
-margin_bottom = -304.0
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -15,6 +13,7 @@ __meta__ = {
 [node name="scroller" type="ScrollContainer" parent="."]
 margin_right = 416.0
 margin_bottom = 776.0
+mouse_filter = 1
 scroll_horizontal_enabled = false
 __meta__ = {
 "_edit_use_anchors_": false
