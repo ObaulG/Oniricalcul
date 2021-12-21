@@ -18,6 +18,5 @@ func _on_VSlider_mouse_entered():
 func _on_VSlider_mouse_exited():
 	panel.visible = false
 
-
 func _on_VSlider_value_changed(value):
 	value_label.text = str(value)

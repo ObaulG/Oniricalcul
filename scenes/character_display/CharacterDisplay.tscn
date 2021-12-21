@@ -15,6 +15,7 @@ script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+id_character_selected = 1
 
 [node name="cr_bg" type="ColorRect" parent="."]
 margin_right = 400.0
@@ -70,18 +71,33 @@ color = Color( 1, 1, 1, 0.180392 )
 
 [node name="bot_diff_label" parent="." instance=ExtResource( 3 )]
 margin_left = 176.0
-margin_top = 16.0
+margin_top = 8.0
 margin_right = 192.0
-margin_bottom = 160.0
-mouse_filter = 1
+margin_bottom = 128.0
+min_value = 1.0
 max_value = 5.0
+value = 1.0
 
-[node name="value_label" parent="bot_diff_label/Panel/VBoxContainer/CenterContainer2" index="0"]
-margin_left = 3.0
-margin_right = 77.0
-text = "<hardness>"
+[node name="next_char_button" type="Button" parent="."]
+margin_left = 136.0
+margin_top = 8.0
+margin_right = 160.0
+margin_bottom = 32.0
+disabled = true
+text = "+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="previous_char_button" type="Button" parent="."]
+margin_left = 136.0
+margin_top = 102.0
+margin_right = 160.0
+margin_bottom = 126.0
+disabled = true
+text = "-"
 
 [connection signal="mouse_entered" from="bot_diff_label" to="." method="_on_bot_diff_label_mouse_entered"]
 [connection signal="value_changed" from="bot_diff_label" to="." method="_on_bot_diff_label_value_changed"]
-
-[editable path="bot_diff_label"]
+[connection signal="button_down" from="next_char_button" to="." method="_on_next_char_button_button_down"]
+[connection signal="button_down" from="previous_char_button" to="." method="_on_previous_char_button_button_down"]

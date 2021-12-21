@@ -28,6 +28,7 @@ onready var stats_display = $Panel/stats_display
 onready var threat_vbox_list = $Panel/threat_data_display/vbox
 onready var incantation_display = $Panel/Incantation
 onready var ai_node = $OniricAI
+onready var stance_icon = $stance_icon
 
 onready var nodes_stats_display = {
 		points = $Panel/stats_display/points,
@@ -63,7 +64,7 @@ func activate_AI():
 	
 func update_all_stats_display():
 	update_stat_display(STAT.POINTS, base_data.points)
-	update_stat_display(STAT.POTENTIAL, base_data.spellbook.get_power(0, true))
+	update_stat_display(STAT.POTENTIAL, base_data.spellbook.get_potential())
 	update_stat_display(STAT.DEFENSE_POWER, base_data.spellbook.get_defense_power())
 	update_stat_display(STAT.CHAIN, base_data.spellbook.chain)
 	update_stat_display(STAT.SPEED, base_data.good_answers/max(1.0, base_data.game_time))
@@ -74,6 +75,16 @@ func update_hp_value(hp):
 	base_data.set_hp_value(hp)
 	hp_display.set_new_value(hp)
 	
+func update_stance(new_stance):
+	base_data.spellbook.set_stance(new_stance)
+	match(new_stance):
+		1:
+			stance_icon.texture = global.icons_textures.arrow
+		2:
+			stance_icon.texture = global.icons_textures.round_shield
+		3:
+			pass
+			
 #returns a dict containing values of all stats displayed
 func get_array_stats_display():
 	var dico = {
@@ -97,7 +108,7 @@ func add_threat(gid, threat_data, is_for_me = true):
 	threat_line_display.update_hp(threat_data["hp"])
 	threat_line_display.update_hp_max(threat_data["hp"])
 	threat_line_display.update_power(threat_data["power"])
-	
+	threat_line_display.start(threat_data["delay"])
 	print("ThreatLine added: " + threat_line_display.name)
 	domain_field.receive_threat(threat_data)
 	

@@ -110,9 +110,7 @@ func _ready():
 	my_domain.domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
 	my_domain.domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
 	my_domain.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
-	
-	connect("changing_stance_command", my_domain.base_data.spellbook, "_on_changing_stance_command")
-	
+
 	#everyone has already the data to spawn every single player
 	spawn_players()
 	print("all players have been initialised")
@@ -222,8 +220,7 @@ func generate_actor(pinfo):
 		nactor.domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
 		nactor.domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
 		nactor.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
-		
-		nactor.base_data.spellbook.connect("operation_to_display_has_changed", operation_display, "_on_spellbook_operation_to_display_has_changed")
+
 		nactor.base_data.spellbook.connect("money_value_has_changed", bonus_window, "_on_spellbook_money_value_has_changed")
 		client_ready(pinfo["game_id"])
 	else:
@@ -239,6 +236,10 @@ remotesync func game_about_to_start():
 	operation_display.change_operation_display(my_domain.base_data.spellbook.get_current_operation())
 	my_domain.update_all_stats_display()
 	
+	for domain in enemy_domains.get_children():
+		if domain.is_bot():
+			domain.base_data.spellbook.charge_new_incantation()
+			domain.update_all_stats_display()
 #we are not supposed to jump states, but just in case,
 #we give the new state as an argument
 #TO BE CONTINUED
@@ -249,7 +250,7 @@ remotesync func changing_state(new_state):
 			STATE.PREROUND:
 				new_round()
 			STATE.ROUND:
-				pass #RAF
+				activate_AI_for_round_time()
 			STATE.SHOPPING:
 				#will call rpc in all clients
 				generate_all_shop_operations()
@@ -299,10 +300,10 @@ remote func changing_stance(gid: int, new_stance):
 			if id != 1:
 				rpc_id(id, "changing_stance", gid, new_stance)
 				
+	print("new stance for domain " + str(gid) + ": " + str(new_stance))
 	var targetted_domain = get_domain_by_gid(gid)
 	if targetted_domain:
-		targetted_domain.base_data.spellbook.set_stance(new_stance)
-	emit_signal("changing_stance_command", new_stance)
+		targetted_domain.update_stance(new_stance)
 	
 remote func incantation_progress_changed(game_id, n):
 	if get_tree().is_network_server():
@@ -327,6 +328,11 @@ remote func potential_value_changed(game_id, x):
 	if targetted_domain:
 		targetted_domain.update_stat_display(PlayerDomain.STAT.DEFENSE_POWER, x)
 		
+func activate_AI_for_round_time():
+	if get_tree().is_network_server():
+		for domain in enemy_domains.get_children():
+			if domain.is_bot():
+				domain.ai_node.determine_ai_time_to_answer()
 #attack from pid to target_id
 func meteor_cast(gid: int, target_game_id: int, threat_data: Dictionary):
 	var targetted_domain = get_domain_by_gid(target_game_id)
@@ -650,7 +656,7 @@ remote func get_new_incantation_operations(L: Array):
 #TO BE CONTINUED
 remote func player_meteor_incantation(gid, dico_threat):
 	var who = get_tree().get_rpc_sender_id()
-	print("Meteor incantation from player " + str(who))
+	print("Meteor incantation from player " + str(gid))
 	if get_tree().is_network_server():
 		#for now, random target...
 		var target = operation_factory.choice(get_all_targetable_players(who))
@@ -658,10 +664,16 @@ remote func player_meteor_incantation(gid, dico_threat):
 		rpc("meteor_cast", gid, target, dico_threat)
 		meteor_cast(gid, target, dico_threat)
 
-remote func player_defense_command(power):
+#TO BE CONTINUED
+remote func player_defense_command(gid, power):
 	if get_tree().is_network_server():
-		pass
+		rpc("player_defense_command", gid, power)
+		
+	var domain = get_domain_by_pid(gid)
+	if domain:
+		domain.domain_field.magic_projectile_incantation(power)
 	
+
 func determine_target(dico_threat):
 	pass
 	
@@ -849,12 +861,6 @@ func _on_bonus_menu_player_asks_for_action(game_id, action_type, element):
 func _on_enemy_elimination(pid: int):
 	pass
 
-func _on_InputHandler_changing_stance_command(new_stance):
-	if get_tree().is_network_server():
-		changing_stance(1, new_stance)
-	else:
-		rpc_id(1, "changing_stance",game_id, new_stance)
-
 
 func _on_InputHandler_keyboard_action(action):
 	pass
@@ -909,10 +915,11 @@ func _on_spellbook_meteor_invocation(game_id, dico_threat):
 		rpc_id(1, "player_meteor_incantation", dico_threat)
 		
 func _on_spellbook_defense_command(game_id, power):
+	print("Defense command from player " + str(game_id))
 	if get_tree().is_network_server():
-		player_defense_command(power)
+		player_defense_command(game_id, power)
 	else:
-		rpc_id(1, "player_defense_command", power)
+		rpc_id(1, "player_defense_command", game_id, power)
 
 func _on_spellbook_low_incantations_stock(game_id):
 	if get_tree().is_network_server():
@@ -966,7 +973,13 @@ func _on_receive_meteor_pressed():
 		pass
 
 
-
-
 func _on_remove10sec_button_button_down():
 	round_timer.start(clamp(round_timer.time_left - 10, 0, 100))
+
+
+func _on_InputHandler_input_stance_change(new_stance):
+	print("changing stance command: " + str(new_stance))
+	if get_tree().is_network_server():
+		changing_stance(1, new_stance)
+	else:
+		rpc_id(1, "changing_stance",game_id, new_stance)

@@ -28,9 +28,9 @@ onready var label_target = $target
 var velocity: Vector2
 
 var enemy_transfer_area2d
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
-	pass # Replace with function body.
+	connect("body_entered", self, "_on_Area2D_body_entered")
 
 func create(caster, power, character, id_player, target, base_speed = BASE_SPEED, type = PROJECTILE_TYPE.STARS):
 	self.caster = caster
@@ -77,25 +77,35 @@ func _process(delta):
 	look_at(destination)
 	move(delta)
 
+#the projectile behaves differently in client and in server :
+# -server side: we apply the damages normally and the projectile
+# remains if it's more powerful than the meteor, else it is destroyed;
+# -client side: it moves and destroys itself with data inside, but 
+# all damage application and meteor destruction will be done with rpcs.
 func _on_Area2D_body_entered(body):
 	#apply damages
-	print("---------COLLISION---------------")
+	print("---------COLLISION---------")
 	print(body)
 	
 	#we check first if it has reached the zone sending a meteor
 	#to the enemy
 	if body.has_method("transfer_to_enemy"):
-		var power_fraction = power * initial_power
-		print("OMG")
-		body.transfer_to_enemy(power_fraction, type)
+		if get_tree().is_network_server():
+			var power_fraction = power * initial_power
+			body.transfer_to_enemy(power_fraction, type)
 		queue_free()
 	
-	var current_hp = 9001
+	var meteor_current_hp = 9001
+	
 	if body.has_method("hit"):
-		current_hp = body.get_hp()
-		body.hit(power, character, id_player, base_speed, type)
-		emit_signal("target_hit", power)
-	power -= current_hp
+		meteor_current_hp = body.get_hp()
+		if get_tree().is_network_server():
+			body.hit(power, character, id_player, base_speed, type)
+			emit_signal("target_hit", power)
+		
+	#as said, the client only process the movements of the projectile
+	#and the effects are processed when the server calls rpc
+	power -= meteor_current_hp
 	if power <= 0:
 		queue_free()
 	call_deferred("change_target",caster.get_nearest_threat())

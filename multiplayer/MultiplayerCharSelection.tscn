@@ -77,10 +77,13 @@ margin_right = 1081.0
 margin_bottom = 156.0
 
 [node name="characters" type="ItemList" parent="vbox_info/VBoxContainer/CenterContainer"]
-margin_left = 200.0
-margin_right = 880.0
+margin_left = 155.0
+margin_right = 925.0
 margin_bottom = 156.0
-rect_min_size = Vector2( 680, 156 )
+rect_min_size = Vector2( 770, 156 )
+custom_constants/vseparation = 6
+custom_constants/icon_margin = 5
+custom_constants/hseparation = 20
 max_columns = 5
 same_column_width = true
 fixed_icon_size = Vector2( 128, 128 )

@@ -13,7 +13,7 @@ signal good_answer()
 signal wrong_answer()
 signal operation_to_display_has_changed(new_op)
 signal incantation_has_changed(L)
-signal new_incantation_charged()
+signal new_incantation_charged(game_id)
 signal incantation_progress_changed(game_id, new_value)
 signal money_value_has_changed(gid, n)
 signal low_incantation_stock(gid)
@@ -260,10 +260,13 @@ func charge_new_incantation():
 	var new_incantation = operations_stock.pop_front()
 	if len(operations_stock) < 3:
 		emit_signal("low_incantation_stock", game_id)
+		
 	#what if there wasn't any new incantation in the stock??
 	if new_incantation:
+		
 		operations = new_incantation
-		emit_signal("new_incantation_charged")
+		print("domain " + str(game_id) + ": new incantation charged!")
+		emit_signal("new_incantation_charged", game_id)
 
 func answer_response(good_answer):
 	if good_answer:
@@ -283,8 +286,10 @@ func good_answer():
 	
 	var is_incantation_completed = pattern.next()
 	if is_incantation_completed:
+		print("Spellbook of domain " + str(game_id) + ": Incantation completed!")
+		print("Current stance: " + str(stance))
 		match(stance):
-			STANCES.ATTACK:
+			1:
 				#[power, delay_time, hp, atk_side_effects]
 				var threat_stats = determine_threat_stats(pattern.get_power())
 				var dico_threat = {
@@ -292,16 +297,16 @@ func good_answer():
 					hp = threat_stats[2],
 					type = atk_type,
 					power = threat_stats[0],
-					delay = atk_type,
+					delay = threat_stats[1],
 					side_effects = threat_stats[3],
 					sender = game_id
 				}
 				meteor_sent += 1
 				emit_signal("meteor_invocation", game_id, dico_threat)
-			STANCES.DEFENSE:
+			2:
 				var defense_damage = 0.5* (1 + (defense_power.apply() / pattern.get_len()))
 				emit_signal("defense_command", game_id, defense_damage)
-			STANCES.BONUS:
+			3:
 				pass
 		charge_new_incantation()
 	
@@ -362,6 +367,7 @@ func get_difficulty_preference():
 	return difficulty_preference
 	
 func set_stance(new_stance):
+	print("new stance: " + str(new_stance))
 	stance = new_stance
 	
 func _on_incantation_change():

@@ -29,6 +29,7 @@ onready var stats_display = $Panel/stats_display
 onready var threat_vbox_list = $Panel/threat_data_display/vbox
 onready var incantation_display = $Panel/Incantation
 onready var ai_node = $OniricAI
+onready var stance_icon = $stance_icon
 
 onready var nodes_stats_display = {
 		points = $Panel/stats_display/points,
@@ -95,7 +96,7 @@ func add_threat(gid: int, threat_data, is_for_me = true):
 	threat_line_display.update_hp(threat_data["hp"])
 	threat_line_display.update_hp_max(threat_data["hp"])
 	threat_line_display.update_power(threat_data["power"])
-	
+	threat_line_display.start(threat_data["delay"])
 	print("ThreatLine added: " + threat_line_display.name)
 	domain_field.receive_threat(threat_data)
 	
@@ -141,6 +142,16 @@ func incantation_progress_changed(n):
 func get_gid():
 	return game_id
 	
+func update_stance(new_stance):
+	print("applying new stance in domain " + str(game_id))
+	base_data.spellbook.set_stance(new_stance)
+	match(new_stance):
+		1:
+			stance_icon.texture = global.icons_textures.arrow
+		2:
+			stance_icon.texture = global.icons_textures.round_shield
+		3:
+			pass
 func is_eliminated():
 	return base_data.eliminated
 	
@@ -188,8 +199,6 @@ func _on_delete_digit():
 func _on_write_digit():
 	pass
 
-
-	
 #we display the field if the mouse comes in
 func _on_BaseDomainDisplay_mouse_entered():
 	pass # Replace with function body.
@@ -205,10 +214,6 @@ func _on_GameFieldMulti_domain_answer_response(id, good_answer):
 		
 func _on_BaseDomainData_eliminated():
 	pass # Replace with function body.
-
-
-func _on_GameFieldMulti_changing_stance_command(new_stance):
-	base_data.spellbook.set_stance(new_stance)
 
 func _on_BaseDomainData_points_value_changed(_gid, n):
 	update_stat_display(STAT.POINTS, n)

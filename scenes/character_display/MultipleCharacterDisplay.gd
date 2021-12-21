@@ -1,6 +1,7 @@
 extends Control
 
 signal bot_diff_changed_bis(id, value)
+signal player_added(node)
 
 const MIN_PLAYERS_DISPLAY: int = 4
 onready var player_list = $scroller/vbox_characters
@@ -46,6 +47,16 @@ func add_player(name_player: String, id_player: int, id_character = -1, validate
 	else:
 		players_count += 1
 		print("Player added to multiplechardisplay: " + name_player)
+	
+	emit_signal("player_added", player_node)
+	
+func add_player_node(player_node, insertion_index):
+	print("Inserting character display at index " + str(insertion_index))
+	if insertion_index < 0:
+		player_list.add_child(player_node)
+	else:
+		var last_node_before_insertion = player_list.get_child(insertion_index)
+		player_list.add_child_below_node(last_node_before_insertion, player_node)
 	
 	
 func remove_player_by_index(index: int):

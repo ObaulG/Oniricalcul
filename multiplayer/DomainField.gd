@@ -4,6 +4,7 @@ extends Control
 signal meteor_hp_changed(gid, id, hp)
 signal meteor_impact(gid, threat_type, hp_current, power)
 signal meteor_destroyed(gid, id)
+signal magic_projectile_end_with_power_left(power, type)
 signal first_threat_ref_changed(t)
 
 onready var sending_meteor_area = $A2D_send_meteor
@@ -48,9 +49,15 @@ func determine_nearest_threat():
 		print("Aucune cible trouvée...")
 	emit_signal("first_threat_ref_changed")
 
+func magic_projectile_incantation(power):
+	var target = first_threat
+	var start_pos = base_projectile_start.position
+	
+	create_magic_homing_projectile(target, id_character, start_pos, power)
+	
 func create_magic_homing_projectile(target, char_id, start_pos: Vector2, power):
 	var new_projectile = global.projectile.instance()
-	new_projectile.create(self, power, get_parent().get_c, id_domain, target)
+	new_projectile.create(self, power, id_character, id_domain, target)
 	threats_container.add_child(new_projectile)
 	new_projectile.position = start_pos
 
@@ -109,6 +116,11 @@ func threat_presence():
 func get_threat_by_id(id):
 	return threats_container.get_node(str(id))
 	
+func get_nearest_threat():
+	return first_threat
+	
+func get_collision_zone_to_enemy():
+	return sending_meteor_area
 #TO BE CONTINUED
 func inflict_damage_to_threat(id_threat, n):
 	var threat = get_threat_by_id(id_threat)
@@ -127,3 +139,14 @@ func _on_threat_destroyed(id, threat_type, power, id_character, over_damage, pos
 	
 func _on_threat_hp_value_changed(id, hp):
 	emit_signal("meteor_hp_changed",id_domain, id, hp)
+
+# if the magic projectile gets to the warp zone, then the character can
+# reuse it :
+# - to send a meteor;
+# - to empower the next incantation;
+# - to heal himself;
+# - etc.
+func _on_A2D_send_meteor_magic_projectile_inside(power, type):
+	print("Magic power remaining: " + str(power))
+	emit_signal("magic_projectile_end_with_power_left", power, type)
+	

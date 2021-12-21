@@ -262,6 +262,30 @@ remotesync func cancel_start():
 	state = STATE.SELECTING
 	panel_chat.write_message("Lancement annulé...")
 	
+func generate_character_display_node(name_player: String, id_player: int, id_character = -1, validated = false, is_bot = false):
+	var player_node = global.character_display.instance()
+	
+	#All players should be displayed before the bots.
+	var insertion_index = player_list.players_count -1
+	if is_bot:
+		insertion_index += player_list.bot_count
+		
+	#we add the node in the player list
+	player_list.add_player_node(player_node, insertion_index)
+	
+	player_node.cancel_validation()
+	player_node.connect("bot_diff_changed", self, "_on_bot_diff_changed")
+	player_node.set_name(str(id_player))
+	player_node.add_player(name_player, id_player)
+	
+	if id_character != -1:
+		player_node.select_character(id_character)
+	if validated:
+		player_node.validate_choice()
+
+	if is_bot:
+		player_node.set_bot(true)
+	
 	
 func print_other_player_label_node():
 	print("In client id " + str(Gamestate.player_info["net_id"]))
@@ -328,6 +352,10 @@ func _on_bot_added(id):
 	print("Ajout du bot dans l'interface")
 	var player_data = network.bots[id]
 	player_list.add_player(player_data["pseudo"], player_data["net_id"], player_data["id_character_selected"], player_data["character_validated"], true)
+	
+func _on_bot_diff_changed(id, diff):
+	if get_tree().is_network_server():
+		change_bot_diff(id, diff)
 	
 func _on_player_disconnected(pinfo):
 	player_list.remove_player_by_id(pinfo["net_id"])

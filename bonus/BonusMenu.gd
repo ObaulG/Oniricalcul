@@ -47,7 +47,7 @@ func _ready():
 	points_label = $MarginContainer/vbox/CenterContainer2/HBoxContainer/points
 	new_operations_grid = $MarginContainer/vbox/bonus_zone/new_operations/new_operations
 	confirm_pop_up_incantation = $ConfirmationDialog
-	timedisplay = $MarginContainer/vbox/HBoxContainer/TimeDisplay
+	timedisplay = $MarginContainer/vbox/CenterContainer/TimeDisplay
 	swap_button = $MarginContainer/vbox/bonus_zone/new_operations/swap_button
 	erase_button = $MarginContainer/vbox/bonus_zone/new_operations/erase_button
 	cancel_button = $MarginContainer/vbox/bonus_zone/new_operations/cancel_button
@@ -248,5 +248,6 @@ func _on_Incantation_Operations_nb_selected_operations_changed(n):
 func _on_spellbook_incantation_has_changed(L: Array):
 	set_pattern(L)
 	
-func _on_spellbook_money_value_has_changed(n):
-	points_label.text = "Argent : " + str(n)
+func _on_spellbook_money_value_has_changed(gid, n):
+	if gid == game_id:
+		points_label.text = "Argent : " + str(n)

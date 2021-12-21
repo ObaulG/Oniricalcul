@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://multiplayer/BaseDomainDisplay.gd" type="Script" id=1]
 [ext_resource path="res://multiplayer/BaseDomainData.tscn" type="PackedScene" id=2]
@@ -15,6 +15,7 @@
 [ext_resource path="res://textures/stars-stack.png" type="Texture" id=13]
 [ext_resource path="res://textures/speedometer.png" type="Texture" id=14]
 [ext_resource path="res://UI/IconStatNumberDisplay.tscn" type="PackedScene" id=15]
+[ext_resource path="res://textures/wide-arrow-dunk.png" type="Texture" id=16]
 
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
@@ -198,6 +199,16 @@ margin_bottom = 146.0
 
 [node name="texture" parent="Panel/stats_display/good_answers/HBoxContainer/CenterContainer" index="0"]
 texture = ExtResource( 11 )
+
+[node name="stance_icon" type="TextureRect" parent="."]
+margin_left = -64.0
+margin_top = 72.0
+margin_bottom = 136.0
+texture = ExtResource( 16 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [connection signal="incantation_progress_changed" from="BaseDomainData/Spellbook" to="Panel/IncantationProgress" method="_on_Spellbook_incantation_progress_changed"]
 

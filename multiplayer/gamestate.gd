@@ -3,7 +3,7 @@ extends Node
 # Contains a player's data.
 
 var player_info: Dictionary
-var update_rate = 30  # How many game updates per second
+var update_rate = 20  # How many game updates per second
 var update_delta = 1.0 / update_rate
 
 # Called when the node enters the scene tree for the first time.

@@ -58,6 +58,8 @@ var icons_textures = {
 	rune_sword = load("res://textures/rune-sword.png"),
 	speedometer = load("res://textures/speedometer.png"),
 	stars = load("res://textures/stars-stack.png"),
+	round_shield = load("res://textures/round-shield.png"),
+	arrow = load("res://textures/wide-arrow-dunk.png")
 }
 # Bonus
 var BONUS = [
@@ -384,6 +386,7 @@ const OP_ID = {
 
 
 var char_data: Dictionary
+var id_char_array: Array
 var dialog_data: Dictionary
 var op_atlas: AtlasTexture 
 var lang = "fr"
@@ -392,10 +395,11 @@ var time_played: float
 
 
 func _init():
-	
+	id_char_array = []
 	# character data loading 
 	for char_id in characters.keys():
 		char_data[char_id] = Character.new(characters[char_id])
+		id_char_array.append(char_id)
 	# character spritesheets loading
 	
 	# retrieve operations data from json
@@ -451,8 +455,16 @@ func _init():
 	current_dialog = "null"
 	
 	load_game()
+	
 func _process(delta):
 	time_played += delta
+	
+#from a characted id, gives the next character id
+func id_next_char(id: int):
+	return id_char_array[(id+1)%len(id_char_array)]
+	
+func id_prev_char(id: int):
+	return id_char_array[(id-1)%len(id_char_array)]
 	
 func get_resized_ImageTexture(t: Texture, w: int, h: int) -> Texture:
 	var img = t.get_data()

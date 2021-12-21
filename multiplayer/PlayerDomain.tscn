@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://multiplayer/PlayerDomain.gd" type="Script" id=1]
 [ext_resource path="res://multiplayer/DomainField.tscn" type="PackedScene" id=2]
@@ -16,6 +16,7 @@
 [ext_resource path="res://incantation/Incantation.tscn" type="PackedScene" id=14]
 [ext_resource path="res://textures/chain.png" type="Texture" id=15]
 [ext_resource path="res://multiplayer/threat_data_display.gd" type="Script" id=16]
+[ext_resource path="res://textures/wide-arrow-dunk.png" type="Texture" id=18]
 
 [sub_resource type="ShaderMaterial" id=4]
 resource_local_to_scene = true
@@ -195,6 +196,17 @@ margin_bottom = 296.0
 
 [node name="texture" parent="Panel/stats_display/good_answers/HBoxContainer/CenterContainer" index="0"]
 texture = ExtResource( 3 )
+
+[node name="stance_icon" type="TextureRect" parent="."]
+margin_left = 240.496
+margin_top = 112.68
+margin_right = 304.496
+margin_bottom = 176.68
+texture = ExtResource( 18 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [connection signal="eliminated" from="BaseDomainData" to="." method="_on_BaseDomainData_eliminated"]
 [connection signal="good_answers_value_changed" from="BaseDomainData" to="." method="_on_BaseDomainData_good_answers_value_changed"]

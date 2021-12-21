@@ -16,21 +16,20 @@ var base_data
 
 onready var answer_timer = $answer_timer
 onready var domain = get_parent()
-onready var server_game_field = get_parent().get_parent()
+onready var server_game_field = get_parent().get_parent().get_parent()
 
 func _ready():
 	activated = false
 	rng = RandomNumberGenerator.new()
-	base_data = domain.base_data
+	
 	
 func activate_AI():
 	activated = true
-
+	base_data = domain.base_data
+	
 func determine_ai_time_to_answer():
-	var op = base_data.pattern.get_current_op()
-	var type = op.get_type()
-	var diff = op.get_diff()
-	var answer_time = AI_BASE_ANSWER_TIME_BY_DIFF[hardness] + AI_BASE_ANSWER_TIME_BY_OP_DIFF[hardness-1]
+	var op = base_data.spellbook.pattern.get_current_element()
+	var answer_time = AI_BASE_ANSWER_TIME_BY_DIFF[op[1]] + AI_BASE_ANSWER_TIME_BY_OP_DIFF[op[1]-1]
 	answer_timer.start(answer_time)
 	
 func is_activated():
@@ -46,14 +45,13 @@ func _on_answer_timer_timeout():
 	
 	server_game_field.result_answer(domain.get_gid(), will_answer_right)
 	determine_ai_time_to_answer()
-
-	if domain.is_incanting():
-		var total_hp_threats = domain.domain_field.get_total_hp_threats()
-		
-		if total_hp_threats > base_data.spellbook.get_defense_power():
-			domain.set_stance(Domain.INCANTATIONS.DEFENSE)
-		else:
-			domain.set_stance(Domain.INCANTATIONS.ATTACK)
+	
+	var total_hp_threats = domain.domain_field.get_total_hp_threats()
+	
+	if total_hp_threats > base_data.spellbook.get_defense_power():
+		server_game_field.changing_stance(domain.get_gid(), Domain.INCANTATIONS.DEFENSE)
+	else:
+		server_game_field.changing_stance(domain.get_gid(), Domain.INCANTATIONS.ATTACK)
 
 
 func _on_GameFieldMulti_game_state_changed(new_state):
