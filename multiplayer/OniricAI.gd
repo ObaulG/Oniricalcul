@@ -22,14 +22,16 @@ func _ready():
 	activated = false
 	rng = RandomNumberGenerator.new()
 	
-	
 func activate_AI():
 	activated = true
 	base_data = domain.base_data
 	
+func pause_AI():
+	answer_timer.stop()
+	
 func determine_ai_time_to_answer():
 	var op = base_data.spellbook.pattern.get_current_element()
-	var answer_time = AI_BASE_ANSWER_TIME_BY_DIFF[op[1]] + AI_BASE_ANSWER_TIME_BY_OP_DIFF[op[1]-1]
+	var answer_time = rng.randfn(AI_BASE_ANSWER_TIME_BY_DIFF[op[1]] + AI_BASE_ANSWER_TIME_BY_OP_DIFF[op[1]-1], 0.9)
 	answer_timer.start(answer_time)
 	
 func is_activated():
@@ -46,6 +48,7 @@ func _on_answer_timer_timeout():
 	server_game_field.result_answer(domain.get_gid(), will_answer_right)
 	determine_ai_time_to_answer()
 	
+	#Determining if the bot should change his stance.
 	var total_hp_threats = domain.domain_field.get_total_hp_threats()
 	
 	if total_hp_threats > base_data.spellbook.get_defense_power():

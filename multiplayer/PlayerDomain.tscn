@@ -216,7 +216,6 @@ __meta__ = {
 [connection signal="defense_power_changed" from="BaseDomainData/Spellbook" to="." method="_on_Spellbook_defense_power_changed"]
 [connection signal="incantation_has_changed" from="BaseDomainData/Spellbook" to="Panel/Incantation" method="_on_Spellbook_incantation_has_changed"]
 [connection signal="incantation_has_changed" from="BaseDomainData/Spellbook" to="Panel/IncantationProgress" method="_on_Spellbook_incantation_has_changed"]
-[connection signal="incantation_progress_changed" from="BaseDomainData/Spellbook" to="Panel/IncantationProgress" method="_on_Spellbook_incantation_progress_changed"]
 [connection signal="money_value_has_changed" from="BaseDomainData/Spellbook" to="." method="_on_Spellbook_money_value_has_changed"]
 [connection signal="potential_value_changed" from="BaseDomainData/Spellbook" to="." method="_on_Spellbook_potential_value_changed"]
 

@@ -16,31 +16,34 @@ signal input_stance_change(new_stance)
 signal delete_digit()
 signal write_digit(d)
 
+var authorised_to_input: bool
 onready var parent = get_parent()
 
-
 func _ready():
-	pass
+	authorised_to_input = false
 
 func _input(event):
 	if is_network_master():
-		if event.is_action("delete_char") && event.is_pressed() && !event.is_echo():
-			emit_signal("delete_digit")
-		if event.is_action("validate") && event.is_pressed() && !event.is_echo():
-			emit_signal("check_answer_command")
+		if authorised_to_input:
+			if event.is_action("delete_char") && event.is_pressed() && !event.is_echo():
+				emit_signal("delete_digit")
+			if event.is_action("validate") && event.is_pressed() && !event.is_echo():
+				emit_signal("check_answer_command")
 
-		if event.is_action("attack_stance") && event.is_pressed() && !event.is_echo():
-			emit_signal("input_stance_change", 1)
-			
-		if event.is_action("defense_stance") && event.is_pressed() && !event.is_echo():
-			emit_signal("input_stance_change", 2)
-			
-		if event.is_action("bonus_stance") && event.is_pressed() && !event.is_echo():
-			emit_signal("input_stance_change", 1)
-			
-		if event is InputEventKey and event.pressed:
-			if event.scancode in keypad_numbers:
-				emit_signal("write_digit", keypad_numbers.bsearch(event.scancode))
-			elif event.scancode in numpad_numbers:
-				emit_signal("write_digit", numpad_numbers.bsearch(event.scancode))
+			if event.is_action("attack_stance") && event.is_pressed() && !event.is_echo():
+				emit_signal("input_stance_change", 1)
+				
+			if event.is_action("defense_stance") && event.is_pressed() && !event.is_echo():
+				emit_signal("input_stance_change", 2)
+				
+			if event.is_action("bonus_stance") && event.is_pressed() && !event.is_echo():
+				emit_signal("input_stance_change", 1)
+				
+			if event is InputEventKey and event.pressed:
+				if event.scancode in keypad_numbers:
+					emit_signal("write_digit", keypad_numbers.bsearch(event.scancode))
+				elif event.scancode in numpad_numbers:
+					emit_signal("write_digit", numpad_numbers.bsearch(event.scancode))
 
+func update_authorisation_to_input(b: bool):
+	authorised_to_input = b

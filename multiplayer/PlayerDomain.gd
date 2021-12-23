@@ -17,6 +17,7 @@ var player_id: int
 var game_id: int
 var parent_node
 
+var waiting_for_transaction_end: bool
 onready var base_data = $BaseDomainData
 onready var spellbook = $BaseDomainData/Spellbook
 onready var panel = $Panel
@@ -41,6 +42,7 @@ onready var nodes_stats_display = {
 	}
 	
 func _ready():
+	waiting_for_transaction_end = false
 	parent_node = get_parent()
 	player_id = -1
 	domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
@@ -118,20 +120,21 @@ func remove_threat(id_threat):
 	domain_field.remove_threat(id_threat)
 
 func shop_action(type, price, element):
+	print("apply shop instruction")
+	print(element)
 	spellbook.spend_money(price)
 	match(type):
 		BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
-			add_operation_to_pattern(element)
+			add_operation_to_pattern(element.get_pattern_element())
 		BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-			spellbook.pattern.remove_by_element(element)
+			spellbook.pattern.remove_by_element(element.get_pattern_element())
 		BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
 			pass
 	update_stat_display(STAT.POTENTIAL, spellbook.pattern.get_power(0, true))
-	update_stat_display(STAT.DEFENSE_POWER, spellbook.defense_power)
+	update_stat_display(STAT.DEFENSE_POWER, spellbook.defense_power.get_value())
 	
-func add_operation_to_pattern(op):
-	if op is Operation:
-		spellbook.pattern.append(op)
+func add_operation_to_pattern(pattern_element):
+	spellbook.pattern.append(pattern_element)
 		
 func incantation_has_changed(L):
 	incantation_display.update_operations(L)
@@ -142,6 +145,8 @@ func incantation_progress_changed(n):
 func get_gid():
 	return game_id
 	
+func get_money():
+	return base_data.spellbook.get_money()
 func update_stance(new_stance):
 	print("applying new stance in domain " + str(game_id))
 	base_data.spellbook.set_stance(new_stance)
@@ -152,6 +157,13 @@ func update_stance(new_stance):
 			stance_icon.texture = global.icons_textures.round_shield
 		3:
 			pass
+			
+func update_transaction_status(is_waiting: bool):
+	waiting_for_transaction_end = is_waiting
+
+func is_waiting_for_transaction_end():
+	return waiting_for_transaction_end
+	
 func is_eliminated():
 	return base_data.eliminated
 	

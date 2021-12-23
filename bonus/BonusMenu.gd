@@ -1,7 +1,7 @@
 extends Control
 
-
 class_name BonusMenuBis
+
 enum BONUS_ACTION{
 	BUY_OPERATION = 1,
 	BUY_BONUS,
@@ -38,6 +38,7 @@ var swap_button
 var erase_button
 var cancel_button
 
+var timer
 onready var state_label = $state_label
 
 func _ready():
@@ -47,7 +48,8 @@ func _ready():
 	points_label = $MarginContainer/vbox/CenterContainer2/HBoxContainer/points
 	new_operations_grid = $MarginContainer/vbox/bonus_zone/new_operations/new_operations
 	confirm_pop_up_incantation = $ConfirmationDialog
-	timedisplay = $MarginContainer/vbox/CenterContainer/TimeDisplay
+	timer = $Timer
+	timedisplay = $MarginContainer/vbox/CenterContainer/timer_display
 	swap_button = $MarginContainer/vbox/bonus_zone/new_operations/swap_button
 	erase_button = $MarginContainer/vbox/bonus_zone/new_operations/erase_button
 	cancel_button = $MarginContainer/vbox/bonus_zone/new_operations/cancel_button
@@ -59,7 +61,10 @@ func _ready():
 	change_state(STATE.IDLE)
 	
 	game_id = get_parent().game_id
-	
+
+func _process(_delta):
+	pass
+		
 func change_state(state):
 	set_state(state)
 	match state:
@@ -97,6 +102,7 @@ func get_selected_operations():
 	return incantation.get_current_selected_operations()
 	
 func set_pattern(list: Array):
+	print("UI Incantation display")
 	incantation.update_operations(list)
 	
 func set_state(state):
@@ -174,10 +180,13 @@ func set_display_potential(value: int):
 	incantation.update_potential(value)
 	
 func set_time(value):
-	timedisplay.update_time(value)
+	timedisplay.set_new_value(value)
 	
 func set_bonus(list: Array):
 	pass
+	
+func set_money_value(n):
+	points_label.text = "Argent : " + str(n)
 	
 func set_new_stats(list: Array):
 	pass
@@ -193,6 +202,7 @@ func pop_up_result(ok_pressed: bool):
 
 func on_trying_to_buy_op(op):
 	print("You try to buy " + str(op))
+	print("Game id: " + str(game_id))
 	emit_signal("player_asks_for_action", game_id, BONUS_ACTION.BUY_OPERATION, op)
 
 

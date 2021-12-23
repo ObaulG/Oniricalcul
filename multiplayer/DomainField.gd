@@ -7,7 +7,7 @@ signal meteor_destroyed(gid, id)
 signal magic_projectile_end_with_power_left(power, type)
 signal first_threat_ref_changed(t)
 
-onready var sending_meteor_area = $A2D_send_meteor
+onready var sending_meteor_area = $meteor_sender
 onready var base_projectile_start = $base_projectile_start
 onready var threats_container = $threats
 
@@ -88,6 +88,7 @@ func receive_threat(dico_threat, signals_connection = true):
 	meteor.apply_scale(Vector2(scaling, scaling))
 	meteor.set_texture(global.threat_texture)
 	
+	determine_nearest_threat()
 	change_magic_projectiles_target()
 	
 func get_total_hp_threats():
@@ -146,7 +147,6 @@ func _on_threat_hp_value_changed(id, hp):
 # - to empower the next incantation;
 # - to heal himself;
 # - etc.
-func _on_A2D_send_meteor_magic_projectile_inside(power, type):
+func _on_meteor_sender_magic_projectile_inside(power, type):
 	print("Magic power remaining: " + str(power))
-	emit_signal("magic_projectile_end_with_power_left", power, type)
-	
+	emit_signal("magic_projectile_end_with_power_left", id_domain, power, type)

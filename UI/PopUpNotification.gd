@@ -27,7 +27,7 @@ func initialize(t, message, d_type = DISPLAY_POSITION.BOTTOM_RIGHT):
 	text = message
 	display_text.text = text
 	display_type = d_type
-	
+
 func _process(delta):
 	var time_left = display_time - timer.time_left
 	modulate.a = time_left/display_time
@@ -45,6 +45,8 @@ func get_display_type():
 func set_texture_icon(pict: Texture):
 	picture.texture = pict
 	
+func change_position(pos):
+	set_position(pos)
 
 func _on_Timer_timeout():
 	queue_free()

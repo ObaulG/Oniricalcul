@@ -101,7 +101,7 @@ remote func authentication(pinfo: Dictionary):
 		if connection_approved:
 			#register the new player into the table
 			print("Auth. approved! Registering the player on the table.")
-			pinfo["game_id"] = get_nb_players() + 1
+			pinfo["game_id"] = create_game_id()
 			register_player(pinfo)
 		rpc_id(sender, "server_response_to_auth", connection_approved, server_info)
 
@@ -134,7 +134,7 @@ remote func register_player(pinfo):
 remote func register_bot(pinfo):
 	if get_total_players_entities() < server_info.max_players:
 		pinfo["net_id"] = get_nb_bots() + 38
-		pinfo["game_id"] = get_total_players_entities() + 1
+		pinfo["game_id"] = create_game_id()
 		pinfo["pseudo"] = "Bot " + str(get_nb_bots()+1)
 		if (get_tree().is_network_server()):
 			# We are on the server, so distribute the player list information throughout the connected players
@@ -170,6 +170,13 @@ func print_net_players_table():
 		var nick = bots[id]["pseudo"]
 		print(nick + " - " + str(id))
 
+#We need to ensure everyone has a unique game ID
+func create_game_id():
+	var id = 1
+	var all_game_ids = get_all_game_ids()
+	while id in all_game_ids:
+		id += 1
+	return id
 
 # Peer trying to connect to server is notified on success
 func _on_connected_to_server():
@@ -279,6 +286,15 @@ func _on_disconnected_from_server():
 	# Reset the player info network ID
 	Gamestate.player_info["net_id"] = 1
 
+func get_all_game_ids() -> Array:
+	var game_id_array = []
+	for player_data in network.players.values():
+		game_id_array.append(player_data["game_id"])
+		
+	for player_data in network.bots.values():
+		game_id_array.append(player_data["game_id"])
+	
+	return game_id_array
 	
 func get_nb_players():
 	return len(players)

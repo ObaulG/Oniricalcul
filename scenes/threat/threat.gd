@@ -77,6 +77,7 @@ func hit(power, character, id_character, base_speed, type):
 	if over_damage >= 0:
 		# if done later, this threat will be counted alive
 		isdead = true
+		$CollisionShape2D.disabled = true
 		emit_signal("destroyed", id, threat_type, power, id_character, over_damage, self.position)
 		remove_animation(true)
 		
@@ -96,6 +97,7 @@ func receive_damage(n):
 	
 func remove_animation(_destroyed_by_player = true):
 	isdead = true
+	$CollisionShape2D.disabled = true
 	timer.stop()
 	set_deferred("$CollisionShape2D.disabled", true)
 	$destroy_particles.emitting = true

@@ -59,6 +59,8 @@ size = 21
 font_data = SubResource( 7 )
 
 [node name="BaseDomainDisplay" type="Control"]
+rect_min_size = Vector2( 600, 200 )
+mouse_filter = 1
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -210,6 +212,8 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[connection signal="mouse_entered" from="." to="." method="_on_BaseDomainDisplay_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_BaseDomainDisplay_mouse_exited"]
 [connection signal="incantation_progress_changed" from="BaseDomainData/Spellbook" to="Panel/IncantationProgress" method="_on_Spellbook_incantation_progress_changed"]
 
 [editable path="BaseDomainData"]

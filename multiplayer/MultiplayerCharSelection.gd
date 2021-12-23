@@ -346,12 +346,12 @@ func _on_player_connected(id):
 	
 func _on_player_added(id):
 	var player_data = network.players[id]
-	player_list.add_player(player_data["pseudo"], player_data["net_id"], player_data["id_character_selected"], player_data["character_validated"])
+	player_list.add_player(player_data["pseudo"], player_data["net_id"], player_data["game_id"], player_data["id_character_selected"], player_data["character_validated"])
 	
 func _on_bot_added(id):
 	print("Ajout du bot dans l'interface")
 	var player_data = network.bots[id]
-	player_list.add_player(player_data["pseudo"], player_data["net_id"], player_data["id_character_selected"], player_data["character_validated"], true)
+	player_list.add_player(player_data["pseudo"], player_data["net_id"], player_data["game_id"], player_data["id_character_selected"], player_data["character_validated"], true)
 	
 func _on_bot_diff_changed(id, diff):
 	if get_tree().is_network_server():
@@ -369,6 +369,7 @@ func _on_player_disconnected(pinfo):
 			state = STATE.SELECTING
 		STATE.LAUCHING:
 			pass
+
 func _on_bot_removed(binfo):
 	player_list.remove_bot_by_id(binfo["net_id"])
 	
@@ -404,6 +405,7 @@ func _on_add_bot_button_down():
 			
 			network.register_bot(bot_info)
 
+#Removes the last bot added in the room
 func _on_remove_bot_button_down():
 	if get_tree().is_network_server():
 		if state == STATE.SELECTING:

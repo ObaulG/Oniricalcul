@@ -16,6 +16,7 @@ var player_id: int
 var game_id: int
 var parent_node
 
+var waiting_for_transaction_end: bool
 onready var base_data = $BaseDomainData
 onready var spellbook = $BaseDomainData/Spellbook
 onready var panel = $Panel
@@ -40,6 +41,7 @@ onready var nodes_stats_display = {
 	}
 
 func _ready():
+	waiting_for_transaction_end = false
 	parent_node = get_parent()
 	player_id = -1
 	domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
@@ -100,6 +102,9 @@ func get_array_stats_display():
 func get_parent_node():
 	return parent_node
 	
+func get_money():
+	return base_data.spellbook.get_money()
+	
 func add_threat(gid, threat_data, is_for_me = true):
 	var threat_line_display = THREATLINE.instance()
 	threat_line_display.name = str(threat_data["meteor_id"])
@@ -113,7 +118,7 @@ func add_threat(gid, threat_data, is_for_me = true):
 	domain_field.receive_threat(threat_data)
 	
 func update_threat_hp(meteor_id, hp):
-	var threat_display_node = threat_vbox_list.get_node(str(meteor_id))
+	var threat_display_node = threat_vbox_list.get_node_or_null(str(meteor_id))
 	if threat_display_node:
 		threat_display_node.update_hp(hp)
 
@@ -122,7 +127,7 @@ func threat_impact(threat_hp, power):
 	base_data.get_damage(power)
 	
 func remove_threat(id_threat):
-	var threat_display_node = threat_vbox_list.get_node(str(id_threat))
+	var threat_display_node = threat_vbox_list.get_node_or_null(str(id_threat))
 	if threat_display_node:
 		threat_display_node.queue_free()
 		
@@ -150,6 +155,12 @@ func incantation_progress_changed(n):
 func get_gid():
 	return game_id
 	
+func update_transaction_status(is_waiting: bool):
+	waiting_for_transaction_end = is_waiting
+
+func is_waiting_for_transaction_end():
+	return waiting_for_transaction_end
+
 func is_eliminated():
 	return base_data.eliminated
 	
@@ -195,11 +206,13 @@ func _on_write_digit():
 
 #we display the field if the mouse comes in
 func _on_BaseDomainDisplay_mouse_entered():
-	pass # Replace with function body.
+	print("mouse in basedomaindisplay")
+	domain_field.show()
 
 #and we hide it when it goes out
 func _on_BaseDomainDisplay_mouse_exited():
-	pass # Replace with function body.
+	print("mouse exited basedomaindisplay")
+	domain_field.hide()
 
 func _on_GameFieldMulti_domain_answer_response(id, good_answer):
 	if id == game_id:

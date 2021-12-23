@@ -152,5 +152,5 @@ func _on_Incantation_Operations_gui_input(event):
 #		if event.button_index == BUTTON_LEFT and event.pressed :
 #			print("Incantation Clic " + str(event.position))
 
-func _on_Spellbook_incantation_has_changed(L: Array):
+func _on_Spellbook_incantation_has_changed(_gid, L: Array):
 	update_operations(L)

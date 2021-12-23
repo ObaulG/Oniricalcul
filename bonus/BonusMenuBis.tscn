@@ -2,7 +2,7 @@
 
 [ext_resource path="res://LMROMAN10-REGULAR.OTF" type="DynamicFontData" id=1]
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=2]
-[ext_resource path="res://UI/TimeDisplay.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI/StatDisplay.tscn" type="PackedScene" id=3]
 [ext_resource path="res://incantation/Incantation_Operations.tscn" type="PackedScene" id=4]
 [ext_resource path="res://bonus/BonusMenu.gd" type="Script" id=5]
 [ext_resource path="res://save/player.gd" type="Script" id=6]
@@ -26,6 +26,8 @@ script = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Timer" type="Timer" parent="."]
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 margin_right = 1300.0
@@ -93,18 +95,18 @@ __meta__ = {
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/vbox"]
 margin_top = 76.0
 margin_right = 1300.0
-margin_bottom = 142.0
+margin_bottom = 102.0
 
-[node name="TimeDisplay" parent="MarginContainer/vbox/CenterContainer" instance=ExtResource( 3 )]
+[node name="timer_display" parent="MarginContainer/vbox/CenterContainer" instance=ExtResource( 3 )]
+pause_mode = 2
 margin_left = 550.0
 margin_right = 750.0
-margin_bottom = 66.0
-mouse_filter = 2
+margin_bottom = 26.0
 
 [node name="bonus_zone" type="HBoxContainer" parent="MarginContainer/vbox"]
-margin_top = 175.0
+margin_top = 135.0
 margin_right = 1300.0
-margin_bottom = 636.0
+margin_bottom = 596.0
 mouse_filter = 2
 custom_constants/separation = 50
 

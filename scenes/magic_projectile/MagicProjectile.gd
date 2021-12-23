@@ -1,4 +1,4 @@
-extends Node2D
+extends KinematicBody2D
 
 class_name MagicProjectile
 
@@ -8,6 +8,7 @@ signal target_hit(damage)
 signal target_destroyed()
 signal target_changed()
 signal target_not_found(power)
+#signal body_entered(body)
 
 enum PROJECTILE_TYPE{
 	STARS = 1, 
@@ -25,12 +26,14 @@ var id_player: int
 var destination: Vector2
 var target: Node2D
 onready var label_target = $target
+
 var velocity: Vector2
 
 var enemy_transfer_area2d
 
 func _ready():
-	connect("body_entered", self, "_on_Area2D_body_entered")
+	pass
+	#connect("body_entered", self, "_on_MagicProjectile_body_entered")
 
 func create(caster, power, character, id_player, target, base_speed = BASE_SPEED, type = PROJECTILE_TYPE.STARS):
 	self.caster = caster
@@ -65,9 +68,6 @@ func update_dest():
 func update_velocity():
 	velocity = position.direction_to(destination) * base_speed 
 	
-func move(delta):
-	self.translate(velocity * delta)
-	
 func _process(delta):
 	label_power.text = str(power)
 	set_rotation(0)
@@ -75,32 +75,37 @@ func _process(delta):
 	update_dest()
 	update_velocity()
 	look_at(destination)
-	move(delta)
-
+	
+	var collision = move_and_collide(delta*velocity)
+	if collision:
+		collision_handler(collision)
 #the projectile behaves differently in client and in server :
 # -server side: we apply the damages normally and the projectile
 # remains if it's more powerful than the meteor, else it is destroyed;
 # -client side: it moves and destroys itself with data inside, but 
 # all damage application and meteor destruction will be done with rpcs.
-func _on_Area2D_body_entered(body):
+
+func collision_handler(collision: KinematicCollision2D):
 	#apply damages
 	print("---------COLLISION---------")
-	print(body)
+	var collider_node = collision.collider
+	print(collider_node)
 	
 	#we check first if it has reached the zone sending a meteor
 	#to the enemy
-	if body.has_method("transfer_to_enemy"):
+	if collider_node.has_method("transfer_to_enemy"):
+		print("Magic projectile converted into instant incantation!")
 		if get_tree().is_network_server():
 			var power_fraction = power * initial_power
-			body.transfer_to_enemy(power_fraction, type)
+			collider_node.transfer_to_enemy(power_fraction, type)
 		queue_free()
 	
 	var meteor_current_hp = 9001
 	
-	if body.has_method("hit"):
-		meteor_current_hp = body.get_hp()
+	if collider_node.has_method("hit"):
+		meteor_current_hp = collider_node.get_hp()
 		if get_tree().is_network_server():
-			body.hit(power, character, id_player, base_speed, type)
+			collider_node.hit(power, character, id_player, base_speed, type)
 			emit_signal("target_hit", power)
 		
 	#as said, the client only process the movements of the projectile

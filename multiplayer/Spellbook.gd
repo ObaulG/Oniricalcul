@@ -1,20 +1,20 @@
 extends Node
 
 class_name Spellbook
+
 enum BUYING_OP_ATTEMPT_RESULT{
 	CAN_BUY = 1, 
 	NO_SPACE, 
 	NO_MONEY,
 	ALREADY_BUYING, 
 	ERROR}
-	
-signal attack()
-signal good_answer()
-signal wrong_answer()
-signal operation_to_display_has_changed(new_op)
-signal incantation_has_changed(L)
-signal new_incantation_charged(game_id)
-signal incantation_progress_changed(game_id, new_value)
+
+signal good_answer(gid)
+signal wrong_answer(gid)
+signal operation_to_display_has_changed(gid, new_op)
+signal incantation_has_changed(gid, L)
+signal new_incantation_charged(gid)
+signal incantation_progress_changed(gid, new_value)
 signal money_value_has_changed(gid, n)
 signal low_incantation_stock(gid)
 signal meteor_invocation(gid, dico_threat)
@@ -106,6 +106,9 @@ func initialise(char_dico):
 	operation_preference = char_dico["operations_preference"]
 	difficulty_preference = char_dico["difficulty_preference"]
 	operation_production = char_dico["operation_production"]
+	
+	money = 0
+	money_per_round = 60
 	meteor_sent = 0
 
 	chain = 0
@@ -236,6 +239,9 @@ func earn_money(n: int):
 	money += n
 	emit_signal("money_value_has_changed", game_id, money)
 	
+func set_money_value(n: int):
+	money = n
+	
 func get_potential():
 	return pattern.get_power(0, true)
 	
@@ -256,6 +262,11 @@ func store_new_incantations(L: Array):
 	for incantation in L:
 		operations_stock.append(incantation)
 	
+	print("Incantation stored: " + str(len(operations_stock)))
+	
+	if len(operations) == 0:
+		charge_new_incantation()
+		
 func charge_new_incantation():
 	var new_incantation = operations_stock.pop_front()
 	if len(operations_stock) < 3:
@@ -263,11 +274,11 @@ func charge_new_incantation():
 		
 	#what if there wasn't any new incantation in the stock??
 	if new_incantation:
-		
 		operations = new_incantation
 		print("domain " + str(game_id) + ": new incantation charged!")
 		emit_signal("new_incantation_charged", game_id)
-
+		emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
+		
 func answer_response(good_answer):
 	if good_answer:
 		good_answer()
@@ -277,34 +288,39 @@ func answer_response(good_answer):
 		print("wrong_answer")
 	determine_defense_power()
 	emit_signal("chain_value_changed", game_id, chain)
-	emit_signal("operation_to_display_has_changed", get_current_operation())
+	emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
+	
+func generate_threat_data_dict() -> Dictionary:
+	#[power, delay_time, hp, atk_side_effects]
+	var threat_stats = determine_threat_stats(pattern.get_power())
+	var dico_threat = {
+		meteor_id = meteor_sent,
+		hp = threat_stats[2],
+		type = atk_type,
+		power = threat_stats[0],
+		delay = threat_stats[1],
+		side_effects = threat_stats[3],
+		sender = game_id
+	}
+	meteor_sent += 1
+	return dico_threat
 	
 func good_answer():
 	var current_pattern_el = get_current_pattern_element()
 	get_parent().score_points(global.get_op_power_by_obj(current_pattern_el))
 	chain += 1
-	
+
 	var is_incantation_completed = pattern.next()
 	if is_incantation_completed:
 		print("Spellbook of domain " + str(game_id) + ": Incantation completed!")
 		print("Current stance: " + str(stance))
 		match(stance):
 			1:
-				#[power, delay_time, hp, atk_side_effects]
-				var threat_stats = determine_threat_stats(pattern.get_power())
-				var dico_threat = {
-					meteor_id = meteor_sent,
-					hp = threat_stats[2],
-					type = atk_type,
-					power = threat_stats[0],
-					delay = threat_stats[1],
-					side_effects = threat_stats[3],
-					sender = game_id
-				}
-				meteor_sent += 1
+				var dico_threat = generate_threat_data_dict()
 				emit_signal("meteor_invocation", game_id, dico_threat)
 			2:
-				var defense_damage = 0.5* (1 + (defense_power.apply() / pattern.get_len()))
+				#var defense_damage = 0.5* (1 + (defense_power.apply() / pattern.get_len()))
+				var defense_damage = defense_power.apply()
 				emit_signal("defense_command", game_id, defense_damage)
 			3:
 				pass
@@ -371,9 +387,20 @@ func set_stance(new_stance):
 	stance = new_stance
 	
 func _on_incantation_change():
-	emit_signal("incantation_has_changed", pattern.get_list())
+	print("Player " + str(game_id) + ": incantation change !")
+	emit_signal("incantation_has_changed", game_id, pattern.get_list())
 	emit_signal("potential_value_changed", game_id, get_potential())
 	determine_defense_power()
 	
+	#because the incantation has changed, we must destroy all
+	#operation lists and generate new ones
+	operations.clear()
+	operations_stock.clear()
+	
+	#and replace the index to 0 to avoid messy situations
+	pattern.reverse_gear(10)
+	
+	emit_signal("low_incantation_stock", game_id)
+
 func _on_changing_stance_command(new_stance):
 	set_stance(new_stance)

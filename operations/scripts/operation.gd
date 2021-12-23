@@ -7,10 +7,10 @@ var diff: int
 var type: int
 var subtype
 
-func _init(diff, type, st = -1):
+func _init(hardness, t, st = -1):
 	result = null
-	self.type = type
-	self.diff = diff
+	self.type = t
+	self.diff = hardness
 	subtype = st
 
 func is_result(value) -> bool:

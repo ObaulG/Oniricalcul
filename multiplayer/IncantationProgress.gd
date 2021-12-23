@@ -13,5 +13,5 @@ func update_nb_elements_completed(n):
 func _on_Spellbook_incantation_progress_changed(_game_id, new_value):
 	update_nb_elements_completed(new_value)
 
-func _on_Spellbook_incantation_has_changed(L):
+func _on_Spellbook_incantation_has_changed(_gid, L):
 	update_nb_max_elements(len(L))

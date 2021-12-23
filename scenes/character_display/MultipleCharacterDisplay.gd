@@ -13,7 +13,7 @@ func _ready():
 	players_count = 0 
 	bot_count = 0
 	
-func add_player(name_player: String, id_player: int, id_character = -1, validated = false, is_bot = false):
+func add_player(name_player: String, net_id: int, game_id: int, id_character = -1, validated = false, is_bot = false):
 	print("Adding player to UI")
 	var player_node = global.character_display.instance()
 	
@@ -32,8 +32,8 @@ func add_player(name_player: String, id_player: int, id_character = -1, validate
 	
 	player_node.cancel_validation()
 	player_node.connect("bot_diff_changed", self, "_on_bot_diff_changed")
-	player_node.set_name(str(id_player))
-	player_node.add_player(name_player, id_player)
+	player_node.set_name(str(net_id))
+	player_node.add_player(name_player, net_id, game_id)
 	
 	if id_character != -1:
 		player_node.select_character(id_character)

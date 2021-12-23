@@ -31,6 +31,8 @@ onready var color_rect = $hbox/ColorRect
 onready var next_char_button = $next_char_button
 onready var previous_char_button = $previous_char_button
 
+onready var game_id_label = $HBoxContainer/game_id_label
+
 func _ready():
 	id_character_selected = -1
 	id_player = -1
@@ -48,13 +50,14 @@ func remove_player():
 	id_player = -1
 	cr_info_bg.color = no_player_color
 	
-func add_player(name: String, id: int):
+func add_player(name: String, net_id: int, game_id: int):
 	set_player_name(name)
-	id_player = id
+	id_player = net_id
+	game_id_label.text = str(game_id)
 	cr_info_bg.color = unconfirmed_color
 	
-func change_screen_data(id: int):
-	var character = global.char_data[id]
+func change_screen_data(char_id: int):
+	var character = global.char_data[char_id]
 	char_icon.set_texture(character.get_icon_texture())
 	char_icon.visible = true
 	emit_signal("ui_updated")
@@ -70,9 +73,9 @@ func clear_selection():
 	char_icon.texture = global.get_resized_ImageTexture(global.unknown, 128, 128)
 	emit_signal("ui_updated")
 
-func select_character(id: int):
-	id_character_selected = id
-	change_screen_data(id)
+func select_character(char_id: int):
+	id_character_selected = char_id
+	change_screen_data(char_id)
 	
 func validate_choice():
 	validated = true

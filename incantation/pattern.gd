@@ -14,7 +14,7 @@ var scaling_coeff: float
 var power: ReliquatNumber
 
 func _init(L = [], scaling_value = 5):
-	elements = L
+	elements = L.duplicate()
 	index = 0
 	power = ReliquatNumber.new(0)
 	scaling_coeff = 1 + scaling_value/100
@@ -87,7 +87,7 @@ func set_index(i: int):
 	index = i
 	
 func set_elements(L: Array):
-	elements = L
+	elements = L.duplicate()
 	power_evaluation()
 	if index < len(elements):
 		index = 0
