@@ -283,6 +283,7 @@ func _on_disconnected_from_server():
 	emit_signal("disconnected")
 	# Clear the internal player list
 	players.clear()
+	bots.clear()
 	# Reset the player info network ID
 	Gamestate.player_info["net_id"] = 1
 

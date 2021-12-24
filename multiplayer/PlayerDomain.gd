@@ -48,7 +48,7 @@ func _ready():
 	domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
 	domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
 	domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
-	
+
 func initialise(pinfo):
 	player_id = pinfo["net_id"]
 	game_id = pinfo["game_id"]
@@ -225,7 +225,7 @@ func _on_GameFieldMulti_domain_answer_response(id, good_answer):
 		base_data.answer_response(good_answer)
 		
 func _on_BaseDomainData_eliminated():
-	pass # Replace with function body.
+	modulate = Color(0.21, 0.21, 0.21)
 
 func _on_BaseDomainData_points_value_changed(_gid, n):
 	update_stat_display(STAT.POINTS, n)

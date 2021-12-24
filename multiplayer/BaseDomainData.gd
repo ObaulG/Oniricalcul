@@ -104,6 +104,7 @@ func answer_response(good_answer):
 	if good_answer:
 		good_answers += 1
 		emit_signal("good_answers_value_changed", game_id, good_answers)
+		
 func is_alive():
 	return hp_current <= 0
 
@@ -154,7 +155,9 @@ func set_shop_operations(op_list: Array):
 
 func set_hp_value(hp: int):
 	hp_current = hp
-
+	if hp_current <= 0:
+		eliminated = true
+		emit_signal("eliminated", game_id)
 func on_spellbook_wrong_answer():
 	if id_character == 1:
 		get_damage(1)

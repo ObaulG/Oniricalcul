@@ -75,9 +75,8 @@ __meta__ = {
 [node name="end_game_window" type="CanvasLayer" parent="."]
 
 [node name="Panel" type="Panel" parent="end_game_window"]
-visible = false
-margin_left = 112.0
-margin_top = 54.0
+margin_left = 704.0
+margin_top = 16.0
 margin_right = 1856.0
 margin_bottom = 1055.0
 __meta__ = {
@@ -85,36 +84,110 @@ __meta__ = {
 }
 
 [node name="game_result_label" type="Label" parent="end_game_window/Panel"]
-margin_left = 496.0
-margin_top = 18.0
-margin_right = 1224.0
-margin_bottom = 91.0
+margin_left = 224.0
+margin_top = 10.5457
+margin_right = 928.0
+margin_bottom = 83.5457
 custom_fonts/font = SubResource( 2 )
-text = "aaaaaaaaaaaaaaaaaaaaaaaaa"
+text = "game_result"
 align = 1
 valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button2" type="Button" parent="end_game_window/Panel"]
-margin_left = 704.0
-margin_top = 930.0
-margin_right = 1228.0
-margin_bottom = 989.0
-custom_fonts/font = ExtResource( 2 )
-text = "Retourner à la sélection du personnage"
+[node name="VBoxContainer" type="VBoxContainer" parent="end_game_window/Panel"]
+margin_left = 256.0
+margin_top = 886.0
+margin_right = 896.0
+margin_bottom = 999.0
+custom_constants/separation = 15
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Button3" type="Button" parent="end_game_window/Panel"]
-margin_left = 744.0
-margin_top = 858.0
-margin_right = 1154.0
-margin_bottom = 917.0
+[node name="leave_game" type="Button" parent="end_game_window/Panel/VBoxContainer"]
+margin_right = 640.0
+margin_bottom = 49.0
 custom_fonts/font = ExtResource( 2 )
 text = "Quitter vers le menu principal"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="TextureRect" type="TextureRect" parent="end_game_window/Panel"]
+margin_left = 64.0
+margin_top = 305.0
+margin_right = 504.0
+margin_bottom = 723.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="end_game_window/Panel"]
+margin_left = 520.636
+margin_top = 328.0
+margin_right = 560.636
+margin_bottom = 368.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="end_game_window/Panel/VBoxContainer2"]
+margin_right = 502.0
+margin_bottom = 43.0
+custom_constants/separation = 285
+
+[node name="Label" type="Label" parent="end_game_window/Panel/VBoxContainer2/HBoxContainer"]
+margin_right = 178.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 2 )
+text = "Temps de jeu"
+
+[node name="Label2" type="Label" parent="end_game_window/Panel/VBoxContainer2/HBoxContainer"]
+margin_left = 463.0
+margin_right = 502.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 2 )
+text = "val"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="end_game_window/Panel/VBoxContainer2"]
+margin_top = 47.0
+margin_right = 502.0
+margin_bottom = 90.0
+custom_constants/separation = 200
+
+[node name="Label" type="Label" parent="end_game_window/Panel/VBoxContainer2/HBoxContainer2"]
+margin_right = 263.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 2 )
+text = "Météorites envoyées"
+
+[node name="Label2" type="Label" parent="end_game_window/Panel/VBoxContainer2/HBoxContainer2"]
+margin_left = 463.0
+margin_right = 502.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 2 )
+text = "val"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="end_game_window/Panel/VBoxContainer2"]
+margin_top = 94.0
+margin_right = 502.0
+margin_bottom = 137.0
+custom_constants/separation = 234
+
+[node name="Label" type="Label" parent="end_game_window/Panel/VBoxContainer2/HBoxContainer3"]
+margin_right = 228.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 2 )
+text = "Météorites reçues"
+
+[node name="Label2" type="Label" parent="end_game_window/Panel/VBoxContainer2/HBoxContainer3"]
+margin_left = 462.0
+margin_right = 501.0
+margin_bottom = 43.0
+custom_fonts/font = ExtResource( 2 )
+text = "val"
 
 [node name="SceneTransitionRect" parent="." instance=ExtResource( 6 )]
 
@@ -200,6 +273,7 @@ margin_bottom = 930.986
 [connection signal="write_digit" from="InputHandler" to="." method="_on_InputHandler_write_digit"]
 [connection signal="write_digit" from="InputHandler" to="OperationDisplayBasic" method="_on_InputHandler_write_digit"]
 [connection signal="timeout" from="round_time_remaining" to="." method="_on_round_time_remaining_timeout"]
+[connection signal="button_down" from="end_game_window/Panel/VBoxContainer/leave_game" to="." method="_on_leave_game_button_down"]
 [connection signal="button_down" from="test_buttons/remove10sec_button" to="." method="_on_remove10sec_button_button_down"]
 [connection signal="pressed" from="test_buttons/receive_meteor" to="." method="_on_receive_meteor_pressed"]
 [connection signal="operations_selection_done" from="bonus_menu" to="." method="_on_bonus_menu_operations_selection_done"]

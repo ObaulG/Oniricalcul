@@ -107,6 +107,7 @@ func _ready():
 	my_domain.base_data.spellbook.connect("money_value_has_changed", self, "_on_spellbook_money_value_has_changed")
 	my_domain.base_data.spellbook.connect("operation_to_display_has_changed", self, "_on_spellbook_operation_to_display_has_changed")
 	my_domain.base_data.connect("hp_value_changed", self, "_on_base_data_hp_value_changed")
+	my_domain.base_data.connect("eliminated", self, "on_player_eliminated")
 	my_domain.domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
 	my_domain.domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
 	my_domain.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
@@ -219,6 +220,8 @@ func generate_actor(pinfo):
 		nactor.base_data.spellbook.connect("defense_power_changed", self, "_on_spellbook_defense_power_changed")
 		
 		nactor.base_data.connect("hp_value_changed", self, "_on_base_data_hp_value_changed")
+		nactor.base_data.connect("elimination", self, "_on_enemy_elimination")
+		
 		nactor.domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
 		nactor.domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
 		nactor.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
@@ -653,13 +656,14 @@ func apply_shop_transaction(gid, action_type, L):
 	if domain:
 		domain.shop_action(action_type, L[0].get_price(), L[0])
 
-#TO BE CONTINUED
-remote func defeated():
-	pass
+#the player must see his end menu and also can also while the game is still playing
+func _on_player_eliminated():
+	$end_game_window/Panel.show()
 	
 remote func end_of_game():
-	pass
+	$end_game_window/Panel.show()
 	
+
 #returns a value explaining if the pid player can buy
 #the thing he asks.
 func check_shop_operation(gid: int, action_type, element):
@@ -690,7 +694,6 @@ remote func get_new_incantation_operations(L: Array):
 	
 #the players rpc this function and the server determines the target
 #or the target is given by the player
-#TO BE CONTINUED
 remote func player_meteor_incantation(gid, dico_threat):
 	var who = get_tree().get_rpc_sender_id()
 	print("Meteor incantation from player " + str(gid))
@@ -701,7 +704,6 @@ remote func player_meteor_incantation(gid, dico_threat):
 		rpc("meteor_cast", gid, target, dico_threat)
 		meteor_cast(gid, target, dico_threat)
 
-#TO BE CONTINUED
 remote func player_defense_command(gid, power):
 	if get_tree().is_network_server():
 		rpc("player_defense_command", gid, power)
@@ -892,9 +894,12 @@ func _on_bonus_menu_player_asks_for_action(game_id, action_type, element):
 					ask_server_for_bonus_action(game_id, action_type, [element])
 	else:
 		create_pop_up_notification(display_time, message,pos)
-		
-func _on_enemy_elimination(pid: int):
-	pass
+	
+#we must evaluate the number of remaining players to stop the game if needed
+func _on_enemy_elimination(gid: int):
+	if get_tree().is_network_server():
+		var remaining
+
 
 func _on_InputHandler_keyboard_action(action):
 	pass
@@ -1028,6 +1033,7 @@ func _on_base_data_hp_value_changed(gid, hp):
 		hp_value_changed(gid, hp)
 	else:
 		rpc_id(1, "hp_value_changed", gid, hp)
+		
 #tests
 func _on_receive_meteor_pressed():
 	if get_tree().is_network_server():
@@ -1044,3 +1050,7 @@ func _on_InputHandler_input_stance_change(new_stance):
 		changing_stance(1, new_stance)
 	else:
 		rpc_id(1, "changing_stance",game_id, new_stance)
+
+
+func _on_leave_game_button_down():
+	leave_game()
