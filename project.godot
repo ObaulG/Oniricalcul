@@ -365,6 +365,7 @@ ClassicMode="*res://ClassicMode.gd"
 SoundPlayer="*res://singletons/SoundPlayer.tscn"
 Gamestate="*res://multiplayer/gamestate.gd"
 network="*res://multiplayer/network.gd"
+HttpServerLink="*res://singletons/HTTPServerLink.gd"
 
 [debug]
 

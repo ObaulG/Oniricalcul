@@ -82,7 +82,7 @@ func dico_save() -> Dictionary:
 		"timestamp_lastplayed": OS.get_unix_time()
 	}
 	
-func save():
+func save(time_played: float):
 	var save_dict = dico_save()
 	var save_game = File.new()
 	save_game.open(global.PATH["SAVE_FILE"], File.WRITE)

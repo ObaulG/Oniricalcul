@@ -219,8 +219,8 @@ func _on_GameFieldMulti_domain_answer_response(id, good_answer):
 		print("Domain " + str(id) + ": answer received: " + str(good_answer))
 		base_data.answer_response(good_answer)
 		
-func _on_BaseDomainData_eliminated():
-	pass # Replace with function body.
+func _on_BaseDomainData_eliminated(_gid):
+	modulate = Color(0.21, 0.21, 0.21)
 
 func _on_GameFieldMulti_changing_stance_command(new_stance):
 	base_data.spellbook.set_stance(new_stance)

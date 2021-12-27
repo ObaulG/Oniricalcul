@@ -20,6 +20,8 @@ enum GAMESTATE {
 	IN_GAME,
 	GAME_END
 }
+
+const PATH_TO_PYTHON_APP_FOLDER = "C:/wamp64/www/oniridata/"
 #Contains all players data and handlers to keep
 #data updated
 
@@ -102,6 +104,11 @@ remote func authentication(pinfo: Dictionary):
 			#register the new player into the table
 			print("Auth. approved! Registering the player on the table.")
 			pinfo["game_id"] = create_game_id()
+			
+			#connecting to db to retrieve elo and db_id
+			print("Checking database...")
+			
+			print("End of checking")
 			register_player(pinfo)
 		rpc_id(sender, "server_response_to_auth", connection_approved, server_info)
 
@@ -151,13 +158,21 @@ remote func register_bot(pinfo):
 	else:
 		print("No more room for a bot !")
 		
+
+func retrieve_data_of_player_with_pseudo(pseudo: String):
+	
+	#checking if this player is in db
+	
+	#if not, we create a new entry
+	pass
+	
 func end_connection():
 	print("Ending connection to server")
 	get_tree().get_network_peer().close_connection()
 	get_tree().set_network_peer(null)
-	Gamestate.player_info["id_character_selected"] = -1
-	Gamestate.player_info["character_validated"] = false
-	players = {}
+	Gamestate.reset()
+	players.clear()
+	bots.clear()
 	
 func print_net_players_table():
 	print(str(Gamestate.player_info["net_id"]) + " - " + str(len(network.players)) + " players registered in :")
@@ -235,6 +250,24 @@ remote func set_game_state(value):
 		rpc("set_game_state", value)
 	server_info.game_state = value
 	
+#connects to a local db
+func send_game_data_to_server(game_data: Dictionary):
+	var http_request = HTTPRequest.new()
+	add_child(http_request)
+	http_request.connect("request_completed", self, "_http_request_completed")
+	# Perform a POST request. The URL below returns JSON as of writing.
+	# Note: Don't make simultaneous requests using a single HTTPRequest node.
+	# The snippet below is provided for reference only.
+	var error = http_request.request("localhost", [], true, HTTPClient.METHOD_POST, game_data)
+	if error != OK:
+		push_error("An error occurred in the HTTP request.")
+
+# Called when the HTTP request is completed.
+func _http_request_completed(result, response_code, headers, body):
+	var response = parse_json(body.get_string_from_utf8())
+
+	# Will print the user agent string used by the HTTPRequest node (as recognized by httpbin.org).
+	print(response.headers["User-Agent"])
 
 func pseudo_in_list(nick: String) -> bool:
 	print("Checking nick " + nick)
@@ -285,7 +318,7 @@ func _on_disconnected_from_server():
 	players.clear()
 	bots.clear()
 	# Reset the player info network ID
-	Gamestate.player_info["net_id"] = 1
+	Gamestate.reset()
 
 func get_all_game_ids() -> Array:
 	var game_id_array = []

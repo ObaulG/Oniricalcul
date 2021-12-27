@@ -158,6 +158,7 @@ func set_hp_value(hp: int):
 	if hp_current <= 0:
 		eliminated = true
 		emit_signal("eliminated", game_id)
+		
 func on_spellbook_wrong_answer():
 	if id_character == 1:
 		get_damage(1)

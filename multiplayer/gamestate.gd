@@ -15,12 +15,14 @@ func _init():
 func reset():
 	player_info["net_id"] = 1 # By default everyone receives "server ID"
 	player_info["game_id"] = 1 #will be given in game
+	player_info["db_id"] = -1 #not equal to game_id
 	player_info["actor_path"] = "res://multiplayer/PlayerDomain.tscn"  # The class used to represent the player in the game world
 	player_info["is_bot"] = false
 	player_info["bot_diff"] = -1
 	player_info["id_character_selected"] = -1
 	player_info["character_validated"] = false
 	player_info["id_character_playing"] = -1
+	player_info["elo"] = 1000
 	
 func get_data() -> Dictionary:
 	return player_info

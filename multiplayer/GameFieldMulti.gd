@@ -47,7 +47,8 @@ var shopping_time: float
 var bot_game_data = {}
 #stored by the server. keys and values are pids
 var targets: Dictionary
-var game_stats = []
+
+var game_data: Dictionary
 
 var base_data
 
@@ -107,7 +108,7 @@ func _ready():
 	my_domain.base_data.spellbook.connect("money_value_has_changed", self, "_on_spellbook_money_value_has_changed")
 	my_domain.base_data.spellbook.connect("operation_to_display_has_changed", self, "_on_spellbook_operation_to_display_has_changed")
 	my_domain.base_data.connect("hp_value_changed", self, "_on_base_data_hp_value_changed")
-	my_domain.base_data.connect("eliminated", self, "on_player_eliminated")
+	my_domain.base_data.connect("eliminated", self, "_on_player_eliminated")
 	my_domain.domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
 	my_domain.domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
 	my_domain.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
@@ -124,13 +125,25 @@ func _ready():
 	if get_tree().is_network_server():
 		print("Generate operations for server player")
 		generate_new_incantation_operations(my_domain.game_id, 3)
+		
 	else:
 		rpc_id(1,"generate_new_incantation_operations", my_domain.game_id, 3)
 	print("my operations are generated")
 	
 	bonus_window.game_id = game_id
-	#pause_mode = true
 	
+	if get_tree().is_network_server():
+		game_data = {
+		"timestamp_start": 0,
+		"timestamp_end": 0,
+		"players_dict": {}, #{game_id : pseudo}
+		"game_actions": [],
+		"eliminations": []
+		}
+		for id in network.players:
+			var gid = network.players[id]["game_id"]
+			var pseudo = network.players[id]["pseudo"]
+			game_data["players_dict"][gid] = pseudo
 func _process(delta):
 	if not pause_mode:
 		game_time += delta
@@ -153,6 +166,7 @@ remote func spawn_players():
 	for id in network.players:
 		if id != Gamestate.player_info["net_id"]:
 			generate_actor(network.players[id])
+
 	for id in network.bots:
 		generate_actor(network.bots[id])
 		
@@ -203,7 +217,7 @@ func generate_actor(pinfo):
 		nactor.activate_AI()
 
 	#we add connections (elimination, meteor casts, projectile casts, etc)
-	#elimination signal
+	#this signal is call on the client (not processed by server)
 	nactor.base_data.connect("eliminated", self, "_on_enemy_elimination")
 	connect("domain_answer_response", nactor, "_on_GameFieldMulti_domain_answer_response")
 
@@ -220,8 +234,6 @@ func generate_actor(pinfo):
 		nactor.base_data.spellbook.connect("defense_power_changed", self, "_on_spellbook_defense_power_changed")
 		
 		nactor.base_data.connect("hp_value_changed", self, "_on_base_data_hp_value_changed")
-		nactor.base_data.connect("elimination", self, "_on_enemy_elimination")
-		
 		nactor.domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
 		nactor.domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
 		nactor.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
@@ -404,6 +416,7 @@ remote func check_answer(op, ans, gid):
 			var domain = get_domain_by_gid(gid)
 			if domain:
 				var stat_calcul = [
+					gid,
 					op.get_type(),
 					op.get_diff(),
 					op.get_parameters(),
@@ -413,18 +426,13 @@ remote func check_answer(op, ans, gid):
 				]
 				# the result is stored inside the operation for now...
 				
-				#calling the function in other players instance
 				if not op.is_result(ans):
-					stat_calcul[5] = false
-				#we only call result_answer in server
-	#			for id in network.players:
-	#				if id != 1:
-	#					rpc_id(id, "result_answer", gid, stat_calcul[5])
-				#we store it in the list
-				game_stats.append(stat_calcul)
+					stat_calcul[6] = false
 				
-				#then we call it on ourself
-				result_answer(gid, stat_calcul[5])
+				#we store it in the list
+				game_data["game_actions"].append(stat_calcul)
+				#will send data to everyone
+				result_answer(gid, stat_calcul[6])
 	
 #only used by server to apply modifications on nodes.
 #signals are propagated to call rpcs in client nodes if there is
@@ -657,13 +665,21 @@ func apply_shop_transaction(gid, action_type, L):
 		domain.shop_action(action_type, L[0].get_price(), L[0])
 
 #the player must see his end menu and also can also while the game is still playing
-func _on_player_eliminated():
+func _on_player_eliminated(gid: int):
+	if get_tree().is_network_server():
+		game_data["eliminations"].append(gid)
+	if gid == game_id:
+		end_of_game(false)
+	
+remote func end_of_game(victory: bool):
+	if victory:
+		$end_game_window/Panel/game_result_label.text = "Victoire !"
+	else:
+		$end_game_window/Panel/game_result_label.text = "Défaite..."
 	$end_game_window/Panel.show()
 	
-remote func end_of_game():
-	$end_game_window/Panel.show()
-	
-
+	if get_tree().is_network_server():
+		network.send_game_data_to_server(game_data)
 #returns a value explaining if the pid player can buy
 #the thing he asks.
 func check_shop_operation(gid: int, action_type, element):
@@ -898,8 +914,10 @@ func _on_bonus_menu_player_asks_for_action(game_id, action_type, element):
 #we must evaluate the number of remaining players to stop the game if needed
 func _on_enemy_elimination(gid: int):
 	if get_tree().is_network_server():
-		var remaining
-
+		var nb_remaining_enemies = len(get_all_targetable_players(game_id))
+		game_data["eliminations"].append(gid)
+		if nb_remaining_enemies == 0:
+			end_of_game(true)
 
 func _on_InputHandler_keyboard_action(action):
 	pass

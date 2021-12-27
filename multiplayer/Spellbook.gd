@@ -150,7 +150,7 @@ func random_int_rounding(x: float) -> int:
 func determine_threat_power(potential: int) -> int:
 	var power = 0
 	if atk_type == THREAT_TYPES.REGULAR:
-		power = 0.82 + 0.06 * potential
+		power = 2 + 0.75 * potential
 	elif atk_type == THREAT_TYPES.FAST:
 		power = 1 + 0.008 * potential
 	elif atk_type == THREAT_TYPES.STRONG:

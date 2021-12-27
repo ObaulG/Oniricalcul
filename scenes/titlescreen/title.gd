@@ -1,53 +1,47 @@
 extends CanvasLayer
 
 
-var fast_game_button
-var classic_game_button
-var history_game_button
-var quit_button
-var options_button
+onready var fast_game_button = $VBoxContainer/buttons_container/list/fast_game_button
+onready var classic_game_button = $VBoxContainer/buttons_container/list/classic_game_button
+onready var history_game_button = $VBoxContainer/buttons_container/list/history_mode_button
+onready var quit_button = $VBoxContainer/buttons_container/list/quit_button
+onready var options_button = $VBoxContainer/buttons_container/list/options_button
 
-var meteor_timer
-var bg_music_timer
+onready var meteor_timer = $meteor_timer
+onready var bg_music_timer = $bgmusic_timer
 
-var scene_transition
+onready var scene_transition = $SceneTransitionRect
+
 func _ready():
+	global.game_mode = 0
 	get_tree().paused = false
-	scene_transition = $SceneTransitionRect
+
 	scene_transition.visible = true
 	scene_transition.play(true)
-	fast_game_button = $VBoxContainer/buttons_container/list/fast_game_button
-	classic_game_button = $VBoxContainer/buttons_container/list/classic_game_button
-	history_game_button = $VBoxContainer/buttons_container/list/history_mode_button
-	quit_button = $VBoxContainer/buttons_container/list/quit_button
-	options_button = $VBoxContainer/buttons_container/list/options_button
 
-	meteor_timer = $meteor_timer
-	bg_music_timer = $bgmusic_timer
 	
 func _on_play_button_down(extra_arg_0: int):
 	global.game_mode = extra_arg_0
 	scene_transition.play()
 	yield(scene_transition, "transition_finished")
+	var new_scene_path: String
 	match extra_arg_0:
 		1:
-			get_tree().change_scene("res://scenes/charselect/CharacterSelection.tscn")
+			new_scene_path = "res://scenes/charselect/CharacterSelection.tscn"
 		2:
 			ClassicMode.reset_game()
-			get_tree().change_scene("res://scenes/dialog/DialogueScene.tscn")
+			new_scene_path = "res://scenes/dialog/DialogueScene.tscn"
 		3:
 			pass
 		4:
-			get_tree().change_scene("res://multiplayer/Onirilobby.tscn")
-
-
+			new_scene_path = "res://multiplayer/Onirilobby.tscn"
+	scene_transition.change_scene(new_scene_path)
 func _on_options_button_down():
 	pass # Replace with function body.
 
 
 func _on_quit_button_down():
 	get_tree().quit()
-
 
 func _on_bgmusic_timer_timeout():
 	SoundPlayer.play_bg_music("titlescreen")

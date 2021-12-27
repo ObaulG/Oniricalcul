@@ -115,13 +115,14 @@ func threat_presence():
 	return threat_count > 0
 
 func get_threat_by_id(id):
-	return threats_container.get_node(str(id))
+	return threats_container.get_node_or_null(str(id))
 	
 func get_nearest_threat():
 	return first_threat
 	
 func get_collision_zone_to_enemy():
 	return sending_meteor_area
+	
 #TO BE CONTINUED
 func inflict_damage_to_threat(id_threat, n):
 	var threat = get_threat_by_id(id_threat)
