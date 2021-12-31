@@ -31,7 +31,7 @@ func pause_AI():
 	
 func determine_ai_time_to_answer():
 	var op = base_data.spellbook.pattern.get_current_element()
-	var answer_time = rng.randfn(AI_BASE_ANSWER_TIME_BY_DIFF[op[1]] + AI_BASE_ANSWER_TIME_BY_OP_DIFF[op[1]-1], 0.9)
+	var answer_time = rng.randfn(AI_BASE_ANSWER_TIME_BY_DIFF[hardness-1] + AI_BASE_ANSWER_TIME_BY_OP_DIFF[op[1]-1], 0.9)
 	answer_timer.start(answer_time)
 	
 func is_activated():
@@ -59,4 +59,3 @@ func _on_answer_timer_timeout():
 
 func _on_GameFieldMulti_game_state_changed(new_state):
 	pass # Replace with function body.
-

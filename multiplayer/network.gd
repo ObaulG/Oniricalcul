@@ -138,29 +138,36 @@ remote func register_player(pinfo):
 	emit_signal("player_added", pinfo["net_id"])
 	#emit_signal("player_list_changed")     # And notify that the player list has been changed
 
-remote func register_bot(pinfo):
-	if get_total_players_entities() < server_info.max_players:
-		pinfo["net_id"] = get_nb_bots() + 38
-		pinfo["game_id"] = create_game_id()
-		pinfo["pseudo"] = "Bot " + str(get_nb_bots()+1)
-		if (get_tree().is_network_server()):
-			# We are on the server, so distribute the player list information throughout the connected players
-			for id in players:
-				if (id != 1):
-					rpc_id(id, "register_bot", pinfo)
-					
-		# Now to code that will be executed regardless of being on client or server
-		print("Registering bot ", pinfo["pseudo"], " (", pinfo["net_id"], ") to internal bot table")
-		bots[pinfo["net_id"]] = pinfo          # Create the player entry in the dictionary
-		print_net_players_table()
-		emit_signal("bot_added", pinfo["net_id"])
-		#emit_signal("bot_list_changed")     # And notify that the player list has been changed
-	else:
-		print("No more room for a bot !")
-		
+remote func register_bot(pinfo = {}):
+	if get_tree().is_network_server():
+		if get_total_players_entities() < server_info.max_players:
+			var bot_info = global.player.get_multiplayer_dict().duplicate()
+			bot_info["is_bot"] = true
+			bot_info["bot_diff"] = 3
+			bot_info["actor_path"] = "res://multiplayer/PlayerDomain.tscn"  # The class used to represent the player in the game world
 
+			#For character select
+			bot_info["id_character_selected"] = 1
+			bot_info["character_validated"] = false
+			#Validated character id
+			bot_info["id_character_playing"] = -1
+			
+			bot_info["net_id"] = get_nb_bots() + 38
+			bot_info["game_id"] = create_game_id()
+			bot_info["pseudo"] = "Bot " + str(get_nb_bots()+1)
+			pinfo = bot_info.duplicate()
+			# We are on the server, so distribute the player list information throughout the connected players
+			rpc("register_bot", bot_info)
+		#emit_signal("bot_list_changed")     # And notify that the player list has been changed
+		else:
+			print("No more room for a bot !")
+			return
+	# Now to code that will be executed regardless of being on client or server
+	print("Registering bot ", pinfo["pseudo"], " (", pinfo["net_id"], ") to internal bot table")
+	bots[pinfo["net_id"]] = pinfo          # Create the player entry in the dictionary
+	print_net_players_table()
+	emit_signal("bot_added", pinfo["net_id"])
 func retrieve_data_of_player_with_pseudo(pseudo: String):
-	
 	#checking if this player is in db
 	
 	#if not, we create a new entry

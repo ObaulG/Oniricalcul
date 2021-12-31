@@ -19,13 +19,17 @@ font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
 size = 20
 font_data = SubResource( 2 )
 
-[node name="MultiplayerCharacterSelection" type="CanvasLayer"]
+[node name="MultiplayerCharacterSelection" type="Control"]
+mouse_filter = 2
 script = ExtResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="ColorRect" type="ColorRect" parent="."]
 margin_right = 1920.0
 margin_bottom = 1080.0
-mouse_filter = 1
+mouse_filter = 2
 color = Color( 0.196078, 0.380392, 0.176471, 0.423529 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -40,11 +44,11 @@ margin_left = 1416.0
 margin_top = 65.0
 margin_right = -40.0
 margin_bottom = -217.0
-mouse_filter = 1
 
 [node name="character_windows" type="HBoxContainer" parent="."]
 margin_right = 1925.0
 margin_bottom = 1076.0
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }

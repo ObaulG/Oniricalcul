@@ -4,7 +4,7 @@ class_name CharacterDisplay
 
 signal ui_updated()
 signal bot_diff_changed(id, new_value)
-
+signal character_changed(id, new_character_id)
 const confirmed_color = Color(0.11,0.92,0.08)
 const unconfirmed_color = Color(0.78,0.75,0.76)
 const no_player_color = Color(0.24,0.28,0.27)
@@ -39,11 +39,9 @@ func _ready():
 
 	validated = false
 	bot = false
-
-	bot_diff_slider.visible = false
-	next_char_button.visible = false
+	next_char_button.visible = true
 	previous_char_button.visible = false
-	
+	bot_diff_slider.editable = false
 func remove_player():
 	set_player_name("???")
 	cancel_validation()
@@ -143,10 +141,11 @@ func _on_bot_diff_label_value_changed(value):
 func _on_bot_diff_label_mouse_entered():
 	print("mouse in vslider in character display")
 
-
 func _on_next_char_button_button_down():
 	print("next button clicked")
 	select_character(global.id_next_char(id_character_selected))
-
+	emit_signal("character_changed", id_player, id_character_selected)
+	
 func _on_previous_char_button_button_down():
 	select_character(global.id_prev_char(id_character_selected))
+	emit_signal("character_changed", id_player, id_character_selected)

@@ -191,11 +191,8 @@ remote func client_ready(gid: int):
 
 func generate_actor(pinfo):
 	# Load the scene and create an instance
-	var pclass
-	if pinfo["is_bot"]:
-		pclass = load("res://multiplayer/BaseDomainDisplay.tscn")
-	else:
-		pclass = load("res://multiplayer/PlayerDomain.tscn")
+	var pclass = load("res://multiplayer/BaseDomainDisplay.tscn")
+
 	var nactor = pclass.instance()
 	
 	# add the actor into the world
