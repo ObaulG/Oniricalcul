@@ -84,7 +84,7 @@ func _ready():
 	network.connect("disconnected", self, "_on_disconnected")
 	
 	operation_factory = OperationFactory.new()
-	print("operation factory generated")
+
 	
 	state = STATE.WAITING_EVERYONE
 	ready_label.text = "Joueurs prêts: 0 / " + str(len(clients_ready_to_play))
@@ -95,8 +95,6 @@ func _ready():
 
 	my_domain.initialise(network.players[Gamestate.player_info["net_id"]])
 	connect("domain_answer_response", my_domain, "_on_GameFieldMulti_domain_answer_response")
-	
-	print("my domain is initialised")
 	
 	my_domain.base_data.spellbook.connect("meteor_invocation", self, "_on_spellbook_meteor_invocation")
 	my_domain.base_data.spellbook.connect("defense_command", self, "_on_spellbook_defense_command")
@@ -113,6 +111,7 @@ func _ready():
 	my_domain.domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
 	my_domain.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
 	my_domain.domain_field.connect("magic_projectile_end_with_power_left", self, "_on_magic_projectile_end_with_power_left")
+	
 	#everyone has already the data to spawn every single player
 	spawn_players()
 	print("all players have been initialised")
@@ -125,11 +124,9 @@ func _ready():
 	if get_tree().is_network_server():
 		print("Generate operations for server player")
 		generate_new_incantation_operations(my_domain.game_id, 3)
-		
 	else:
 		rpc_id(1,"generate_new_incantation_operations", my_domain.game_id, 3)
-	print("my operations are generated")
-	
+
 	bonus_window.game_id = game_id
 	
 	if get_tree().is_network_server():
@@ -144,6 +141,7 @@ func _ready():
 			var gid = network.players[id]["game_id"]
 			var pseudo = network.players[id]["pseudo"]
 			game_data["players_dict"][gid] = pseudo
+
 func _process(delta):
 	if not pause_mode:
 		game_time += delta
@@ -188,11 +186,10 @@ remote func client_ready(gid: int):
 #note: meteor and projectile casts are only visual in clients: if it is display
 #on a basedomaindisplay, then it's not the main character so they should
 #not send data from other players.
-
+#used to generate other players instances (BaseDomainDisplay)
 func generate_actor(pinfo):
 	# Load the scene and create an instance
 	var pclass = load("res://multiplayer/BaseDomainDisplay.tscn")
-
 	var nactor = pclass.instance()
 	
 	# add the actor into the world
@@ -203,8 +200,9 @@ func generate_actor(pinfo):
 	# If this actor does not belong to the server, change the node name and network master accordingly
 	if (pinfo["net_id"] != 1):
 		nactor.set_network_master(pinfo["net_id"])
-	
 	nactor.set_name(str(pinfo["net_id"]))
+	
+	#bot initialisation
 	if pinfo["is_bot"]:
 		bot_game_data[pinfo["game_id"]] = {}
 		bot_game_data[pinfo["game_id"]]["shop_operations"] = []
@@ -220,23 +218,22 @@ func generate_actor(pinfo):
 
 	if get_tree().is_network_server():
 		generate_new_incantation_operations(pinfo["game_id"], 3)
-		
-	#send signal to tell everyone this bot is ready
-	if get_tree().is_network_server() and pinfo["is_bot"]:
-		nactor.base_data.spellbook.connect("meteor_invocation", self, "_on_spellbook_meteor_invocation")
-		nactor.base_data.spellbook.connect("defense_command", self, "_on_spellbook_defense_command")
-		nactor.base_data.spellbook.connect("low_incantation_stock", self, "_on_spellbook_low_incantations_stock")
-		nactor.base_data.spellbook.connect("incantation_has_changed", self, "_on_spellbook_incantation_has_changed")
-		nactor.base_data.spellbook.connect("potential_value_changed", self, "_on_spellbook_potential_value_changed")
-		nactor.base_data.spellbook.connect("defense_power_changed", self, "_on_spellbook_defense_power_changed")
-		
-		nactor.base_data.connect("hp_value_changed", self, "_on_base_data_hp_value_changed")
-		nactor.domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
-		nactor.domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
-		nactor.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
+		#send signal to tell everyone this bot is ready
+		if pinfo["is_bot"]:
+			nactor.base_data.spellbook.connect("meteor_invocation", self, "_on_spellbook_meteor_invocation")
+			nactor.base_data.spellbook.connect("defense_command", self, "_on_spellbook_defense_command")
+			nactor.base_data.spellbook.connect("low_incantation_stock", self, "_on_spellbook_low_incantations_stock")
+			nactor.base_data.spellbook.connect("incantation_has_changed", self, "_on_spellbook_incantation_has_changed")
+			nactor.base_data.spellbook.connect("potential_value_changed", self, "_on_spellbook_potential_value_changed")
+			nactor.base_data.spellbook.connect("defense_power_changed", self, "_on_spellbook_defense_power_changed")
+			
+			nactor.base_data.connect("hp_value_changed", self, "_on_base_data_hp_value_changed")
+			nactor.domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
+			nactor.domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
+			nactor.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
 
-		nactor.base_data.spellbook.connect("money_value_has_changed", bonus_window, "_on_spellbook_money_value_has_changed")
-		client_ready(pinfo["game_id"])
+			nactor.base_data.spellbook.connect("money_value_has_changed", bonus_window, "_on_spellbook_money_value_has_changed")
+			client_ready(pinfo["game_id"])
 	else:
 		rpc_id(1, "client_ready", pinfo["game_id"])
 		
@@ -254,6 +251,7 @@ remotesync func game_about_to_start():
 		if domain.is_bot():
 			domain.base_data.spellbook.charge_new_incantation()
 			domain.update_all_stats_display()
+			
 #we are not supposed to jump states, but just in case,
 #we give the new state as an argument
 #TO BE CONTINUED
@@ -676,7 +674,9 @@ remote func end_of_game(victory: bool):
 	$end_game_window/Panel.show()
 	
 	if get_tree().is_network_server():
-		network.send_game_data_to_server(game_data)
+		#network.send_game_data_to_server(game_data)
+		pass
+		
 #returns a value explaining if the pid player can buy
 #the thing he asks.
 func check_shop_operation(gid: int, action_type, element):

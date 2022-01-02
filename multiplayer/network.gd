@@ -237,8 +237,11 @@ remote func unregister_player(id):
 		print("Player is already removed... ?")
 	
 remote func unregister_bot(id):
-	print("Removing bot ", str(id), " from internal table")
-	
+	if get_tree().is_network_server():
+		print("Removing bot ", str(id), " from internal table")
+		#send the signal to everyone else
+		rpc("unregister_bot", id)
+		
 	if id in bots:
 		# Cache the player info because it's still necessary for some upkeeping
 		var pinfo = network.bots[id]
@@ -250,8 +253,7 @@ remote func unregister_bot(id):
 		# Emit the signal that is meant to be intercepted only by the server
 		emit_signal("bot_removed", pinfo)
 	else:
-		print("Player is already removed... ?")
-
+		print("Bot is already removed... ?")
 remote func set_game_state(value):
 	if get_tree().is_network_server():
 		rpc("set_game_state", value)
