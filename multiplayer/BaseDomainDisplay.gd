@@ -17,6 +17,7 @@ var game_id: int
 var parent_node
 
 var waiting_for_transaction_end: bool
+
 onready var base_data = $BaseDomainData
 onready var spellbook = $BaseDomainData/Spellbook
 onready var panel = $Panel
@@ -204,6 +205,9 @@ func _on_delete_digit():
 func _on_write_digit():
 	pass
 
+func apply_elimination_ui():
+	base_data.eliminated = true
+	modulate = Color(0.21, 0.21, 0.21)
 #we display the field if the mouse comes in
 func _on_BaseDomainDisplay_mouse_entered():
 	print("mouse in basedomaindisplay")

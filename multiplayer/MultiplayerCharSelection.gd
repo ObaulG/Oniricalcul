@@ -137,20 +137,18 @@ func update_character_select():
 				#print("player " + str(id) + " has already validated")
 				rpc("ui_validate_choice", id)
 				
-remotesync func character_selection(id_character, net_id):
+remote func character_selection(id_character, net_id):
 	if (get_tree().is_network_server()):
-		# We are on the server, so distribute the information throughout the connected players
-		for id in network.players:
-			# Send new player info to currently iterated player, skipping the server (which will get the info shortly)
-			if (id != 1):
-				rpc_id(id, "character_selection", id_character, net_id)
+		rpc("character_selection", id_character, net_id)
 		#we update this information in the network
 		network.players[net_id]["id_character_selected"] = id_character
 	# Now to code that will be executed regardless of being on client or server
 	print("Character " + str(id_character) + " selected by client id " + str(net_id))
+	
 	#we update the gamestate id char information
 	Gamestate.player_info["id_character_selected"] = id_character
-	
+	#and on the network
+	network.players[net_id]["id_character_selected"] = id_character
 	#then we apply modifications on the screen
 	change_screen_data(id_character, net_id)
 	
@@ -234,8 +232,7 @@ remote func change_bot_diff(bot_id, new_diff):
 	if get_tree().is_network_server():
 		for id in network.players:
 			# Send new player info to currently iterated player, skipping the server (which will get the info shortly)
-			if (id != 1):
-				rpc_id(id, "change_bot_diff", bot_id, new_diff)
+			rpc("change_bot_diff", bot_id, new_diff)
 				
 	network.bots[bot_id]["bot_diff"] = new_diff
 	var bot_display = player_list.get_bot_by_id(bot_id)
@@ -263,6 +260,7 @@ remotesync func validate_choice(net_id):
 		# then the game may start.
 		if is_everyone_ready() and network.get_total_players_entities() > 1:
 			#we validate bot character display
+			network.update_all_players_data()
 			rpc("ui_validate_all_bots")
 			rpc("write_message", 1, "Tous les joueurs sont prêts!")
 			rpc("start_game")
@@ -339,7 +337,9 @@ func _on_characters_item_selected(index):
 	if not Gamestate.player_info["character_validated"]:
 		var char_selected_id = association[index]
 		if get_tree().is_network_server():
-			rpc("character_selection", char_selected_id, Gamestate.player_info["net_id"])
+			character_selection(char_selected_id, Gamestate.player_info["net_id"])
+		else:
+			rpc_id(1, "character_selection", char_selected_id, Gamestate.player_info["net_id"])
 
 func _on_play_button_down():
 	if Gamestate.player_info["id_character_selected"] != -1:
@@ -354,7 +354,6 @@ func _on_cancel_choice_button_down():
 	print("Annulation choix par id client " + str(Gamestate.player_info["net_id"]))
 	rpc("clear_selection", Gamestate.player_info["net_id"])
 	
-
 
 func _on_player_list_changed():
 	print("Player list has changed.")

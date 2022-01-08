@@ -277,11 +277,18 @@ remote func update_player_dict(gid: int, pinfo: Dictionary):
 	
 	var dict_data = get_dict_data_by_game_id(gid)
 	if dict_data:
-		dict_data = pinfo.duplicate()
+		var new_dict = pinfo.duplicate()
+		dict_data = new_dict
 	
-remote func update_all_players_data():
-	pass
-	
+#synchronising all networking data with all clients
+func update_all_players_data():
+	if get_tree().is_network_server():
+		for id in players:
+			rpc("update_player_dict", players[id]["game_id"], players[id])
+		
+		for id in bots:
+			rpc("update_player_dict", bots[id]["game_id"], bots[id])
+
 #connects to a local db
 func send_game_data_to_server(game_data: Dictionary):
 	var http_request = HTTPRequest.new()

@@ -13,6 +13,13 @@ func _init(start_base, start_number, final_base, diff, type, subtype).(diff, typ
 	self.final_base = final_base
 	
 	self.result = 0
+	if self.start_base == 10:
+		self.result = convert_decimal_to_other_base(self.start_number, self.final_base)
+	else:
+		if self.final_base == 10:
+			self.result = convert_to_decimal(self.start_number, self.final_base)
+		else:
+			self.result = convert_baseA_baseB(self.start_number, self.start_base, self.final_base)
 
 func convert_to_decimal(n: String, base: int) -> String:
 	var total = 0
@@ -45,6 +52,9 @@ func to_string() -> String:
 	
 func get_str_show() -> String:
 	return str(start_number) + "("+str(start_base)+") ->..."+"("+str(final_base)+")"
+	
+func get_operands() -> Array:
+	return [self.start_base, self.start_number, self.final_base]
 	
 func get_parameters() -> Array:
 	return [start_base, start_number, final_base]

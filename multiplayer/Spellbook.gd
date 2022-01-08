@@ -265,7 +265,6 @@ func on_change_stance_command(new_stance):
 func store_new_incantations(L: Array):
 	for incantation in L:
 		operations_stock.append(incantation)
-	
 	print("Incantation stored: " + str(len(operations_stock)))
 	
 	#should be accessed only in the beginning (when we don't have any operations)
@@ -280,12 +279,15 @@ func charge_new_incantation():
 
 		operations = new_incantation
 		print("domain " + str(game_id) + ": new incantation charged!")
+		pattern.reverse_gear(10)
 		operation_charged = true
+		print("incantation: " + str(operations))
 		emit_signal("new_incantation_charged", game_id)
 		emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
 	else:
 		emit_signal("low_incantation_stock", game_id)
 		operation_charged = false
+
 func answer_response(good_answer):
 	if good_answer:
 		good_answer()

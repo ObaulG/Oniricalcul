@@ -41,8 +41,46 @@ func generate(pattern_el: Array):
 			calcul = generateConversion(diff, subtype)
 	return calcul
 	
+#generates a dict containing the data to generate the operation
+func generate_operation_dict_from_pattern_element(pattern_el: Array):
+	var operation = generate(pattern_el)
+	var dict = {
+		"type": operation.get_type(),
+		"diff": operation.get_diff(),
+		"operands": operation.get_operands(), #array
+		"result": operation.get_result()
+	}
+	return dict
+
+#we'd prefer call this one because the operation is already generated
+func generate_operation_dict_from_operation(operation):
+	var dict = {
+		"type": operation.get_type(),
+		"diff": operation.get_diff(),
+		"operands": operation.get_operands(), #array
+		"result": operation.get_result()
+	}
+	return dict
+	
 func generate_single_args(calcul_type, diff):
 	return generate([calcul_type, diff])
+	
+#generating the object on client side from dict because we can't send objets via rpcs.
+func generate_operation_from_dict(op_dict: Dictionary):
+	var calcul
+	var type = op_dict["type"]
+	var diff = op_dict["diff"]
+	var operands = op_dict["operands"]
+	match type:
+		OPERATION.ADDITION:
+			calcul = Addition.new(operands[0], operands[1], diff, type, -1)
+		OPERATION.SUBSTRACTION:
+			calcul = Substraction.new(operands[0], operands[1], diff, type, -1)
+		OPERATION.PRODUCT:
+			calcul = Product.new(operands[0], operands[1], diff, type, -1)
+		OPERATION.CONVERSION:
+			calcul = Conversion.new(operands[0], operands[1], operands[2], 4, type, -1)
+	return calcul
 	
 func choice(L: Array):
 	return L[rng.randi() % L.size()]

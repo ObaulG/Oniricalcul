@@ -198,6 +198,9 @@ func update_hp_value(hp):
 	base_data.set_hp_value(hp)
 	hp_display.set_new_value(hp)
 	
+func apply_elimination_ui():
+	modulate = Color(0.21, 0.21, 0.21)
+
 #input handlers
 func _on_check_answer_command():
 	pass

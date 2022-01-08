@@ -12,5 +12,8 @@ func _init(nb1, nb2, diff, type, st = -1).(diff, type, st):
 func get_diff():
 	return self.diff
 	
+func get_operands() -> Array:
+	return [self.nb1, self.nb2]
+
 func get_parameters() -> Array:
 	return [nb1, nb2, subtype]
