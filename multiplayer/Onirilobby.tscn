@@ -75,7 +75,7 @@ margin_top = 56.0
 margin_right = 544.0
 margin_bottom = 109.0
 custom_fonts/font = ExtResource( 2 )
-text = "zebi"
+text = "Team BB"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -166,7 +166,7 @@ margin_top = 56.0
 margin_right = 544.0
 margin_bottom = 109.0
 custom_fonts/font = ExtResource( 2 )
-text = "172.20.10.8"
+text = "192.168.1.20"
 __meta__ = {
 "_edit_use_anchors_": false
 }

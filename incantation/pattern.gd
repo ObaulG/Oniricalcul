@@ -92,3 +92,9 @@ func set_elements(L: Array):
 	if index < len(elements):
 		index = 0
 	emit_signal("incantation_has_changed")
+
+func swap_elements(i1: int, i2: int):
+	var temp = elements[i1].duplicate()
+	elements[i1] = elements[i2]
+	elements[i2] = temp
+	emit_signal("incantation_has_changed")

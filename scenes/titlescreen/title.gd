@@ -19,11 +19,8 @@ func _ready():
 	scene_transition.visible = true
 	scene_transition.play(true)
 
-	
 func _on_play_button_down(extra_arg_0: int):
 	global.game_mode = extra_arg_0
-	scene_transition.play()
-	yield(scene_transition, "transition_finished")
 	var new_scene_path: String
 	match extra_arg_0:
 		1:
@@ -36,6 +33,7 @@ func _on_play_button_down(extra_arg_0: int):
 		4:
 			new_scene_path = "res://multiplayer/Onirilobby.tscn"
 	scene_transition.change_scene(new_scene_path)
+
 func _on_options_button_down():
 	pass # Replace with function body.
 

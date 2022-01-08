@@ -35,3 +35,6 @@ func update_delay_display():
 
 func get_id():
 	return int(meteor_id.text)
+
+func _on_Timer_timeout():
+	queue_free()

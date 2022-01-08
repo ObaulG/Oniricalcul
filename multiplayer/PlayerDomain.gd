@@ -119,17 +119,18 @@ func remove_threat(id_threat):
 		
 	domain_field.remove_threat(id_threat)
 
-func shop_action(type, price, element):
+func shop_action(type, price, operations_selected_list):
 	print("apply shop instruction")
-	print(element)
+	print(operations_selected_list)
 	spellbook.spend_money(price)
 	match(type):
 		BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
-			add_operation_to_pattern(element.get_pattern_element())
+			add_operation_to_pattern(operations_selected_list[0].get_pattern_element())
 		BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-			spellbook.pattern.remove_by_element(element.get_pattern_element())
+			spellbook.pattern.remove_by_element(operations_selected_list[0].get_pattern_element())
 		BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
-			pass
+			spellbook.pattern.swap_elements(operations_selected_list[0].get_index_in_incantation(),
+											operations_selected_list[1].get_index_in_incantation())
 	update_stat_display(STAT.POTENTIAL, spellbook.pattern.get_power(0, true))
 	update_stat_display(STAT.DEFENSE_POWER, spellbook.defense_power.get_value())
 	
@@ -147,6 +148,7 @@ func get_gid():
 	
 func get_money():
 	return base_data.spellbook.get_money()
+	
 func update_stance(new_stance):
 	print("applying new stance in domain " + str(game_id))
 	base_data.spellbook.set_stance(new_stance)

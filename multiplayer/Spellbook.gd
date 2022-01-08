@@ -4,7 +4,8 @@ class_name Spellbook
 
 enum BUYING_OP_ATTEMPT_RESULT{
 	CAN_BUY = 1, 
-	NO_SPACE, 
+	NO_SPACE,
+	NOT_ERASABLE, 
 	NO_MONEY,
 	ALREADY_BUYING, 
 	ERROR}
@@ -79,6 +80,10 @@ var operations: Array
 # if they need another one to be generated
 var operations_stock : Array
 
+#flag telling if there is an incantation ready in the list operations.
+#user should not be able to access the list and play if empty
+var operation_charged: bool
+
 var points: int
 var energy
 var nb_calculs: int
@@ -86,10 +91,9 @@ var good_answers: int
 var chain: int
 var nb_pattern_loops: int
 
-#onready var domain_field = get_parent().get_parent().get_node("domain_field")
 
 func _ready():
-	pass
+	operation_charged = false
 	
 	
 func initialise(char_dico):
@@ -264,21 +268,24 @@ func store_new_incantations(L: Array):
 	
 	print("Incantation stored: " + str(len(operations_stock)))
 	
+	#should be accessed only in the beginning (when we don't have any operations)
 	if len(operations) == 0:
 		charge_new_incantation()
 		
 func charge_new_incantation():
-	var new_incantation = operations_stock.pop_front()
-	if len(operations_stock) < 3:
-		emit_signal("low_incantation_stock", game_id)
-		
-	#what if there wasn't any new incantation in the stock??
-	if new_incantation:
+	if len(operations_stock) > 0:
+		var new_incantation = operations_stock.pop_front()
+		if len(operations_stock) < 3:
+			emit_signal("low_incantation_stock", game_id)
+
 		operations = new_incantation
 		print("domain " + str(game_id) + ": new incantation charged!")
+		operation_charged = true
 		emit_signal("new_incantation_charged", game_id)
 		emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
-		
+	else:
+		emit_signal("low_incantation_stock", game_id)
+		operation_charged = false
 func answer_response(good_answer):
 	if good_answer:
 		good_answer()
@@ -354,6 +361,10 @@ func buy_attempt_result(action_type, price: int):
 				return BUYING_OP_ATTEMPT_RESULT.CAN_BUY
 			else:
 				return BUYING_OP_ATTEMPT_RESULT.NO_SPACE
+				
+		if action_type == BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
+			if pattern.get_len() == 3:
+				return BUYING_OP_ATTEMPT_RESULT.NOT_ERASABLE
 		return BUYING_OP_ATTEMPT_RESULT.CAN_BUY
 	else:
 		return BUYING_OP_ATTEMPT_RESULT.NO_MONEY

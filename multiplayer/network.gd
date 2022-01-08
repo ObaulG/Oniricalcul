@@ -89,6 +89,7 @@ remote func server_response_to_auth(approved: bool, server_data: Dictionary):
 #sends data to server to check if it is correct
 remote func _on_join_success():
 	Gamestate.player_info["net_id"] = get_tree().get_network_unique_id()
+	print("My id is " + str(Gamestate.player_info["net_id"]))
 	rpc_id(1,"authentication",Gamestate.player_info)
 	
 remote func authentication(pinfo: Dictionary):
@@ -113,6 +114,14 @@ remote func authentication(pinfo: Dictionary):
 		rpc_id(sender, "server_response_to_auth", connection_approved, server_info)
 
 remote func register_player(pinfo):
+	
+	print("Registering player ", pinfo["pseudo"], " (", pinfo["net_id"], ") to internal player table")
+	players[pinfo["net_id"]] = pinfo          # Create the player entry in the dictionary
+	if pinfo["net_id"] == get_tree().get_network_unique_id():
+		Gamestate.player_info = pinfo.duplicate()
+	print_net_players_table()
+	emit_signal("player_added", pinfo["net_id"])
+	
 	if (get_tree().is_network_server()):
 		
 		# We are on the server, so distribute the player list information throughout the connected players
@@ -130,13 +139,6 @@ remote func register_player(pinfo):
 			print("Bot " + str(id))
 			# Send currently iterated player info to the new player
 			rpc_id(pinfo["net_id"], "register_bot", bots[id])
-
-	# Now to code that will be executed regardless of being on client or server
-	print("Registering player ", pinfo["pseudo"], " (", pinfo["net_id"], ") to internal player table")
-	players[pinfo["net_id"]] = pinfo          # Create the player entry in the dictionary
-	print_net_players_table()
-	emit_signal("player_added", pinfo["net_id"])
-	#emit_signal("player_list_changed")     # And notify that the player list has been changed
 
 remote func register_bot(pinfo = {}):
 	if get_tree().is_network_server():
@@ -254,10 +256,31 @@ remote func unregister_bot(id):
 		emit_signal("bot_removed", pinfo)
 	else:
 		print("Bot is already removed... ?")
+		
 remote func set_game_state(value):
 	if get_tree().is_network_server():
 		rpc("set_game_state", value)
 	server_info.game_state = value
+	
+	
+remote func update_player_dict_element(gid: int, key: String, value):
+	if get_tree().is_network_server():
+		rpc("update_player_dict_element", gid, key, value)
+	
+	var dict_data = get_dict_data_by_game_id(gid)
+	if dict_data:
+		dict_data[key] = value
+		
+remote func update_player_dict(gid: int, pinfo: Dictionary):
+	if get_tree().is_network_server():
+		rpc("update_player_dict", gid, pinfo)
+	
+	var dict_data = get_dict_data_by_game_id(gid)
+	if dict_data:
+		dict_data = pinfo.duplicate()
+	
+remote func update_all_players_data():
+	pass
 	
 #connects to a local db
 func send_game_data_to_server(game_data: Dictionary):
@@ -329,6 +352,24 @@ func _on_disconnected_from_server():
 	# Reset the player info network ID
 	Gamestate.reset()
 
+func get_net_id_by_game_id(gid: int) -> int:
+	for id in players:
+		if players[id]["game_id"] == gid:
+			return id
+	for id in bots:
+		if bots[id]["game_id"] == gid:
+			return 1
+	return -1
+	
+func get_dict_data_by_game_id(gid: int) -> Dictionary:
+	for id in players:
+		if players[id]["game_id"] == gid:
+			return players[id]
+	for id in bots:
+		if bots[id]["game_id"] == gid:
+			return bots[id]
+	return {}
+	
 func get_all_game_ids() -> Array:
 	var game_id_array = []
 	for player_data in network.players.values():

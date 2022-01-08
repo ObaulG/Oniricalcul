@@ -266,7 +266,6 @@ margin_bottom = 930.986
 
 [connection signal="changing_stance_command" from="." to="main_player_domain" method="_on_GameFieldMulti_changing_stance_command"]
 [connection signal="new_incantations_received" from="." to="main_player_domain" method="_on_GameFieldMulti_new_incantations_received"]
-[connection signal="ready" from="." to="." method="_on_GameFieldMulti_ready"]
 [connection signal="check_answer_command" from="InputHandler" to="." method="_on_InputHandler_check_answer_command"]
 [connection signal="delete_digit" from="InputHandler" to="." method="_on_InputHandler_delete_digit"]
 [connection signal="delete_digit" from="InputHandler" to="OperationDisplayBasic" method="_on_InputHandler_delete_digit"]

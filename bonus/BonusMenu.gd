@@ -28,7 +28,6 @@ var erase_price
 var swap_price
 
 var state
-var selected_op_index: int #useless now
 var nb_selection_needed: int
 var confirm_pop_up_incantation
 var operation_dragged
@@ -57,7 +56,6 @@ func _ready():
 	pop_up_cancel_button = confirm_pop_up_incantation.get_cancel()
 	connect("on_pop_up_ok_press", self, "on_pop_up_ok_press")
 	connect("on_pop_up_cancel", self, "on_pop_up_cancel")
-	selected_op_index = -1
 	change_state(STATE.IDLE)
 	
 	game_id = get_parent().game_id
@@ -98,6 +96,10 @@ func change_state(state):
 			cancel_button.disabled = false
 			make_op_selectionnable(true, true)
 			
+func end_selection():
+	change_state(STATE.IDLE)
+	nb_selection_needed = 0
+
 func get_selected_operations():
 	return incantation.get_current_selected_operations()
 	
@@ -193,12 +195,6 @@ func set_new_stats(list: Array):
 
 func make_op_selectionnable(b = true, multi = false):
 	incantation.set_operations_selectable(b, multi)
-	
-func pop_up_result(ok_pressed: bool):
-	if ok_pressed:
-		return selected_op_index
-	else:
-		return -1
 
 func on_trying_to_buy_op(op):
 	print("You try to buy " + str(op))
@@ -208,15 +204,6 @@ func on_trying_to_buy_op(op):
 
 func _on_operation_confirmed(index):
 	return index
-
-
-func _on_pop_up_ok_press():
-	pop_up_result(true)
-
-
-func _on_pop_up_cancel():
-	pop_up_result(false)
-
 
 func set_shop_operations_buyable(b = true):
 	for op in new_operations_grid.get_children():
@@ -235,11 +222,12 @@ func _on_cancel_button_down():
 	change_state(STATE.IDLE)
 
 func _on_erase_button_down():
-	emit_signal("player_asks_for_action", game_id, BONUS_ACTION.ERASE_OPERATION)
+	emit_signal("player_asks_for_action", game_id, BONUS_ACTION.ERASE_OPERATION, null)
 
 #if we have the correct number of operations selected
 #for the current state then we call the function needed
 func _on_Incantation_Operations_nb_selected_operations_changed(n):
+	print("operations selected: " + str(n))
 	match state:
 		STATE.IDLE:
 			pass
@@ -251,10 +239,9 @@ func _on_Incantation_Operations_nb_selected_operations_changed(n):
 			pass
 
 	if n == nb_selection_needed:
-		emit_signal("operations_selection_ended", get_selected_operations(), state)
-		change_state(STATE.IDLE)
-		nb_selection_needed = 0
-
+		emit_signal("operations_selection_done", get_selected_operations(), state)
+		end_selection()
+		
 func _on_spellbook_incantation_has_changed(L: Array):
 	set_pattern(L)
 	

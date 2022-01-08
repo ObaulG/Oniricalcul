@@ -71,6 +71,7 @@ onready var ready_label = $players_ready
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	game_id = Gamestate.player_info["game_id"]
+	
 	# Connect event handler to the player_list_changed signal
 	network.connect("player_list_changed", self, "_on_player_list_changed")
 	
@@ -85,7 +86,6 @@ func _ready():
 	
 	operation_factory = OperationFactory.new()
 
-	
 	state = STATE.WAITING_EVERYONE
 	ready_label.text = "Joueurs prêts: 0 / " + str(len(clients_ready_to_play))
 	
@@ -93,7 +93,7 @@ func _ready():
 	preround_time = PREROUND_TIME
 	shopping_time = SHOPPING_TIME
 
-	my_domain.initialise(network.players[Gamestate.player_info["net_id"]])
+	my_domain.initialise(network.players[get_tree().get_network_unique_id()])
 	connect("domain_answer_response", my_domain, "_on_GameFieldMulti_domain_answer_response")
 	
 	my_domain.base_data.spellbook.connect("meteor_invocation", self, "_on_spellbook_meteor_invocation")
@@ -112,7 +112,7 @@ func _ready():
 	my_domain.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
 	my_domain.domain_field.connect("magic_projectile_end_with_power_left", self, "_on_magic_projectile_end_with_power_left")
 	
-	#everyone has already the data to spawn every single player
+	#everyone has already the data to spawn every single player in network singleton
 	spawn_players()
 	print("all players have been initialised")
 	
@@ -141,7 +141,7 @@ func _ready():
 			var gid = network.players[id]["game_id"]
 			var pseudo = network.players[id]["pseudo"]
 			game_data["players_dict"][gid] = pseudo
-
+		
 func _process(delta):
 	if not pause_mode:
 		game_time += delta
@@ -160,7 +160,7 @@ func _on_disconnected_from_server():
 func leave_game():
 	scene_transition_rect.change_scene("res://scenes/titlescreen/title.tscn")
 	
-remote func spawn_players():
+func spawn_players():
 	for id in network.players:
 		if id != Gamestate.player_info["net_id"]:
 			generate_actor(network.players[id])
@@ -168,7 +168,7 @@ remote func spawn_players():
 	for id in network.bots:
 		generate_actor(network.bots[id])
 		
-	print("All actors generated")
+	print("All actors generated !")
 	
 #called to tell everyone the game is about to start
 remote func client_ready(gid: int):
@@ -183,6 +183,7 @@ remote func client_ready(gid: int):
 		if len(clients_ready_to_play) >= network.get_total_players_entities():
 			rpc("game_about_to_start")
 
+	
 #note: meteor and projectile casts are only visual in clients: if it is display
 #on a basedomaindisplay, then it's not the main character so they should
 #not send data from other players.
@@ -196,30 +197,20 @@ func generate_actor(pinfo):
 	enemy_domains.add_child(nactor)
 	# domain initialization
 	nactor.initialise(pinfo)
-	
-	# If this actor does not belong to the server, change the node name and network master accordingly
-	if (pinfo["net_id"] != 1):
-		nactor.set_network_master(pinfo["net_id"])
 	nactor.set_name(str(pinfo["net_id"]))
 	
-	#bot initialisation
-	if pinfo["is_bot"]:
-		bot_game_data[pinfo["game_id"]] = {}
-		bot_game_data[pinfo["game_id"]]["shop_operations"] = []
-		nactor.set_name("bot_"+str(pinfo["net_id"]))
-		var bot_diff = pinfo["bot_diff"]
-		nactor.ai_node.set_hardness(bot_diff)
-		nactor.activate_AI()
-
-	#we add connections (elimination, meteor casts, projectile casts, etc)
-	#this signal is call on the client (not processed by server)
-	nactor.base_data.connect("eliminated", self, "_on_enemy_elimination")
-	connect("domain_answer_response", nactor, "_on_GameFieldMulti_domain_answer_response")
-
 	if get_tree().is_network_server():
 		generate_new_incantation_operations(pinfo["game_id"], 3)
-		#send signal to tell everyone this bot is ready
+		
+		#bot initialisation
 		if pinfo["is_bot"]:
+			bot_game_data[pinfo["game_id"]] = {}
+			bot_game_data[pinfo["game_id"]]["shop_operations"] = []
+			nactor.set_name("bot_"+str(pinfo["net_id"]))
+			var bot_diff = pinfo["bot_diff"]
+			nactor.ai_node.set_hardness(bot_diff)
+			nactor.activate_AI()
+		
 			nactor.base_data.spellbook.connect("meteor_invocation", self, "_on_spellbook_meteor_invocation")
 			nactor.base_data.spellbook.connect("defense_command", self, "_on_spellbook_defense_command")
 			nactor.base_data.spellbook.connect("low_incantation_stock", self, "_on_spellbook_low_incantations_stock")
@@ -233,10 +224,18 @@ func generate_actor(pinfo):
 			nactor.domain_field.connect("meteor_hp_changed", self, "_on_domain_field_meteor_hp_changed")
 
 			nactor.base_data.spellbook.connect("money_value_has_changed", bonus_window, "_on_spellbook_money_value_has_changed")
+			#send signal to tell everyone this bot is ready
 			client_ready(pinfo["game_id"])
-	else:
-		rpc_id(1, "client_ready", pinfo["game_id"])
-		
+		else:
+			# If this actor does not belong to the server, change the node name and network master accordingly
+#			if (pinfo["net_id"] != 1):
+#				nactor.set_network_master(pinfo["net_id"])
+			pass
+	#we add connections (elimination, meteor casts, projectile casts, etc)
+	#this signal is call on the client (not processed by server)
+	nactor.base_data.connect("eliminated", self, "_on_enemy_elimination")
+	connect("domain_answer_response", nactor, "_on_GameFieldMulti_domain_answer_response")
+	
 #called to tell all clients the game can start
 remotesync func game_about_to_start():
 	pause_mode = false
@@ -261,6 +260,7 @@ remotesync func changing_state(new_state):
 		match(new_state):
 			STATE.PREROUND:
 				new_round()
+				bonus_window.end_selection()
 			STATE.ROUND:
 				activate_AI_for_round_time()
 			STATE.SHOPPING:
@@ -269,6 +269,7 @@ remotesync func changing_state(new_state):
 				generate_all_shop_operations()
 			STATE.ENDED:
 				pause_AI()
+				
 		for id in network.players:
 			if id != 1:
 				rpc_id(id, "changing_state", new_state)
@@ -508,17 +509,17 @@ remote func ask_server_for_bonus_action(gid, action_type, L: Array):
 			#checking if the action is possible according to 
 			#the data in the server
 			var buy_status = check_shop_operation(gid, action_type, L[0])
-
+			var price: int
 			#then we apply modifications on the server
 			if buy_status == Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
 				match(action_type):
 					BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
-						domain.shop_action(action_type, L[0].get_price(), L[0])
+						price = L[0].get_price()
 					BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-						domain.shop_action(action_type, L[0].get_price(), L[0])
+						price = domain.base_data.spellbook.get_erase_price()
 					BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
-						pass
-
+						price = domain.base_data.spellbook.get_swap_price()
+				domain.shop_action(action_type, price, L)
 			#if the one asking is not a bot
 			if who != 1:
 				rpc_id(who, "server_answer_for_bonus_action", buy_status, action_type, L)
@@ -702,8 +703,18 @@ func check_shop_operation(gid: int, action_type, element):
 			return buy_status
 
 remote func get_new_incantation_operations(L: Array):
-	my_domain.base_data.spellbook.store_new_incantations(L)
 	print("player " + str(game_id) + " got " + str(len(L))+ " new incantations")
+	my_domain.base_data.spellbook.store_new_incantations(L)
+	
+	#we are ready when we get the operations to play!
+	if state == STATE.WAITING_EVERYONE:
+		if get_tree().is_network_server():
+			client_ready(game_id)
+		else:
+			rpc_id(1, "client_ready", game_id)
+		print("ready to play!")
+		
+	
 	
 #the players rpc this function and the server determines the target
 #or the target is given by the player
@@ -824,12 +835,6 @@ func create_pop_up_notification(display_time: float, message: String, pos = 1):
 	popup.initialize(display_time, message, pos)
 	popup.change_position(Vector2(500, 600))
 	popup.display_on_screen()
-	
-func _on_GameFieldMulti_ready():
-	if get_tree().is_network_server():
-		client_ready(1)
-	else:
-		rpc_id(1, "client_ready", game_id)
 
 func _on_player_list_changed():
 	# First remove all children from the boxList widget
@@ -888,6 +893,8 @@ func _on_bonus_menu_player_asks_for_action(game_id, action_type, element):
 			pass
 		Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_MONEY:
 			message = "Pas assez d'argent, économisez!"
+		Spellbook.BUYING_OP_ATTEMPT_RESULT.NOT_ERASABLE:
+			message = "Vous ne pouvez pas retirer plus d'opérations !"	
 		Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_SPACE:
 			message = "Vous ne pouvez pas compléter davantage votre Incantation !"
 		Spellbook.BUYING_OP_ATTEMPT_RESULT.ERROR:
@@ -898,8 +905,9 @@ func _on_bonus_menu_player_asks_for_action(game_id, action_type, element):
 		#expecting more action from the user
 		match(action_type):
 			BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
+				bonus_window.change_state(BonusMenu.STATE.SWAPPING)
+			BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
 				bonus_window.change_state(BonusMenu.STATE.SELECTING)
-
 			BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
 				if not get_tree().is_network_server():
 					rpc_id(1, "ask_server_for bonus_action", game_id, action_type, [element])
@@ -944,18 +952,17 @@ func _on_InputHandler_write_digit(d):
 		rpc_id(1, "keyboard_action", Gamestate.player_info["net_id"], 2)
 
 
-func _on_bonus_menu_operations_selection_done(L, state):
+func _on_bonus_menu_operations_selection_done(L, bonus_menu_state):
 	var action_type
-	match(state):
-		STATE.IDLE:
+	match(bonus_menu_state):
+		BonusMenuBis.STATE.IDLE:
 			pass
-		STATE.REPLACING_OP:
-			pass
-		STATE.SWAPPING:
+		BonusMenuBis.STATE.SWAPPING:
 			action_type = BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS
-		STATE.SELECTING:
+		BonusMenuBis.STATE.SELECTING:
 			action_type = BonusMenuBis.BONUS_ACTION.ERASE_OPERATION
 			
+	print("Sending request for buying selection...")
 	if Gamestate.player_info["net_id"] != 1:
 		rpc_id(1, "ask_server_for bonus_action", game_id, action_type, L)
 	else:

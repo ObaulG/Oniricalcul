@@ -338,7 +338,8 @@ func _on_characters_item_selected(index):
 	#if you validate your choice, you can't change the character.
 	if not Gamestate.player_info["character_validated"]:
 		var char_selected_id = association[index]
-		rpc("character_selection", char_selected_id, Gamestate.player_info["net_id"])
+		if get_tree().is_network_server():
+			rpc("character_selection", char_selected_id, Gamestate.player_info["net_id"])
 
 func _on_play_button_down():
 	if Gamestate.player_info["id_character_selected"] != -1:

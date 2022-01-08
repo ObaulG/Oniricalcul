@@ -148,7 +148,6 @@ func get_swap_price():
 func get_erase_price():
 	return spellbook.get_erase_price()
 	
-
 # setters
 func set_shop_operations(op_list: Array):
 	spellbook.list_shop_operations = op_list.duplicate()

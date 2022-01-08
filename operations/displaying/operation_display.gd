@@ -128,6 +128,9 @@ func get_subtype():
 
 func get_diff():
 	return diff
+	
+func get_index_in_incantation() -> int:
+	return index_in_incantation
 
 func get_pattern_element() -> Array:
 	return [type, diff]
@@ -167,10 +170,10 @@ func _on_Area2D_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:
 		if selectable and event.pressed and event.button_index == BUTTON_LEFT:
 			if !selected:
-				$selected.visible = true
+				set_selected(true)
 				emit_signal("operation_selected", index_in_incantation)
 			else:
-				$selected.visible = false
+				set_selected(false)
 				emit_signal("operation_unselected", index_in_incantation)
 
 
@@ -182,8 +185,8 @@ func _on_operation_gui_input(event):
 	if event is InputEventMouseButton:
 		if selectable and event.pressed and event.button_index == BUTTON_LEFT:
 			if !selected:
-				$selected.visible = true
+				set_selected(true)
 				emit_signal("operation_selected", index_in_incantation)
 			else:
-				$selected.visible = false
+				set_selected(false)
 				emit_signal("operation_unselected", index_in_incantation)
