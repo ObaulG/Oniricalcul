@@ -257,7 +257,6 @@ remotesync func game_about_to_start():
 			
 #we are not supposed to jump states, but just in case,
 #we give the new state as an argument
-#TO BE CONTINUED
 remotesync func changing_state(new_state):
 	round_timer.stop()
 	if get_tree().is_network_server():
@@ -444,8 +443,9 @@ remote func check_answer(op, ans, gid):
 #data to send
 remote func result_answer(gid, good_answer: bool):
 	if get_tree().is_network_server():
-		print("result answer for player " + str(gid) + ": " + str(good_answer))
-		emit_signal("domain_answer_response", gid, good_answer)
+		rpc("result_answer", gid, good_answer)
+	print("result answer for player " + str(gid) + ": " + str(good_answer))
+	emit_signal("domain_answer_response", gid, good_answer)
 
 remote func damage_taken(gid: int, n: int):
 	if get_tree().is_network_server():
