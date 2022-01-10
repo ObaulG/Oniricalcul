@@ -31,3 +31,7 @@ func set_operation_display(s: String):
 	
 func _on_spellbook_operation_to_display_has_changed(new_op):
 	change_operation_display(new_op)
+
+
+func _on_InputHandler_check_answer_command():
+	clear_answer()

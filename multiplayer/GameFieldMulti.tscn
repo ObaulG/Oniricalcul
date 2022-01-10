@@ -73,6 +73,7 @@ __meta__ = {
 }
 
 [node name="end_game_window" type="CanvasLayer" parent="."]
+pause_mode = 2
 
 [node name="Panel" type="Panel" parent="end_game_window"]
 visible = false
@@ -267,6 +268,7 @@ margin_bottom = 930.986
 [connection signal="changing_stance_command" from="." to="main_player_domain" method="_on_GameFieldMulti_changing_stance_command"]
 [connection signal="new_incantations_received" from="." to="main_player_domain" method="_on_GameFieldMulti_new_incantations_received"]
 [connection signal="check_answer_command" from="InputHandler" to="." method="_on_InputHandler_check_answer_command"]
+[connection signal="check_answer_command" from="InputHandler" to="OperationDisplayBasic" method="_on_InputHandler_check_answer_command"]
 [connection signal="delete_digit" from="InputHandler" to="." method="_on_InputHandler_delete_digit"]
 [connection signal="delete_digit" from="InputHandler" to="OperationDisplayBasic" method="_on_InputHandler_delete_digit"]
 [connection signal="input_stance_change" from="InputHandler" to="." method="_on_InputHandler_input_stance_change"]

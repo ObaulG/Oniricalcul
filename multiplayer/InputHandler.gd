@@ -44,8 +44,6 @@ func _input(event):
 				emit_signal("write_digit", keypad_numbers.bsearch(event.scancode))
 			elif event.scancode in numpad_numbers:
 				emit_signal("write_digit", numpad_numbers.bsearch(event.scancode))
-	else:
-		print("Not authorised to input!")
 
 func update_authorisation_to_input(b: bool):
 	authorised_to_input = b

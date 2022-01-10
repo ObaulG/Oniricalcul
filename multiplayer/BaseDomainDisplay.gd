@@ -62,9 +62,26 @@ func initialise(pinfo):
 	player_name_lbl.text = pinfo["pseudo"]
 
 	domain_field.initialise(game_id, base_data.id_character)
+	
 func activate_AI():
 	ai_node.activate_AI()
 	
+func answer_action(good_answer):
+	print("Domain " + str(game_id) + ": answer received: " + str(good_answer))
+	base_data.answer_response(good_answer)
+	
+func shop_action(type, price, element):
+	spellbook.spend_money(price)
+	match(type):
+		BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
+			add_operation_to_pattern(element)
+		BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
+			spellbook.pattern.remove_by_element(element)
+		BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
+			pass
+	update_stat_display(STAT.POTENTIAL, spellbook.pattern.get_power(0, true))
+	update_stat_display(STAT.DEFENSE_POWER, spellbook.defense_power)
+
 func update_all_stats_display():
 	update_stat_display(STAT.POINTS, base_data.points)
 	update_stat_display(STAT.POTENTIAL, base_data.spellbook.get_potential())
@@ -134,17 +151,7 @@ func remove_threat(id_threat):
 		
 	domain_field.remove_threat(id_threat)
 
-func shop_action(type, price, element):
-	spellbook.spend_money(price)
-	match(type):
-		BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
-			add_operation_to_pattern(element)
-		BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-			spellbook.pattern.remove_by_element(element)
-		BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
-			pass
-	update_stat_display(STAT.POTENTIAL, spellbook.pattern.get_power(0, true))
-	update_stat_display(STAT.DEFENSE_POWER, spellbook.defense_power)
+
 	
 func add_operation_to_pattern(op):
 	if op is Operation:
@@ -217,11 +224,6 @@ func _on_BaseDomainDisplay_mouse_entered():
 func _on_BaseDomainDisplay_mouse_exited():
 	print("mouse exited basedomaindisplay")
 	domain_field.hide()
-
-func _on_GameFieldMulti_domain_answer_response(id, good_answer):
-	if id == game_id:
-		print("Domain " + str(id) + ": answer received: " + str(good_answer))
-		base_data.answer_response(good_answer)
 		
 func _on_BaseDomainData_eliminated(_gid):
 	modulate = Color(0.21, 0.21, 0.21)

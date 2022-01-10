@@ -67,6 +67,10 @@ func initialise(pinfo):
 func activate_AI():
 	ai_node.activate_AI()
 	
+func answer_action(good_answer):
+	print("Domain " + str(game_id) + ": answer received: " + str(good_answer))
+	base_data.answer_response(good_answer)
+	
 func update_all_stats_display():
 	update_stat_display(STAT.POINTS, base_data.points)
 	update_stat_display(STAT.POTENTIAL, base_data.spellbook.pattern.get_power(0, true))
@@ -141,6 +145,7 @@ func incantation_has_changed(L):
 	incantation_display.update_operations(L)
 	
 func incantation_progress_changed(n):
+	print("incantation progress changed")
 	incantation_progress.update_nb_elements_completed(n)
 	
 func get_gid():

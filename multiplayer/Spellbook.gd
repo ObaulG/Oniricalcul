@@ -291,10 +291,8 @@ func charge_new_incantation():
 func answer_response(good_answer):
 	if good_answer:
 		good_answer()
-		print("good answer")
 	else:
 		wrong_answer()
-		print("wrong_answer")
 	determine_defense_power()
 	emit_signal("chain_value_changed", game_id, chain)
 	emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
