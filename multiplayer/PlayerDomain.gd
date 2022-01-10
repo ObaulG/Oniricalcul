@@ -53,7 +53,7 @@ func initialise(pinfo):
 	player_id = pinfo["net_id"]
 	game_id = pinfo["game_id"]
 	var id_char = pinfo["id_character_selected"]
-	base_data.initialise(id_char, player_id)
+	base_data.initialise(id_char, game_id)
 	
 	hp_display.set_max_value(global.char_data[id_char].get_base_hp())
 	hp_display.set_max_value(global.char_data[id_char].get_base_hp())
@@ -67,9 +67,9 @@ func initialise(pinfo):
 func activate_AI():
 	ai_node.activate_AI()
 	
-func answer_action(good_answer):
+func answer_action(good_answer, is_my_domain: bool):
 	print("Domain " + str(game_id) + ": answer received: " + str(good_answer))
-	base_data.answer_response(good_answer)
+	base_data.answer_response(good_answer, is_my_domain)
 	
 func update_all_stats_display():
 	update_stat_display(STAT.POINTS, base_data.points)
@@ -107,7 +107,7 @@ func add_threat(gid: int, threat_data, is_for_me = true):
 	domain_field.receive_threat(threat_data)
 	
 func update_threat_hp(meteor_id, hp):
-	var threat_display_node = threat_vbox_list.get_node(str(meteor_id))
+	var threat_display_node = threat_vbox_list.get_node_or_nullshop(str(meteor_id))
 	if threat_display_node:
 		threat_display_node.update_hp(hp)
 		
@@ -117,7 +117,7 @@ func threat_impact(threat_hp, power):
 	
 func remove_threat(id_threat):
 	print("ThreatLine removal: " + str(id_threat))
-	var threat_display_node = threat_vbox_list.get_node(str(id_threat))
+	var threat_display_node = threat_vbox_list.get_node_or_null(str(id_threat))
 	if threat_display_node:
 		threat_display_node.queue_free()
 		
@@ -131,12 +131,12 @@ func shop_action(type, price, operations_selected_list):
 		BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
 			add_operation_to_pattern(operations_selected_list[0].get_pattern_element())
 		BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-			spellbook.pattern.remove_by_element(operations_selected_list[0].get_pattern_element())
+			spellbook.pattern.remove(operations_selected_list[0])
 		BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
-			spellbook.pattern.swap_elements(operations_selected_list[0].get_index_in_incantation(),
-											operations_selected_list[1].get_index_in_incantation())
+			spellbook.pattern.swap_elements(operations_selected_list[0],
+											operations_selected_list[1])
 	update_stat_display(STAT.POTENTIAL, spellbook.pattern.get_power(0, true))
-	update_stat_display(STAT.DEFENSE_POWER, spellbook.defense_power.get_value())
+	update_stat_display(STAT.DEFENSE_POWER, spellbook.get_defense_power())
 	
 func add_operation_to_pattern(pattern_element):
 	spellbook.pattern.append(pattern_element)

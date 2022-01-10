@@ -30,7 +30,7 @@ const THREAT_TYPES = {REGULAR = 1, FAST = 2, STRONG = 3}
 #Public vars
 
 #Private 
-var game_id
+var game_id: int
 var id_character: int
 
 var rng = RandomNumberGenerator.new()
@@ -60,9 +60,9 @@ func _ready():
 	id_character = -1
 	eliminated = false
 	
-func initialise(char_id: int, pid: int):
+func initialise(char_id: int, gid: int):
 	var char_dico = global.characters[char_id]
-	game_id = pid
+	game_id = gid
 	id_character = char_id
 	hp_max = char_dico["hp"]
 	hp_current = hp_max
@@ -99,8 +99,8 @@ func score_points(n: int):
 	points += n
 	emit_signal("points_value_changed", game_id, points)
 	
-func answer_response(good_answer):
-	spellbook.answer_response(good_answer)
+func answer_response(good_answer, is_my_domain):
+	spellbook.answer_response(good_answer, is_my_domain)
 	if good_answer:
 		good_answers += 1
 		emit_signal("good_answers_value_changed", game_id, good_answers)

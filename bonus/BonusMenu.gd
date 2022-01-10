@@ -57,8 +57,6 @@ func _ready():
 	connect("on_pop_up_ok_press", self, "on_pop_up_ok_press")
 	connect("on_pop_up_cancel", self, "on_pop_up_cancel")
 	change_state(STATE.IDLE)
-	
-	game_id = get_parent().game_id
 
 func _process(_delta):
 	pass
@@ -127,6 +125,7 @@ func set_new_operations(list_player: Array, list_enemy: Array):
 	for op in list_player:
 		var type = op[0]
 		var diff = op[1]
+		var price = op[2]
 		var subtype
 		if len(op) == 3:
 			subtype = op[2]
@@ -136,7 +135,7 @@ func set_new_operations(list_player: Array, list_enemy: Array):
 		new_operations_grid.add_child(new_op)
 		new_op.change_operation(type, diff, subtype)
 		new_op.set_display_type(Operation_Display.DISPLAY_TYPE.BUYING)
-		new_op.set_price(5 + 2*pow(diff,2))
+		new_op.set_price(price)
 		new_op.connect("wants_to_buy_op", self, "on_trying_to_buy_op")
 		new_op.set_name("myop"+str(i))
 		i+=1
@@ -144,11 +143,11 @@ func set_new_operations(list_player: Array, list_enemy: Array):
 	for op in list_enemy:
 		var type = op[0]
 		var diff = op[1]
-
+		var price = op[2]
 		var new_op = global.operation_display.instance()
 		new_operations_grid.add_child(new_op)
 		new_op.change_operation(type, diff)
-		new_op.set_price(10 + 2*pow(diff,2))
+		new_op.set_price(price)
 		new_op.set_display_type(Operation_Display.DISPLAY_TYPE.BUYING)
 		new_op.connect("wants_to_buy_op", self, "on_trying_to_buy_op")
 		new_op.set_name("enemyop"+str(i))
@@ -159,6 +158,20 @@ func get_erase_price():
 	
 func get_swap_price():
 	return swap_price
+	
+func get_new_operation_by_index(i: int):
+	var op = new_operations_grid.get_child(i)
+	if op:
+		return op
+	return null
+	
+func get_index_of_new_operation(op):
+	var i = 0
+	for operation in new_operations_grid.get_children():
+		if op == operation:
+			return i
+		i += 1
+	return -1
 	
 func get_new_operations():
 	var list_of_new_op = []
@@ -197,10 +210,7 @@ func make_op_selectionnable(b = true, multi = false):
 	incantation.set_operations_selectable(b, multi)
 
 func on_trying_to_buy_op(op):
-	print("You try to buy " + str(op))
-	print("Game id: " + str(game_id))
-	emit_signal("player_asks_for_action", game_id, BONUS_ACTION.BUY_OPERATION, op)
-
+	emit_signal("player_asks_for_action", game_id, BONUS_ACTION.BUY_OPERATION, [op, get_index_of_new_operation(op)])
 
 func _on_operation_confirmed(index):
 	return index
@@ -215,7 +225,7 @@ func set_shop_operations_buyable(b = true):
 					op.set_display_type(Operation_Display.DISPLAY_TYPE.BASIC)
 					
 func _on_swap_button_down():
-	emit_signal("player_asks_for_action", game_id, BONUS_ACTION.SWAP_OPERATIONS, -1)
+	emit_signal("player_asks_for_action", game_id, BONUS_ACTION.SWAP_OPERATIONS, null)
 
 func _on_cancel_button_down():
 	set_shop_operations_buyable(true)

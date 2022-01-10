@@ -66,21 +66,22 @@ func initialise(pinfo):
 func activate_AI():
 	ai_node.activate_AI()
 	
-func answer_action(good_answer):
+func answer_action(good_answer, is_my_domain):
 	print("Domain " + str(game_id) + ": answer received: " + str(good_answer))
-	base_data.answer_response(good_answer)
+	base_data.answer_response(good_answer, is_my_domain)
 	
-func shop_action(type, price, element):
+func shop_action(type, price, operations_selected_list):
 	spellbook.spend_money(price)
 	match(type):
 		BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
-			add_operation_to_pattern(element)
+			add_operation_to_pattern(operations_selected_list[0])
 		BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-			spellbook.pattern.remove_by_element(element)
+			spellbook.pattern.remove(operations_selected_list[0])
 		BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
-			pass
+			spellbook.pattern.swap_elements(operations_selected_list[0],
+											operations_selected_list[1])
 	update_stat_display(STAT.POTENTIAL, spellbook.pattern.get_power(0, true))
-	update_stat_display(STAT.DEFENSE_POWER, spellbook.defense_power)
+	update_stat_display(STAT.DEFENSE_POWER, spellbook.get_defense_power())
 
 func update_all_stats_display():
 	update_stat_display(STAT.POINTS, base_data.points)

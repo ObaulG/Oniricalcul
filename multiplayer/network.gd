@@ -114,7 +114,6 @@ remote func authentication(pinfo: Dictionary):
 		rpc_id(sender, "server_response_to_auth", connection_approved, server_info)
 
 remote func register_player(pinfo):
-	
 	print("Registering player ", pinfo["pseudo"], " (", pinfo["net_id"], ") to internal player table")
 	players[pinfo["net_id"]] = pinfo          # Create the player entry in the dictionary
 	if pinfo["net_id"] == get_tree().get_network_unique_id():
@@ -123,7 +122,6 @@ remote func register_player(pinfo):
 	emit_signal("player_added", pinfo["net_id"])
 	
 	if (get_tree().is_network_server()):
-		
 		# We are on the server, so distribute the player list information throughout the connected players
 		for id in players:
 			# Send currently iterated player info to the new player

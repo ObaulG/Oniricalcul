@@ -75,10 +75,8 @@ func _ready():
 	char_info_node.add_player(Gamestate.player_info["pseudo"], Gamestate.player_info["net_id"])
 
 func leave_scene(dest: String):
-	scene_transition.play()
-	yield(scene_transition,"transition_finished")
-	get_tree().change_scene(dest)
-	
+	scene_transition.change_scene(dest)
+
 remote func change_screen_data(char_selected_id: int, player: int):
 	var character = global.char_data[char_selected_id]
 	print("Player " + str(player) + " has selected character " + str(char_selected_id))

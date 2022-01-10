@@ -269,33 +269,53 @@ func store_new_incantations(L: Array):
 	
 	#should be accessed only in the beginning (when we don't have any operations)
 	if len(operations) == 0:
-		charge_new_incantation()
+		charge_new_incantation(true)
 		
-func charge_new_incantation():
-	if len(operations_stock) > 0:
-		var new_incantation = operations_stock.pop_front()
-		if len(operations_stock) < 3:
+func charge_new_incantation(is_my_domain: bool = false):
+	if get_tree().is_network_server():
+		if len(operations_stock) > 0:
+			var new_incantation = operations_stock.pop_front()
+			if len(operations_stock) < 3:
+				emit_signal("low_incantation_stock", game_id)
+
+			operations = new_incantation
+			print("domain " + str(game_id) + ": new incantation charged!")
+			pattern.reverse_gear(10)
+			operation_charged = true
+			print("incantation: " + str(operations))
+			emit_signal("new_incantation_charged", game_id)
+			emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
+		else:
 			emit_signal("low_incantation_stock", game_id)
-
-		operations = new_incantation
-		print("domain " + str(game_id) + ": new incantation charged!")
+			operation_charged = false
+	else:
 		pattern.reverse_gear(10)
-		operation_charged = true
-		print("incantation: " + str(operations))
-		emit_signal("new_incantation_charged", game_id)
-		emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
-	else:
-		emit_signal("low_incantation_stock", game_id)
-		operation_charged = false
+		if is_my_domain:
+			if len(operations_stock) > 0:
+				var new_incantation = operations_stock.pop_front()
+				if len(operations_stock) < 3:
+					emit_signal("low_incantation_stock", game_id)
 
-func answer_response(good_answer):
+				operations = new_incantation
+				print("domain " + str(game_id) + ": new incantation charged!")
+				operation_charged = true
+				print("incantation: " + str(operations))
+				emit_signal("new_incantation_charged", game_id)
+				emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
+			else:
+				emit_signal("low_incantation_stock", game_id)
+				operation_charged = false
+				
+func answer_response(good_answer, is_my_domain):
 	if good_answer:
-		good_answer()
+		good_answer(is_my_domain)
 	else:
-		wrong_answer()
+		wrong_answer(is_my_domain)
 	determine_defense_power()
 	emit_signal("chain_value_changed", game_id, chain)
-	emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
+	if is_my_domain:
+		print("i must charge the new operation")
+		emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
 	
 func generate_threat_data_dict() -> Dictionary:
 	#[power, delay_time, hp, atk_side_effects]
@@ -312,33 +332,37 @@ func generate_threat_data_dict() -> Dictionary:
 	meteor_sent += 1
 	return dico_threat
 	
-func good_answer():
+func good_answer(is_my_domain):
+	print("good answer")
 	var current_pattern_el = get_current_pattern_element()
 	get_parent().score_points(global.get_op_power_by_obj(current_pattern_el))
 	chain += 1
 
 	var is_incantation_completed = pattern.next()
 	if is_incantation_completed:
-		print("Spellbook of domain " + str(game_id) + ": Incantation completed!")
-		print("Current stance: " + str(stance))
-		match(stance):
-			1:
-				var dico_threat = generate_threat_data_dict()
-				emit_signal("meteor_invocation", game_id, dico_threat)
-			2:
-				#var defense_damage = 0.5* (1 + (defense_power.apply() / pattern.get_len()))
-				var defense_damage = defense_power.apply()
-				emit_signal("defense_command", game_id, defense_damage)
-			3:
-				pass
-		charge_new_incantation()
+		if get_tree().is_network_server():
+			print("Spellbook of domain " + str(game_id) + ": Incantation completed!")
+			print("Current stance: " + str(stance))
+			match(stance):
+				1:
+					var dico_threat = generate_threat_data_dict()
+					emit_signal("meteor_invocation", game_id, dico_threat)
+				2:
+					#var defense_damage = 0.5* (1 + (defense_power.apply() / pattern.get_len()))
+					var defense_damage = defense_power.apply()
+					emit_signal("defense_command", game_id, defense_damage)
+				3:
+					pass
+		
+		charge_new_incantation(is_my_domain)
 	
 	emit_signal("incantation_progress_changed", game_id, pattern.get_index())
 	
-func wrong_answer():
+func wrong_answer(is_my_domain: bool):
 	emit_signal("wrong_answer")
 	chain = 0
 	var progression_removal = 0
+	var must_charge_incantation = false
 	match(malus_level):
 		1:
 			progression_removal = 0
@@ -346,22 +370,26 @@ func wrong_answer():
 			progression_removal = 1
 		3:
 			progression_removal = 10
-			charge_new_incantation()
+			must_charge_incantation = true
 		4:
 			progression_removal = 10
-			charge_new_incantation()
-	pattern.reverse_gear(progression_removal)
+			must_charge_incantation = true
+	if must_charge_incantation:
+		charge_new_incantation(is_my_domain)
+	else:
+		pattern.reverse_gear(progression_removal)
 
 	emit_signal("incantation_progress_changed", game_id, pattern.get_index())
 
 func buy_attempt_result(action_type, price: int):
+	if price == -1:
+		return BUYING_OP_ATTEMPT_RESULT.ERROR
 	if price <= money:
 		if action_type == BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
 			if pattern.get_len() < 8:
 				return BUYING_OP_ATTEMPT_RESULT.CAN_BUY
 			else:
 				return BUYING_OP_ATTEMPT_RESULT.NO_SPACE
-				
 		if action_type == BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
 			if pattern.get_len() == 3:
 				return BUYING_OP_ATTEMPT_RESULT.NOT_ERASABLE
@@ -410,8 +438,6 @@ func _on_incantation_change():
 	
 	#and replace the index to 0 to avoid messy situations
 	pattern.reverse_gear(10)
-	
-	emit_signal("low_incantation_stock", game_id)
 
 func _on_changing_stance_command(new_stance):
 	set_stance(new_stance)
