@@ -87,7 +87,14 @@ func get_current_selected_operations():
 		if op.is_selected():
 			selected.append(op)
 	return selected
-	
+
+func get_current_selected_operations_indexes():
+	var selected = []
+	for op in grid.get_children():
+		if op.is_selected():
+			selected.append(op.get_index_in_incantation())
+	return selected
+		
 func on_operation_selected(index: int):
 	print("Le noeud Incantation a reçu la sélection de l'opération d'index " + str(index))
 	emit_signal("nb_selected_operations_changed", len(get_current_selected_operations()))

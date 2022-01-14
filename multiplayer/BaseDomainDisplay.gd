@@ -71,14 +71,16 @@ func answer_action(good_answer, is_my_domain):
 	base_data.answer_response(good_answer, is_my_domain)
 	
 func shop_action(type, price, operations_selected_list):
+	print("Player " + str(game_id) + ": application of shop operation")
+	print(type)
 	spellbook.spend_money(price)
 	match(type):
 		BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
-			add_operation_to_pattern(operations_selected_list[0])
+			base_data.spellbook.pattern.append(operations_selected_list[0])
 		BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-			spellbook.pattern.remove(operations_selected_list[0])
+			base_data.spellbook.pattern.remove(operations_selected_list[0])
 		BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
-			spellbook.pattern.swap_elements(operations_selected_list[0],
+			base_data.spellbook.pattern.swap_elements(operations_selected_list[0],
 											operations_selected_list[1])
 	update_stat_display(STAT.POTENTIAL, spellbook.pattern.get_power(0, true))
 	update_stat_display(STAT.DEFENSE_POWER, spellbook.get_defense_power())
@@ -153,11 +155,6 @@ func remove_threat(id_threat):
 	domain_field.remove_threat(id_threat)
 
 
-	
-func add_operation_to_pattern(op):
-	if op is Operation:
-		spellbook.pattern.append(op)
-		
 func incantation_progress_changed(n):
 	incantation_progress.update_nb_elements_completed(n)
 	
@@ -216,6 +213,8 @@ func _on_write_digit():
 func apply_elimination_ui():
 	base_data.eliminated = true
 	modulate = Color(0.21, 0.21, 0.21)
+	if is_bot():
+		ai_node.pause_AI()
 #we display the field if the mouse comes in
 func _on_BaseDomainDisplay_mouse_entered():
 	print("mouse in basedomaindisplay")

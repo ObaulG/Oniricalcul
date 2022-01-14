@@ -107,7 +107,7 @@ func add_threat(gid: int, threat_data, is_for_me = true):
 	domain_field.receive_threat(threat_data)
 	
 func update_threat_hp(meteor_id, hp):
-	var threat_display_node = threat_vbox_list.get_node_or_nullshop(str(meteor_id))
+	var threat_display_node = threat_vbox_list.get_node_or_null(str(meteor_id))
 	if threat_display_node:
 		threat_display_node.update_hp(hp)
 		
@@ -124,16 +124,16 @@ func remove_threat(id_threat):
 	domain_field.remove_threat(id_threat)
 
 func shop_action(type, price, operations_selected_list):
-	print("apply shop instruction")
-	print(operations_selected_list)
+	print("Player " + str(game_id) + ": application of shop operation")
+	print(type)
 	spellbook.spend_money(price)
 	match(type):
 		BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
-			add_operation_to_pattern(operations_selected_list[0].get_pattern_element())
+			add_operation_to_pattern(operations_selected_list[0])
 		BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-			spellbook.pattern.remove(operations_selected_list[0])
+			base_data.spellbook.pattern.remove(operations_selected_list[0])
 		BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
-			spellbook.pattern.swap_elements(operations_selected_list[0],
+			base_data.spellbook.pattern.swap_elements(operations_selected_list[0],
 											operations_selected_list[1])
 	update_stat_display(STAT.POTENTIAL, spellbook.pattern.get_power(0, true))
 	update_stat_display(STAT.DEFENSE_POWER, spellbook.get_defense_power())

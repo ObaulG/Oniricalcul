@@ -139,5 +139,5 @@ func _on_Threat_impact(_threat_id, _threat_type, _current_hp, _power):
 		remove_animation()
 
 func _on_Tween_tween_all_completed():
-	print("prout")
+	pass
 

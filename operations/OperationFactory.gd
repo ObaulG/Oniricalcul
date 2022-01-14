@@ -19,6 +19,7 @@ var current_seed
 
 func _init():
 	rng = RandomNumberGenerator.new()
+	rng.randomize()
 	current_seed = rng.seed
 	
 func generate(pattern_el: Array):

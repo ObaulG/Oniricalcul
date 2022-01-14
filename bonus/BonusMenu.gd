@@ -101,6 +101,8 @@ func end_selection():
 func get_selected_operations():
 	return incantation.get_current_selected_operations()
 	
+func get_selected_operations_indexes():
+	return incantation.get_current_selected_operations_indexes()
 func set_pattern(list: Array):
 	print("UI Incantation display")
 	incantation.update_operations(list)
@@ -249,7 +251,7 @@ func _on_Incantation_Operations_nb_selected_operations_changed(n):
 			pass
 
 	if n == nb_selection_needed:
-		emit_signal("operations_selection_done", get_selected_operations(), state)
+		emit_signal("operations_selection_done", get_selected_operations_indexes(), state)
 		end_selection()
 		
 func _on_spellbook_incantation_has_changed(L: Array):

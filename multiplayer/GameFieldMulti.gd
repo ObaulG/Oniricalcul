@@ -123,7 +123,6 @@ func _ready():
 	round_timer.start(60)
 
 	if get_tree().is_network_server():
-		print("Generate operations for server player")
 		generate_new_incantation_operations(my_domain.game_id, 3)
 	else:
 		rpc_id(1,"generate_new_incantation_operations", my_domain.game_id, 3)
@@ -138,11 +137,13 @@ func _ready():
 		"game_actions": [],
 		"eliminations": []
 		}
+		#TODO
 		for id in network.players:
 			var gid = network.players[id]["game_id"]
 			var pseudo = network.players[id]["pseudo"]
 			game_data["players_dict"][gid] = pseudo
 		client_ready(game_id)
+
 func _process(delta):
 	if not pause_mode:
 		game_time += delta
@@ -157,7 +158,8 @@ func _on_disconnected_from_server():
 	leave_game()
 
 func leave_game():
-	network.end_connection()
+	if get_tree().is_network_server():
+		network.end_connection()
 	scene_transition_rect.change_scene("res://scenes/titlescreen/title.tscn")
 	
 func spawn_players():
@@ -222,6 +224,7 @@ func generate_actor(pinfo):
 		nactor.base_data.spellbook.connect("potential_value_changed", self, "_on_spellbook_potential_value_changed")
 		nactor.base_data.spellbook.connect("defense_power_changed", self, "_on_spellbook_defense_power_changed")
 		nactor.base_data.spellbook.connect("money_value_has_changed", self, "_on_spellbook_money_value_has_changed")
+		
 		nactor.base_data.connect("hp_value_changed", self, "_on_base_data_hp_value_changed")
 		nactor.domain_field.connect("meteor_destroyed", self, "_on_domain_field_meteor_destroyed")
 		nactor.domain_field.connect("meteor_impact", self, "_on_domain_field_meteor_impact")
@@ -311,6 +314,7 @@ remotesync func changing_state(new_state):
 			state_label.text = "Fin de partie"
 			if not my_domain.is_eliminated():
 				stop_playing(true)
+
 remote func keyboard_action(pid: int, type: int):
 	if get_tree().is_network_server():
 		for id in network.players:
@@ -393,10 +397,11 @@ remote func meteor_impact(gid: int, meteor_id, meteor_hp, power):
 	if get_tree().is_network_server():
 		rpc("meteor_impact", gid, meteor_id, meteor_hp, power)
 	
-	print("GamefieldMulti meteor impact in domain " + str(gid))
-	var targetted_domain = get_domain_by_gid(gid) 
-	if targetted_domain:
-		targetted_domain.threat_impact(meteor_hp, power)
+	if state != STATE.ENDED:
+		print("GamefieldMulti meteor impact in domain " + str(gid))
+		var targetted_domain = get_domain_by_gid(gid) 
+		if targetted_domain:
+			targetted_domain.threat_impact(meteor_hp, power)
 		
 remote func meteor_remove(gid: int, meteor_id: int):
 	if get_tree().is_network_server():
@@ -520,6 +525,7 @@ remote func ask_server_for_bonus_action(gid, action_type, L: Array):
 	var who = get_tree().get_rpc_sender_id()
 	if get_tree().is_network_server():
 		var domain = get_domain_by_gid(gid)
+		print("------------------------------------------------------------")
 		print("Player " + str(gid) + " wants to do shop action " + str(action_type))
 		if domain:
 			var already_buying = domain.is_waiting_for_transaction_end()
@@ -532,28 +538,31 @@ remote func ask_server_for_bonus_action(gid, action_type, L: Array):
 			#the data in the server
 			#TODO
 			var buy_status = check_shop_operation(gid, action_type, L)
+			print(buy_status)
 			var price: int = -1
 			var shop_element = null
 			#then we apply modifications on the server
 			if buy_status == Spellbook.BUYING_OP_ATTEMPT_RESULT.CAN_BUY:
+				print("Granted")
 				match(action_type):
 					BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
 						var i = L[0]
+						#[type, diff, price]
 						shop_element = all_shop_elements[gid]["new_operations"][i]
+						price = shop_element[2]
 					BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
 						price = domain.base_data.spellbook.get_erase_price()
 					BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
 						price = domain.base_data.spellbook.get_swap_price()
-						
-				#the server will get the application later (server_answer call)
+					
 				if gid != 1:
 					if shop_element:
-						domain.shop_action(action_type, price, [shop_element[0], shop_element[1]])
+						domain.shop_action(action_type, price, [[shop_element[0], shop_element[1]]])
 					else:
 						domain.shop_action(action_type, price, L)
 					
 			#if the one asking is a player but not the server
-			if not domain.is_bot() and gid != 1:
+			if (not domain.is_bot()) and gid != 1:
 				rpc_id(who, "server_answer_for_bonus_action", buy_status, action_type, L)
 			else:
 				server_answer_for_bonus_action(buy_status, action_type, L)
@@ -580,12 +589,13 @@ remote func server_answer_for_bonus_action(answer_type, action_type, L):
 			match(action_type):
 				BonusMenuBis.BONUS_ACTION.BUY_OPERATION:
 					var op = bonus_window.get_new_operation_by_index(L[0])
-					my_domain.shop_action(action_type, op.get_price(), [op])
+					my_domain.shop_action(action_type, op.get_price(), [op.get_pattern_element()])
 				BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-					my_domain.shop_action(action_type, base_data.spellbook.get_erase_price(), L)
+					my_domain.shop_action(action_type, my_domain.base_data.spellbook.get_erase_price(), L)
 				BonusMenuBis.BONUS_ACTION.SWAP_OPERATIONS:
-					my_domain.shop_action(action_type, base_data.spellbook.get_swap_price(), L)
+					my_domain.shop_action(action_type, my_domain.base_data.spellbook.get_swap_price(), L)
 			bonus_window.set_pattern(my_domain.spellbook.pattern.get_list())
+			
 		Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_MONEY:
 			message = "Pas assez d'argent, économisez !"
 		Spellbook.BUYING_OP_ATTEMPT_RESULT.NO_SPACE:
@@ -601,9 +611,12 @@ remote func server_answer_for_bonus_action(answer_type, action_type, L):
 func new_round():
 	if get_tree().is_network_server():
 		for domain in get_array_of_all_domains():
-			print("domain " + str(domain.game_id))
 			domain.base_data.spellbook.new_round()
+			if not domain.base_data.spellbook.operation_charged:
+				printerr("Server: must generate incantations for " + str(domain.game_id))
+				generate_new_incantation_operations(domain.game_id, 3)
 	round_counter += 1
+	
 remote func restart_timer(t: float):
 	if get_tree().is_network_server():
 		for id in network.players:
@@ -648,9 +661,8 @@ func generate_all_shop_operations():
 					var new_op_data = [type,diff, price] 
 					print("new operation element added : " + str(new_op_data))
 					new_op_dict[id].append(new_op_data)
-					
-				#we save the data in the server
-				all_shop_elements[id]["new_operations"].append_array(new_op_dict[id])
+					#we save the data in the server
+					all_shop_elements[id]["new_operations"].append(new_op_data)
 		#the player have also access to a part of operations
 		#from the enemies. Now we can do it.
 		var new_op_enemies_dict = {}
@@ -658,7 +670,6 @@ func generate_all_shop_operations():
 		var all_players_game_id_except_one
 		for domain in all_domains_array:
 			var gid = domain.game_id
-			all_shop_elements[gid]["new_operations"].clear()
 			all_players_game_id_except_one = all_players_game_id.duplicate()
 			all_players_game_id_except_one.erase(gid)
 			#dict of new operations that will be given to the player
@@ -678,8 +689,8 @@ func generate_all_shop_operations():
 				var price = 5 + pow(2, diff)
 				new_op_enemies_dict[gid].append([type,diff, price])
 		
-			#we save the data in the server
-			all_shop_elements[gid]["new_operations"].append_array(new_op_enemies_dict[gid])
+				#we save the data in the server
+				all_shop_elements[gid]["new_operations"].append([type,diff, price])
 			
 			#now we can send the data to the player
 			#only if the domain is not one of a bot !
@@ -722,7 +733,7 @@ remote func stop_playing(victory: bool):
 func end_of_game():
 	if get_tree().is_network_server():
 		rpc("changing_state", STATE.ENDED)
-		#network.send_game_data_to_server(game_data)
+		network.send_game_data_to_server(game_data)
 
 #returns a value explaining if the pid player can buy
 #the thing he asks.
@@ -762,6 +773,7 @@ remote func get_new_incantation_operations(L: Array):
 		for dict in incantation:
 			incantation_operations.append(operation_factory.generate_operation_from_dict(dict))
 		list_of_incantations.append(incantation_operations)
+		print("incantation added to list: " + str(list_of_incantations))
 	my_domain.base_data.spellbook.store_new_incantations(list_of_incantations)
 	
 	#we are ready when we get the operations to play!
@@ -771,7 +783,8 @@ remote func get_new_incantation_operations(L: Array):
 		else:
 			rpc_id(1, "client_ready", game_id)
 		print("ready to play!")
-
+	
+	input_handler.update_authorisation_to_input(true)
 
 #the players rpc this function and the server determines the target
 #or the target is given by the player
@@ -807,16 +820,18 @@ remote func generate_new_incantation_operations(gid: int, n = 2):
 			var new_operation_list = []
 			var new_operation
 			for i in range(n):
-				new_operation_list.clear()
+				new_operation_list = []
 				for p_element in pattern:
 					new_operation = operation_factory.generate(p_element)
 					new_operation_list.append(new_operation)
+				print(new_operation_list)
 				array_of_full_operation_list.append(new_operation_list)
+				print(str(array_of_full_operation_list))
 				
 			#we must store the operations inside the server
 			domain.base_data.spellbook.store_new_incantations(array_of_full_operation_list)
 			
-			#we send them to other players (not bots)
+			#we send them only to other players (not bots)
 			if (not domain.is_bot()) and gid != 1:
 				#if we have to send them, we must generate the array containing 
 				# the list of dicts of operations
@@ -826,8 +841,9 @@ remote func generate_new_incantation_operations(gid: int, n = 2):
 					for op in incantation:
 						incantation_list.append(operation_factory.generate_operation_dict_from_operation(op))
 					array_of_full_operation_dicts_list.append(incantation_list)
+				print("sending the new incantations to " + str(gid))
 				rpc_id(pid, "get_new_incantation_operations", array_of_full_operation_dicts_list)
-			
+
 func get_all_targetable_players(gid: int) -> Array:
 	var targetable = []
 	var iterated_domain_gid
@@ -1004,6 +1020,7 @@ remote func player_eliminated(gid: int):
 		game_data["eliminations"].append(gid)
 		#TODO: put base_data elimination !
 		print("remaining players: " + str(nb_remaining_players))
+		ready_label.text = "Restants: " + str(nb_remaining_players)
 		if nb_remaining_players <= 1:
 			end_of_game()
 	
@@ -1075,13 +1092,11 @@ func _on_spellbook_defense_command(gid, power):
 func _on_spellbook_low_incantations_stock(gid):
 	if get_tree().is_network_server():
 		generate_new_incantation_operations(gid, 4)
-	else:
-		if gid == game_id:
-			rpc_id(1, "generate_new_incantation_operations", gid, 2)
+
 
 func _on_spellbook_incantation_has_changed(gid, L):
 	var domain = get_domain_by_gid(gid)
-	if domain:
+	if domain == my_domain:
 		domain.incantation_has_changed(L)
 	
 	#on the server side, if it is not a bot
@@ -1089,12 +1104,16 @@ func _on_spellbook_incantation_has_changed(gid, L):
 		#update incantation in bonus_menu
 		bonus_window.set_pattern(L)
 		
+		#we have to wait the server to send new incantations
+		input_handler.update_authorisation_to_input(false)
+		
 func _on_spellbook_operation_to_display_has_changed(gid, new_op):
 	print("domain " + str(gid) + " must change the operation to display")
 	if gid == game_id:
 		print("i must change the operation to display")
 		operation_display.change_operation_display(new_op)
-		
+		input_handler.update_authorisation_to_input(true)
+
 func _on_spellbook_incantation_progress_changed(gid, n):
 	if get_tree().is_network_server():
 		incantation_progress_changed(gid, n)

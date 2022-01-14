@@ -98,7 +98,6 @@ margin_top = 200.0
 margin_right = 536.0
 margin_bottom = 240.0
 min_value = 2.0
-max_value = 38.0
 value = 5.0
 rounded = true
 align = 1

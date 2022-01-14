@@ -11,8 +11,8 @@ func _init(nb1, nb2, diff, type, st = -1).(nb1, nb2, diff, type, st):
 	nb_numeral = len(str(max(nb1,nb2)))
 	determine_nb_carryover()
 
-func to_string() -> String:
-	return "Soustraction: "+ str(self.nb1) + "-" + str(self.nb2)
+func _to_string() -> String:
+	return str(self.nb1) + "-" + str(self.nb2)
 	
 func get_str_show() -> String:
 	return str(self.nb1) + " - " + str(self.nb2)

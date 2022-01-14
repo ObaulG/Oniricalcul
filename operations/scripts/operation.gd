@@ -34,5 +34,5 @@ func get_pattern_element() -> Array:
 func get_potential() -> int:
 	return global.get_op_power(type,diff)
 	
-func to_string() -> String:
+func _to_string() -> String:
 	return "Operation"

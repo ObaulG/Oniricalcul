@@ -196,12 +196,8 @@ func determine_threat_stats(potential: float):
 
 func determine_effective_power() -> int:
 	var power = pattern.get_power()
-	print("base potential " + str(power))
 	var coeff = 1
 	var bonus_potential = 0
-	
-	print("chain " + str(chain))
-	print("character id" + str(character))
 #	var bonus_keys = bonus.keys()
 #	if 12 in bonus_keys:
 #		power += 8*bonus[12]
@@ -221,11 +217,8 @@ func determine_effective_power() -> int:
 		coeff += float(min(chain, 20)) / 100.0
 #	power = power * fit_coeff
 	
-	print("coeff " + str(coeff))
-	print("flat bonus " + str(bonus_potential))
-	
 	power = power * coeff + bonus_potential
-	print("effective potential used " + str(power))
+
 	power = stepify(power, 0.01)
 	emit_signal("potential_value_changed", game_id, power)
 	return power
@@ -263,11 +256,14 @@ func on_change_stance_command(new_stance):
 	
 #L is a list of incantations
 func store_new_incantations(L: Array):
-	for incantation in L:
-		operations_stock.append(incantation)
-	print("Incantation stored: " + str(len(operations_stock)))
 	
-	#should be accessed only in the beginning (when we don't have any operations)
+	for incantation in L:
+		print("incantation going to be stored: " +  str(incantation))
+		operations_stock.append(incantation)
+	print("Incantation stored: ")
+	for inc in operations_stock:
+		print(str(inc))
+	
 	if len(operations) == 0:
 		charge_new_incantation(true)
 		
@@ -275,9 +271,6 @@ func charge_new_incantation(is_my_domain: bool = false):
 	if get_tree().is_network_server():
 		if len(operations_stock) > 0:
 			var new_incantation = operations_stock.pop_front()
-			if len(operations_stock) < 3:
-				emit_signal("low_incantation_stock", game_id)
-
 			operations = new_incantation
 			print("domain " + str(game_id) + ": new incantation charged!")
 			pattern.reverse_gear(10)
@@ -293,18 +286,13 @@ func charge_new_incantation(is_my_domain: bool = false):
 		if is_my_domain:
 			if len(operations_stock) > 0:
 				var new_incantation = operations_stock.pop_front()
-				if len(operations_stock) < 3:
-					emit_signal("low_incantation_stock", game_id)
-
 				operations = new_incantation
 				print("domain " + str(game_id) + ": new incantation charged!")
 				operation_charged = true
 				print("incantation: " + str(operations))
 				emit_signal("new_incantation_charged", game_id)
 				emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
-			else:
-				emit_signal("low_incantation_stock", game_id)
-				operation_charged = false
+
 				
 func answer_response(good_answer, is_my_domain):
 	if good_answer:
@@ -391,7 +379,8 @@ func buy_attempt_result(action_type, price: int):
 			else:
 				return BUYING_OP_ATTEMPT_RESULT.NO_SPACE
 		if action_type == BonusMenuBis.BONUS_ACTION.ERASE_OPERATION:
-			if pattern.get_len() == 3:
+			print(pattern.get_list())
+			if pattern.get_len() <= 3:
 				return BUYING_OP_ATTEMPT_RESULT.NOT_ERASABLE
 		return BUYING_OP_ATTEMPT_RESULT.CAN_BUY
 	else:
@@ -427,14 +416,18 @@ func set_stance(new_stance):
 	
 func _on_incantation_change():
 	print("Player " + str(game_id) + ": incantation change !")
-	emit_signal("incantation_has_changed", game_id, pattern.get_list())
-	emit_signal("potential_value_changed", game_id, get_potential())
-	determine_defense_power()
 	
 	#because the incantation has changed, we must destroy all
 	#operation lists and generate new ones
 	operations.clear()
 	operations_stock.clear()
+	operation_charged = false
+	
+	print("Incantation freed")
+	
+	emit_signal("incantation_has_changed", game_id, pattern.get_list())
+	emit_signal("potential_value_changed", game_id, get_potential())
+	determine_defense_power()
 	
 	#and replace the index to 0 to avoid messy situations
 	pattern.reverse_gear(10)
