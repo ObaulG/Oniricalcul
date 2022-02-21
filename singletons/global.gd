@@ -510,6 +510,9 @@ func get_op_power_by_obj(values: Array) -> int:
 func get_op_power_by_op(op: Operation):
 	return op_data[op.get_type()].get_potential(op.get_diff())
 	
+func get_op_answer_type(type: int):
+	return op_data[type].get_answer_type()
+	
 func get_dialog_line(id):
 	return dialog_data["dialogue_lines"][str(id)][lang]
 	
@@ -518,6 +521,7 @@ func get_dialog_tree(name: String):
 	
 func get_char_name(id: int):
 	return char_data[id].get_name()
+	
 #list is a list of element pattern ([type, diff])
 func most_powerful_op(list: Array):
 	var maxi = 0

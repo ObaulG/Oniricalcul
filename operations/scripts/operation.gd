@@ -2,6 +2,13 @@ extends Object
 
 class_name Operation
 
+enum ANSWER_TYPE {
+	SINGLE_NUMBER = 1,
+	MATH_EXPR = 2,
+	MULTIPLE_NUMBERS = 3,
+	QCM = 4,
+}
+
 var result
 var diff: int
 var type: int

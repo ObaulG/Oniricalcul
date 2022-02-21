@@ -4,5 +4,6 @@
 font_path = "res://fonts/LMROMAN10-REGULAR.OTF"
 
 [resource]
+resource_local_to_scene = true
 size = 30
 font_data = SubResource( 1 )

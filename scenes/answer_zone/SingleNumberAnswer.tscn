@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/answer_zone/SingleNumberAnswer.gd" type="Script" id=1]
+
+[node name="SingleNumberAnswer" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -1670.0
+margin_bottom = -980.0
+rect_min_size = Vector2( 250, 100 )
+rect_pivot_offset = Vector2( 960, -422.078 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="lb_answer" type="Label" parent="."]
+margin_right = 250.0
+margin_bottom = 100.0
+__meta__ = {
+"_edit_use_anchors_": false
+}

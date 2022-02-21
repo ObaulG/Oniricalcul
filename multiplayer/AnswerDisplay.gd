@@ -1,11 +1,11 @@
 extends Control
 
+class_name AnswerDisplay
 
 onready var operation_display = $operation_display
 onready var label_answer = $operation_answer
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	operation_display.text = "..."
 	clear_answer()

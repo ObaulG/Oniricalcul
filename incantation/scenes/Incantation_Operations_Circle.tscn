@@ -1,8 +1,9 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://incantation/Incantation_Operations_Circle.gd" type="Script" id=1]
+[ext_resource path="res://incantation/scenes/Incantation_Operations_Circle.gd" type="Script" id=1]
 [ext_resource path="res://UI/CircularContainer.tscn" type="PackedScene" id=2]
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=3]
+
 
 [node name="Incantation_Operations_Circle" type="Control"]
 anchor_right = 1.0

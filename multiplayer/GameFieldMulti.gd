@@ -733,7 +733,8 @@ remote func stop_playing(victory: bool):
 func end_of_game():
 	if get_tree().is_network_server():
 		rpc("changing_state", STATE.ENDED)
-		network.send_game_data_to_server(game_data)
+		
+		# network.send_game_data_to_server(game_data)
 
 #returns a value explaining if the pid player can buy
 #the thing he asks.

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=1]
-[ext_resource path="res://incantation/Incantation_Operations.gd" type="Script" id=2]
+[ext_resource path="res://incantation/scenes/Incantation_Operations.gd" type="Script" id=1]
+[ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=2]
 
 [node name="Incantation_Operations" type="Container"]
 anchor_right = 1.0
@@ -10,7 +10,7 @@ margin_right = -1329.0
 margin_bottom = -983.0
 rect_min_size = Vector2( 590, 97 )
 mouse_filter = 2
-script = ExtResource( 2 )
+script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -47,8 +47,7 @@ columns = 8
 margin_top = 69.0
 margin_right = 590.0
 margin_bottom = 112.0
-custom_fonts/font = ExtResource( 1 )
+custom_fonts/font = ExtResource( 2 )
 text = "Potentiel: 0"
 
 [connection signal="gui_input" from="." to="." method="_on_Incantation_Operations_gui_input"]
-[connection signal="operation_confirmed_and_incantation_updated" from="." to="." method="on_operation_confirmed"]

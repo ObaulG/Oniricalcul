@@ -1,81 +1,212 @@
 {
   "operations": [
-  {
-    "id": 1,
-    "str_data" : {
-      "fr": {
-        "name": "Addition 2 opérandes",
-        "descr": "Une addition tout ce qu'il y a de plus classique."
-      }
+    {
+      "id": 1,
+      "answer_type": 1,
+      "str_data": {
+        "fr": {
+          "name": "Addition 2 opérandes",
+          "descr": "Une addition tout ce qu'il y a de plus classique."
+        }
+      },
+      "hardness_list": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "potential_list": [
+        1,
+        2,
+        3,
+        6,
+        9
+      ]
     },
-    
-    "hardness_list" : [1,2,3,4,5],
-    "potential_list": [1,2,3,6,9]
-  },
-  {
-    "id": 2,
-    "str_data" : {
-      "fr": {
-        "name": "Soustraction 2 opérandes",
-        "descr": "Une soustraction tout ce qu'il y a de plus classique."
-      }
+    {
+      "id": 2,
+      "answer_type": 1,
+      "str_data": {
+        "fr": {
+          "name": "Soustraction 2 opérandes",
+          "descr": "Une soustraction tout ce qu'il y a de plus classique."
+        }
+      },
+      "hardness_list": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "potential_list": [
+        1,
+        2,
+        5,
+        7,
+        11
+      ]
     },
-    
-    "hardness_list" : [1,2,3,4,5],
-    "potential_list": [1,2,5,7,11]
-    
-  },
-  {
-    "id": 3,
-    "str_data" : {
-      "fr": {
-        "name": "Multiplication 2 opérandes",
-        "descr": "Une multiplication tout ce qu'il y a de plus classique."
-      }
+    {
+      "id": 3,
+      "answer_type": 1,
+      "str_data": {
+        "fr": {
+          "name": "Multiplication 2 opérandes",
+          "descr": "Une multiplication tout ce qu'il y a de plus classique."
+        }
+      },
+      "hardness_list": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "potential_list": [
+        1,
+        2,
+        5,
+        11,
+        18
+      ]
     },
-    
-    "hardness_list" : [1,2,3,4,5],
-    "potential_list": [1,2,5,11,18]
-    
-  },
-  {
-    "id": 4,
-    "str_data" : {
-      "fr": {
-        "name": "Conversion de bases",
-        "descr": "Conversion d'un nombre d'une base a vers une base b."
-      }
+    {
+      "id": 4,
+      "answer_type": 1,
+      "str_data": {
+        "fr": {
+          "name": "Conversion de bases",
+          "descr": "Conversion d'un nombre d'une base a vers une base b."
+        }
+      },
+      "hardness_list": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "potential_list": [
+        1,
+        2,
+        3,
+        6,
+        9
+      ]
     },
-    
-    "hardness_list" : [1,2,3,4,5],
-    "potential_list": [1,2,3,6,9]
-    
-  },
-  {
-    "id": 5,
-    "str_data" : {
-      "fr": {
-        "name": "Exponentiation",
-        "descr": "Elévation d'un nombre a à la puissance b."
-      }
+    {
+      "id": 5,
+      "answer_type": 1,
+      "str_data": {
+        "fr": {
+          "name": "Exponentiation",
+          "descr": "Elévation d'un nombre a à la puissance b."
+        }
+      },
+      "hardness_list": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "potential_list": [
+        2,
+        5,
+        10,
+        15
+      ]
     },
-    
-    "hardness_list" : [2,3,4,5],
-    "potential_list": [2,5,10,15]
-    
-  },
-  {
-    "id": 6,
-    "str_data" : {
-      "fr": {
-        "name": "Racine",
-        "descr": "Elévation d'un nombre a à la puissance b."
-      }
+    {
+      "id": 6,
+      "answer_type": 1,
+      "str_data": {
+        "fr": {
+          "name": "Racine",
+          "descr": "Elévation d'un nombre a à la puissance b."
+        }
+      },
+      "hardness_list": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "potential_list": [
+        2,
+        5,
+        10,
+        15
+      ]
     },
-    
-    "hardness_list" : [2,3,4,5],
-    "potential_list": [2,5,10,15]
-    
-  }
+    {
+      "id": 7,
+      "answer_type": 3,
+      "str_data": {
+        "fr": {
+          "name": "Simplification de fraction",
+          "descr": "Rendre irréductible une fraction."
+        }
+      },
+      "hardness_list": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "potential_list": [
+        2,
+        5,
+        10,
+        15
+      ]
+    },
+    {
+      "id": 8,
+      "answer_type": 3,
+      "str_data": {
+        "fr": {
+          "name": "Somme de fractions",
+          "descr": "Une somme de fraction classique."
+        }
+      },
+      "hardness_list": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "potential_list": [
+        5,
+        8,
+        11,
+        14
+      ]
+    },
+    {
+      "id": 9,
+      "answer_type": 3,
+      "str_data": {
+        "fr": {
+          "name": "Produit de fractions",
+          "descr": "Un produit de fraction classique."
+        }
+      },
+      "hardness_list": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "potential_list": [
+        2,
+        4,
+        10,
+        22,
+        36
+      ]
+    }
   ]
 }

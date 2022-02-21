@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://incantation/Incantation_Operations.tscn" type="PackedScene" id=1]
+[ext_resource path="res://incantation/scenes/Incantation_Operations.tscn" type="PackedScene" id=1]
 [ext_resource path="res://tests/test_operations.gd" type="Script" id=2]
 [ext_resource path="res://operations/displaying/operation_display.tscn" type="PackedScene" id=3]
 

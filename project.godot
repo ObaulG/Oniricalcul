@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://AnimationPlay.gd"
 }, {
+"base": "Control",
+"class": "AnswerDisplay",
+"language": "GDScript",
+"path": "res://multiplayer/AnswerDisplay.gd"
+}, {
 "base": "Node",
 "class": "BaseDomainData",
 "language": "GDScript",
@@ -50,9 +55,14 @@ _global_script_classes=[ {
 "path": "res://operations/scripts/calcul.gd"
 }, {
 "base": "Control",
-"class": "CalculZone",
+"class": "CalculAnswer",
 "language": "GDScript",
-"path": "res://scenes/answer_zone/CalculZone.gd"
+"path": "res://scenes/answer_zone/CalculAnswer.gd"
+}, {
+"base": "Operation",
+"class": "CalculFrac",
+"language": "GDScript",
+"path": "res://operations/scripts/CalculFrac.gd"
 }, {
 "base": "Operation",
 "class": "Calcul_1O",
@@ -109,6 +119,26 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://operations/scripts/exponentiation.gd"
 }, {
+"base": "CalculFrac",
+"class": "FracAdd",
+"language": "GDScript",
+"path": "res://operations/scripts/FracAdd.gd"
+}, {
+"base": "Object",
+"class": "Fraction",
+"language": "GDScript",
+"path": "res://scripts/fraction.gd"
+}, {
+"base": "Control",
+"class": "FractionAnswer",
+"language": "GDScript",
+"path": "res://scenes/answer_zone/FractionAnswer.gd"
+}, {
+"base": "Control",
+"class": "FractionDisplay",
+"language": "GDScript",
+"path": "res://scenes/answer_zone/FractionDisplay.gd"
+}, {
 "base": "Node2D",
 "class": "GameMaster",
 "language": "GDScript",
@@ -127,17 +157,17 @@ _global_script_classes=[ {
 "base": "Control",
 "class": "Incantation",
 "language": "GDScript",
-"path": "res://incantation/Incantation.gd"
+"path": "res://incantation/scenes/Incantation.gd"
 }, {
 "base": "Control",
 "class": "Incantation_Operations",
 "language": "GDScript",
-"path": "res://incantation/Incantation_Operations.gd"
+"path": "res://incantation/scenes/Incantation_Operations.gd"
 }, {
 "base": "Control",
 "class": "Incantation_Operations_Circle",
 "language": "GDScript",
-"path": "res://incantation/Incantation_Operations_Circle.gd"
+"path": "res://incantation/scenes/Incantation_Operations_Circle.gd"
 }, {
 "base": "Node",
 "class": "InputHandler",
@@ -148,6 +178,11 @@ _global_script_classes=[ {
 "class": "MagicProjectile",
 "language": "GDScript",
 "path": "res://scenes/magic_projectile/MagicProjectile.gd"
+}, {
+"base": "Object",
+"class": "Math",
+"language": "GDScript",
+"path": "res://scripts/math.gd"
 }, {
 "base": "Reference",
 "class": "MusicPlay",
@@ -187,7 +222,7 @@ _global_script_classes=[ {
 "base": "Object",
 "class": "Pattern",
 "language": "GDScript",
-"path": "res://incantation/pattern.gd"
+"path": "res://incantation/scripts/pattern.gd"
 }, {
 "base": "Reference",
 "class": "Pause",
@@ -244,6 +279,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scenes/scene_transition/SceneTransitionRect.gd"
 }, {
+"base": "Control",
+"class": "SingleAnswerNumber",
+"language": "GDScript",
+"path": "res://scenes/answer_zone/SingleNumberAnswer.gd"
+}, {
 "base": "Reference",
 "class": "SoundPlay",
 "language": "GDScript",
@@ -293,12 +333,14 @@ _global_script_class_icons={
 "Addition": "",
 "AdvancedCharacterDisplay": "",
 "AnimationPlay": "",
+"AnswerDisplay": "",
 "BaseDomainData": "",
 "BaseDomainDisplay": "",
 "BonusMenu": "",
 "BonusMenuBis": "",
 "Calcul": "",
-"CalculZone": "",
+"CalculAnswer": "",
+"CalculFrac": "",
 "Calcul_1O": "",
 "Calcul_Factory": "",
 "Character": "",
@@ -310,6 +352,10 @@ _global_script_class_icons={
 "DialogueVoicePlayer": "",
 "Domain": "",
 "Exponentiation": "",
+"FracAdd": "",
+"Fraction": "",
+"FractionAnswer": "",
+"FractionDisplay": "",
 "GameMaster": "",
 "HealthDisplay": "",
 "IconStatNumberDisplay": "",
@@ -318,6 +364,7 @@ _global_script_class_icons={
 "Incantation_Operations_Circle": "",
 "InputHandler": "",
 "MagicProjectile": "",
+"Math": "",
 "MusicPlay": "",
 "Network": "",
 "NumberLine": "",
@@ -337,6 +384,7 @@ _global_script_class_icons={
 "ReliquatNumber": "",
 "RootOP": "",
 "SceneTransitionRect": "",
+"SingleAnswerNumber": "",
 "SoundPlay": "",
 "SpeedChange": "",
 "Spellbook": "",
@@ -351,7 +399,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Oniricalcul"
-run/main_scene="res://scenes/titlescreen/title.tscn"
+run/main_scene="res://tests/TestFractionDisplay.tscn"
 config/icon="res://textures/icon.png"
 
 [audio]

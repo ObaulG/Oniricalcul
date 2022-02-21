@@ -26,11 +26,11 @@ func power_evaluation():
 		var type = elements[i][0]
 		var diff = elements[i][1]
 		print(str([type,diff]))
-		print("Potentiel opération numero " + str(i) + ": " + str(global.get_op_power(type, diff)))
+		#print("Potentiel opération numero " + str(i) + ": " + str(global.get_op_power(type, diff)))
 		total += global.get_op_power(type, diff) * pow(scaling_coeff, i)
 		
 	power.set_value(total)
-	print("Potentiel: " + str(total))
+	#print("Potentiel: " + str(total))
 	
 func add_to(p_el, i):
 	elements.insert(i, p_el)
