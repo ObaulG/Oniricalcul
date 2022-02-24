@@ -17,11 +17,14 @@ const normal_bases = [2, 10, 16]
 var rng
 var current_seed
 
+var perfect_squares: PoolIntArray = []
 func _init():
 	rng = RandomNumberGenerator.new()
 	rng.randomize()
 	current_seed = rng.seed
-	
+	for i in range(1001):
+		perfect_squares.append(i*i)
+		
 func generate(pattern_el: Array):
 	var calcul_type = pattern_el[0]
 	var diff = pattern_el[1]
@@ -212,3 +215,49 @@ func generateConversion(diff := 1, subtype := -1):
 
 	var a = Conversion.new(start_base, start_number, final_base, 4, OPERATION.keys()[OPERATION.CONVERSION], subtype)
 	return a
+
+func generateExponentiation(diff: int, subtype: int):
+	rng.randomize()
+	
+	var n: int
+	var p: int = 2
+	match diff:
+		1:
+			n = rng.randi_range(0,9)
+		2:
+			n = 2
+			p = rng.randi_range(0,8)
+		3:
+			n = 2
+			n = rng.randi_range(9,16)
+		4:
+			p = 3
+			n = rng.randi_range(3,9)
+	
+	var op = Exponentiation.new(n, p, diff, 5)
+	
+func generateRoot(diff, subtype):
+	rng.randomize()
+	#n is the square root, and the index of
+	#an element of the array perfect squares
+	var n: int
+	match diff:
+		1:
+			n = rng.randi_range(0,5)
+		2:
+			n = rng.randi_range(4,10)
+		3:
+			n = rng.randi_range(9,16)
+		4:
+			n = rng.randi_range(3,9)
+	
+	var op = SquareRootOP.new(perfect_squares[n], diff, 6)
+	
+func generateFracSimp(diff, subtype):
+	pass
+	
+func generateFracAdd(diff, subtype):
+	pass
+	
+func generateFracMul(diff, subtype):
+	pass

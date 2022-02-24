@@ -30,7 +30,6 @@ func determine_nb_carryover() -> void:
 		total += (1 if retenue else 0)
 	nb_carryover = total
 	
-
 func get_nb_numeral() -> int:
 	return nb_numeral
 	

@@ -2,11 +2,10 @@ extends CalculFrac
 
 class_name FracAdd
 
-
 func _init(f1, f2, diff, type, st = -1).(f1, f2, diff, type, st):
-	pass
+	result = add_frac(f1, f2)
 
-func add_frac(f1, f2):
+static func add_frac(f1, f2):
 	var a = f1.numerator
 	var b = f1.denominator
 	var c = f2.numerator
@@ -22,7 +21,7 @@ func add_frac(f1, f2):
 		b *= coeffA
 		c *= coeffB
 		d *= coeffB
-		numerator += a+c
+		var numerator = a+c
 		return Fraction.new(numerator, common_den)
 		
 func _to_string() -> String:

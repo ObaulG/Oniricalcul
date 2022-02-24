@@ -54,6 +54,7 @@ func power(n: int):
 	numerator = int(pow(numerator, n))
 	denominator = int(pow(denominator, n))
 	
+
 func factors_pgcd() -> int:
 	return Math.pgcd(numerator, denominator)
 
