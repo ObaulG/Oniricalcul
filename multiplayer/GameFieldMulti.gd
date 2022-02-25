@@ -13,6 +13,7 @@ enum STATE{
 	SHOPPING = 4,
 	ENDED = 5
 }
+
 var REVERSE_STATE = {
 	1: STATE.WAITING_EVERYONE,
 	2: STATE.PREROUND,
@@ -30,6 +31,8 @@ var clients_ready_to_play = []
 var rng = RandomNumberGenerator.new()
 var round_counter: int
 var operation_factory: OperationFactory
+
+var game_type
 
 #duration of the game
 var game_time: float
@@ -55,6 +58,8 @@ var game_data: Dictionary
 var base_data
 
 var total_meteor_sent:= 0
+
+onready var incantation_factory = $IncantationFactory
 #The field game, with at least 2 players.
 #Later, we might have a 3+ multiplayer mode,
 #so we don't always update the screen.
@@ -69,6 +74,7 @@ onready var time_display = $TimeLeftDisplay
 onready var popup_nodes = $PopUps
 onready var state_label = $state_label
 onready var ready_label = $players_ready
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -809,8 +815,21 @@ remote func player_defense_command(gid, power):
 func determine_target(dico_threat):
 	pass
 	
+func generate_incantation_threaded(pattern):
+	if get_tree().is_network_server():
+		var new_operation_list = []
+		var new_operation
+		for p_element in pattern:
+			new_operation = operation_factory.generate(p_element)
+			new_operation_list.append(new_operation)
+		return new_operation_list
+		
+func generate_new_incantations_threaded(gid: int, n := 2):
+	if get_tree().is_network_server():
+		print("Threaded incantations generation for player " + str(gid))
+	
 #generate n full patterns of operations for the player gid.
-remote func generate_new_incantation_operations(gid: int, n = 2):
+remote func generate_new_incantation_operations(gid: int, n := 2):
 	if get_tree().is_network_server():
 		print("operations generation for player " + str(gid))
 		var domain = get_domain_by_gid(gid)

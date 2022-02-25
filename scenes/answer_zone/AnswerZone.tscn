@@ -24,5 +24,7 @@ __meta__ = {
 }
 
 [node name="CalculAnswer" parent="." instance=ExtResource( 1 )]
+visible = false
 
 [node name="FractionAnswer" parent="." instance=ExtResource( 3 )]
+visible = false

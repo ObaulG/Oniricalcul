@@ -405,7 +405,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Oniricalcul"
-run/main_scene="res://tests/TestFractionDisplay.tscn"
+run/main_scene="res://scenes/titlescreen/title.tscn"
 config/icon="res://textures/icon.png"
 
 [audio]
