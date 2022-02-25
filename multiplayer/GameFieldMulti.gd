@@ -1,7 +1,7 @@
 extends Node2D
 
 var POPUPCLASS = load("res://UI/PopUpNotification.tscn")
-
+var pclass = load("res://multiplayer/BaseDomainDisplay.tscn")
 const ROUND_TIME = 33.0
 const PREROUND_TIME = 5.0
 const SHOPPING_TIME = 15.0
@@ -129,6 +129,7 @@ func _ready():
 	round_timer.start(60)
 
 	if get_tree().is_network_server():
+		print("Init generation of incantations")
 		generate_new_incantation_operations(my_domain.game_id, 3)
 	else:
 		rpc_id(1,"generate_new_incantation_operations", my_domain.game_id, 3)
@@ -149,7 +150,7 @@ func _ready():
 			var pseudo = network.players[id]["pseudo"]
 			game_data["players_dict"][gid] = pseudo
 		client_ready(game_id)
-
+	print("XD -----------------------------------------------------------")
 func _process(delta):
 	if not pause_mode:
 		game_time += delta
@@ -181,6 +182,7 @@ func spawn_players():
 #called to tell everyone the game is about to start
 remote func client_ready(gid: int):
 	if not (gid in clients_ready_to_play):
+		print("Client " + str(gid) + " ready!")
 		clients_ready_to_play.append(gid)
 		ready_label.text = "Joueurs prêts: " + str(len(clients_ready_to_play)) +" / " + str(network.get_total_players_entities())
 		if get_tree().is_network_server():
@@ -198,7 +200,6 @@ remote func client_ready(gid: int):
 #used to generate other players instances (BaseDomainDisplay)
 func generate_actor(pinfo):
 	# Load the scene and create an instance
-	var pclass = load("res://multiplayer/BaseDomainDisplay.tscn")
 	var nactor = pclass.instance()
 	
 	# add the actor into the world
@@ -221,6 +222,7 @@ func generate_actor(pinfo):
 			if (pinfo["net_id"] != 1):
 				nactor.set_network_master(pinfo["net_id"])
 		
+		print("nactor incantation generation")
 		generate_new_incantation_operations(pinfo["game_id"], 3)
 		
 		nactor.base_data.spellbook.connect("meteor_invocation", self, "_on_spellbook_meteor_invocation")
@@ -665,7 +667,7 @@ func generate_all_shop_operations():
 					var diff = ponderate_random_choice_dict(difficulty_preference)
 					var price = 5 + pow(2, diff)
 					var new_op_data = [type,diff, price] 
-					print("new operation element added : " + str(new_op_data))
+					#print("new operation element added : " + str(new_op_data))
 					new_op_dict[id].append(new_op_data)
 					#we save the data in the server
 					all_shop_elements[id]["new_operations"].append(new_op_data)
@@ -770,7 +772,7 @@ func check_shop_operation(gid: int, action_type, L):
 #should not be called from the server.
 #list of list of dictionnary representing the operation
 remote func get_new_incantation_operations(L: Array):
-	print("player " + str(game_id) + " got " + str(len(L))+ " new incantations")
+	#print("player " + str(game_id) + " got " + str(len(L))+ " new incantations")
 	
 	#re-generate the incantations from the dicts
 	var list_of_incantations = []
@@ -780,7 +782,7 @@ remote func get_new_incantation_operations(L: Array):
 		for dict in incantation:
 			incantation_operations.append(operation_factory.generate_operation_from_dict(dict))
 		list_of_incantations.append(incantation_operations)
-		print("incantation added to list: " + str(list_of_incantations))
+		#print("incantation added to list: " + str(list_of_incantations))
 	my_domain.base_data.spellbook.store_new_incantations(list_of_incantations)
 	
 	#we are ready when we get the operations to play!
@@ -815,23 +817,40 @@ remote func player_defense_command(gid, power):
 func determine_target(dico_threat):
 	pass
 	
-func generate_incantation_threaded(pattern):
-	if get_tree().is_network_server():
-		var new_operation_list = []
-		var new_operation
-		for p_element in pattern:
-			new_operation = operation_factory.generate(p_element)
-			new_operation_list.append(new_operation)
-		return new_operation_list
-		
+#is it faster ??
+#no wtf
 func generate_new_incantations_threaded(gid: int, n := 2):
 	if get_tree().is_network_server():
 		print("Threaded incantations generation for player " + str(gid))
-	
+		var domain = get_domain_by_gid(gid)
+		if domain:
+			var pid = domain.player_id
+			var array_of_full_operation_list = []
+			var pattern = domain.base_data.spellbook.pattern.get_list()
+			var new_incantation_list = incantation_factory.generate_incantations(pattern, n)
+			
+			#we must store the operations inside the server
+			domain.base_data.spellbook.store_new_incantations(new_incantation_list)
+			
+			#we send them only to other players (not bots)
+			if (not domain.is_bot()) and gid != 1:
+				#if we have to send them, we must generate the array containing 
+				# the list of dicts of operations
+				var array_of_full_operation_dicts_list = []
+				for incantation in new_incantation_list:
+					var incantation_list = []
+					for op in incantation:
+						incantation_list.append(operation_factory.generate_operation_dict_from_operation(op))
+					array_of_full_operation_dicts_list.append(incantation_list)
+				#print("sending the new incantations to " + str(gid))
+				rpc_id(pid, "get_new_incantation_operations", array_of_full_operation_dicts_list)
+			print("Incantations sent to player " + str(gid))
+
+
 #generate n full patterns of operations for the player gid.
 remote func generate_new_incantation_operations(gid: int, n := 2):
 	if get_tree().is_network_server():
-		print("operations generation for player " + str(gid))
+		#print("operations generation for player " + str(gid))
 		var domain = get_domain_by_gid(gid)
 		if domain:
 			var pid = domain.player_id
@@ -861,7 +880,7 @@ remote func generate_new_incantation_operations(gid: int, n := 2):
 					for op in incantation:
 						incantation_list.append(operation_factory.generate_operation_dict_from_operation(op))
 					array_of_full_operation_dicts_list.append(incantation_list)
-				print("sending the new incantations to " + str(gid))
+				#print("sending the new incantations to " + str(gid))
 				rpc_id(pid, "get_new_incantation_operations", array_of_full_operation_dicts_list)
 
 func get_all_targetable_players(gid: int) -> Array:
@@ -1111,6 +1130,7 @@ func _on_spellbook_defense_command(gid, power):
 
 func _on_spellbook_low_incantations_stock(gid):
 	if get_tree().is_network_server():
+		print("Low stock for " + str(gid))
 		generate_new_incantation_operations(gid, 4)
 
 

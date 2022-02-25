@@ -258,11 +258,11 @@ func on_change_stance_command(new_stance):
 func store_new_incantations(L: Array):
 	
 	for incantation in L:
-		print("incantation going to be stored: " +  str(incantation))
+		#print("incantation going to be stored: " +  str(incantation))
 		operations_stock.append(incantation)
-	print("Incantation stored: ")
-	for inc in operations_stock:
-		print(str(inc))
+	#print("Incantation stored: ")
+	#for inc in operations_stock:
+		#print(str(inc))
 	
 	if len(operations) == 0:
 		charge_new_incantation(true)
@@ -272,10 +272,10 @@ func charge_new_incantation(is_my_domain: bool = false):
 		if len(operations_stock) > 0:
 			var new_incantation = operations_stock.pop_front()
 			operations = new_incantation
-			print("domain " + str(game_id) + ": new incantation charged!")
+			#print("domain " + str(game_id) + ": new incantation charged!")
 			pattern.reverse_gear(10)
 			operation_charged = true
-			print("incantation: " + str(operations))
+			#print("incantation: " + str(operations))
 			emit_signal("new_incantation_charged", game_id)
 			emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
 		else:
@@ -287,9 +287,9 @@ func charge_new_incantation(is_my_domain: bool = false):
 			if len(operations_stock) > 0:
 				var new_incantation = operations_stock.pop_front()
 				operations = new_incantation
-				print("domain " + str(game_id) + ": new incantation charged!")
+				#print("domain " + str(game_id) + ": new incantation charged!")
 				operation_charged = true
-				print("incantation: " + str(operations))
+				#print("incantation: " + str(operations))
 				emit_signal("new_incantation_charged", game_id)
 				emit_signal("operation_to_display_has_changed", game_id, get_current_operation())
 
