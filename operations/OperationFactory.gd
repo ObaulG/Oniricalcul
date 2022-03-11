@@ -261,3 +261,8 @@ func generateFracAdd(diff, subtype):
 	
 func generateFracMul(diff, subtype):
 	pass
+
+func generateQCM(type, diff, subtype):
+	pass
+	
+	

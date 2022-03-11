@@ -1,50 +1,35 @@
 extends Control
 
-enum ACTIONS {
-	WRITE_DIGIT,
-	DELETE_DIGIT,
-	CLEAR_ANSWER,
-	CHANGE_SIGN,
-	SEND
-}
-enum QUESTION_TYPE{
+class_name ElementDisplay
+
+
+enum ELEMENT_TYPE{
 	CALCUL,
 	MATH_EXPR,
 	FRACTION,
 	TEXT
 }
 
-enum ANSWER_TYPE {
-	NUMBER = 1,
-	MATH_EXPR,
-	FRACTION,
-	QCM,
-	NONE
-}
 
-var node_to_display = null
-onready var calcul_node = $CalculAnswer
-onready var frac_node = $FractionAnswer
+var node_to_display
+
+onready var text_rt = $text
+onready var calcul_node = $calcul
+onready var fractions_list = $hbox_frac
+
 
 func _ready():
 	pass # Replace with function body.
 
-func do_action(action):
-	match action:
-		ACTIONS.WRITE_DIGIT:
-			pass
-		ACTIONS.DELETE_DIGIT:
-			pass
-		ACTIONS.CLEAR_ANSWER:
-			pass
-		ACTIONS.CHANGE_SIGN:
-			pass
-		ACTIONS.SEND:
-			pass
 
 func hide_all():
-	calcul_node.visible = false
-	frac_node.visible = false
+	text_rt.hide()
+	calcul_node.hide()
+	for c in fractions_list.get_children():
+		c.hide()
+	
+func display_new_element():
+	pass
 	
 func display_new_operation(operation: Operation):
 	var p_el = operation.get_pattern_element()
@@ -75,3 +60,4 @@ func change_display_node(display_type: int):
 			frac_node.visible = true
 		4:
 			pass
+

@@ -1,0 +1,34 @@
+[gd_scene format=2]
+
+[node name="QCMAnswer" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="answers" type="GridContainer" parent="."]
+margin_right = 666.0
+margin_bottom = 195.0
+columns = 2
+
+[node name="Panel" type="Panel" parent="answers"]
+margin_right = 100.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 100, 50 )
+
+[node name="Panel2" type="Panel" parent="answers"]
+margin_left = 104.0
+margin_right = 204.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 100, 50 )
+
+[node name="Panel3" type="Panel" parent="answers"]
+margin_top = 54.0
+margin_right = 100.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 100, 50 )
+
+[node name="Panel4" type="Panel" parent="answers"]
+margin_left = 104.0
+margin_top = 54.0
+margin_right = 204.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 100, 50 )

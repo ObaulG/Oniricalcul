@@ -2,7 +2,6 @@ extends Object
 
 class_name Fraction
 
-
 var numerator: int
 var denominator: int
 

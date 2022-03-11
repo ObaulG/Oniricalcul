@@ -11,9 +11,6 @@ margin_right = -1320.0
 margin_bottom = -780.0
 rect_min_size = Vector2( 600, 300 )
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Panel" type="Panel" parent="."]
 margin_right = 600.0
@@ -24,7 +21,5 @@ __meta__ = {
 }
 
 [node name="CalculAnswer" parent="." instance=ExtResource( 1 )]
-visible = false
 
 [node name="FractionAnswer" parent="." instance=ExtResource( 3 )]
-visible = false

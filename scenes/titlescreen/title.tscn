@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scenes/titlescreen/title.gd" type="Script" id=1]
-[ext_resource path="res://sketches28_fullhd.png" type="Texture" id=2]
+[ext_resource path="res://textures/sketches28_fullhd.png" type="Texture" id=2]
 [ext_resource path="res://game_fonts/lmroman70.tres" type="DynamicFont" id=3]
 [ext_resource path="res://game_fonts/lmroman25.tres" type="DynamicFont" id=4]
 [ext_resource path="res://scenes/scene_transition/SceneTransitionRect.tscn" type="PackedScene" id=5]
@@ -25,9 +25,6 @@ rect_min_size = Vector2( 1920, 1080 )
 rect_clip_content = true
 texture = ExtResource( 2 )
 stretch_mode = 6
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_left = 1414.17
@@ -100,6 +97,7 @@ custom_fonts/font = ExtResource( 4 )
 text = "Quitter"
 
 [node name="SceneTransitionRect" parent="." instance=ExtResource( 5 )]
+visible = false
 modulate = Color( 0, 0, 0, 1 )
 
 [connection signal="timeout" from="bgmusic_timer" to="." method="_on_bgmusic_timer_timeout"]
